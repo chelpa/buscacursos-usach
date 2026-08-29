@@ -4,13 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BuscaCursos USACH</title>
-<script>
-  // Applied before first paint so a saved theme choice doesn't flash the wrong colors.
-  try{
-    var t = localStorage.getItem('bc-usach-theme');
-    if(t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
-  }catch(e){}
-</script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
@@ -188,13 +181,6 @@
     color:var(--ink-soft); font-size:12.5px; margin-left:auto; text-align:right;
   }
   .context strong{ color:var(--ink); }
-
-  .theme-toggle{
-    flex:none; width:34px; height:34px; border-radius:999px;
-    border:1px solid var(--border-strong); background:var(--surface-2); color:var(--ink-soft);
-    display:inline-flex; align-items:center; justify-content:center; cursor:pointer;
-  }
-  .theme-toggle:hover{ border-color:var(--accent); color:var(--ink); }
 
   .search-row{
     max-width:1440px; margin:0 auto; padding:0 20px 14px;
@@ -600,9 +586,6 @@
     <div class="context">
       <strong>Ingeniería Comercial (INGECO) · Diurno</strong> · Segundo Semestre 2026 (prueba)
     </div>
-    <button class="theme-toggle" id="theme-toggle" type="button" title="Cambiar a modo oscuro" aria-label="Cambiar a modo oscuro">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-    </button>
   </div>
   <div class="search-row">
     <div class="search-box">
@@ -616,9 +599,9 @@
     <select id="f-nivel" class="filter-select"><option value="">Todos los semestres</option></select>
     <select id="f-area" class="filter-select"><option value="">Todas las áreas</option></select>
     <div class="pill-toggle" id="f-elect">
-      <button data-v="" aria-pressed="false">Todos</button>
-      <button data-v="0" aria-pressed="false">Obligatorios</button>
-      <button data-v="1" aria-pressed="false">Electivos</button>
+      <button data-v="" aria-pressed="true">Todos</button>
+      <button data-v="0">Obligatorios</button>
+      <button data-v="1">Electivos</button>
     </div>
   </div>
 </div>
@@ -7662,63 +7645,24 @@ let query = '';
 let fNivel = '';
 let fArea = '';
 let fElect = '';
-let fElectTouched = false;
 let qDebounce = null;
 function norm(str){
   return (str||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
 }
-const qInput = document.getElementById('q');
-const btnGotoResults = document.getElementById('btn-goto-results');
-const btnGotoLabel = btnGotoResults.querySelector('span');
-const btnGotoIcon = btnGotoResults.querySelector('svg');
-const ICON_SEARCH = '<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>';
-const ICON_CLEAR = '<path d="M18 6 6 18M6 6l12 12"/>';
-function setGotoMode(mode){
-  btnGotoResults.dataset.mode = mode;
-  if(mode === 'limpiar'){
-    btnGotoLabel.textContent = 'Limpiar';
-    btnGotoResults.title = 'Limpiar la búsqueda';
-    btnGotoIcon.innerHTML = ICON_CLEAR;
-  } else {
-    btnGotoLabel.textContent = 'Buscar';
-    btnGotoResults.title = 'Ir directo al listado de asignaturas';
-    btnGotoIcon.innerHTML = ICON_SEARCH;
-  }
-}
-qInput.addEventListener('input', e=>{
+document.getElementById('q').addEventListener('input', e=>{
   clearTimeout(qDebounce);
   const v = e.target.value;
   qDebounce = setTimeout(()=>{ query = norm(v.trim()); render(); }, 120);
-  if(!v.trim()) setGotoMode('buscar');
 });
-btnGotoResults.addEventListener('click', ()=>{
-  if(btnGotoResults.dataset.mode === 'limpiar'){
-    qInput.value = '';
-    clearTimeout(qDebounce);
-    query = '';
-    render();
-    setGotoMode('buscar');
-    qInput.focus();
-  } else {
-    document.querySelector('main').scrollIntoView({behavior:'smooth', block:'start'});
-    if(qInput.value.trim()) setGotoMode('limpiar');
-  }
+document.getElementById('btn-goto-results').addEventListener('click', ()=>{
+  document.querySelector('main').scrollIntoView({behavior:'smooth', block:'start'});
 });
 selNivel.addEventListener('change', e=>{ fNivel = e.target.value; render(); });
 selArea.addEventListener('change', e=>{ fArea = e.target.value; render(); });
 document.getElementById('f-elect').addEventListener('click', e=>{
   const btn = e.target.closest('button'); if(!btn) return;
-  const alreadyActive = fElectTouched && btn.getAttribute('aria-pressed') === 'true';
-  if(alreadyActive){
-    // clicking the already-selected pill again deselects it
-    fElect = '';
-    fElectTouched = false;
-    document.querySelectorAll('#f-elect button').forEach(b=>b.setAttribute('aria-pressed', 'false'));
-  } else {
-    fElect = btn.dataset.v;
-    fElectTouched = true;
-    document.querySelectorAll('#f-elect button').forEach(b=>b.setAttribute('aria-pressed', b===btn?'true':'false'));
-  }
+  fElect = btn.dataset.v;
+  document.querySelectorAll('#f-elect button').forEach(b=>b.setAttribute('aria-pressed', b===btn?'true':'false'));
   render();
 });
 
@@ -7851,7 +7795,7 @@ const resultsEl = document.getElementById('results');
 const resultsHeadEl = document.querySelector('.results-head');
 const bottomGuideEl = document.getElementById('bottom-guide-wrap');
 function render(){
-  const noFiltersActive = !query && !fNivel && !fArea && !fElectTouched && pickedSlots.size===0;
+  const noFiltersActive = !query && !fNivel && !fArea && !fElect && pickedSlots.size===0;
 
   if(noFiltersActive){
     resultsHeadEl.style.display = 'none';
@@ -8035,40 +7979,6 @@ function renderSchedule(){
 ['btn-print','btn-print-big'].forEach(id=>{
   document.getElementById(id).addEventListener('click', ()=> window.print());
 });
-
-// ---------- Theme toggle (light / dark, remembers choice) ----------
-(function initTheme(){
-  const root = document.documentElement;
-  const btn = document.getElementById('theme-toggle');
-  const icon = btn.querySelector('svg');
-  const ICON_SUN = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
-  const ICON_MOON = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
-
-  function systemPrefersDark(){
-    return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  }
-  function effectiveTheme(){
-    const attr = root.getAttribute('data-theme');
-    if(attr === 'dark' || attr === 'light') return attr;
-    return systemPrefersDark() ? 'dark' : 'light';
-  }
-  function updateIcon(){
-    const isDark = effectiveTheme() === 'dark';
-    icon.innerHTML = isDark ? ICON_MOON : ICON_SUN;
-    const label = isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro';
-    btn.title = label;
-    btn.setAttribute('aria-label', label);
-  }
-
-  updateIcon(); // data-theme, if saved, was already applied before first paint (see <head>)
-
-  btn.addEventListener('click', ()=>{
-    const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
-    root.setAttribute('data-theme', next);
-    try{ localStorage.setItem('bc-usach-theme', next); }catch(e){}
-    updateIcon();
-  });
-})();
 
 // ---------- Guide panel (collapsible, remembers state) ----------
 (function initGuide(){
