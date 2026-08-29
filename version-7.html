@@ -196,12 +196,6 @@
     font-size:14px;
   }
   .search-box svg{ position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--ink-faint); }
-  .btn-goto-results{
-    flex:none; border:0; border-radius:999px; background:var(--accent-btn-bg); color:var(--accent-btn-text);
-    padding:10px 16px; font-size:13px; font-weight:700; cursor:pointer;
-    display:inline-flex; align-items:center; gap:7px; white-space:nowrap;
-  }
-  .btn-goto-results:hover{ filter:brightness(1.06); }
   .pill-toggle{
     display:flex; border:1px solid var(--border-strong); border-radius:999px; overflow:hidden;
   }
@@ -310,26 +304,17 @@
   .mock-grid .c{ aspect-ratio:1/1; border-radius:3px; background:var(--surface-3); border:1px solid var(--border); }
   .mock-grid .c.on{ background:hsl(var(--h) 55% 45%); border-color:hsl(var(--h) 55% 35%); }
 
-  /* ---------- Horario-libre + Mi horario side by side (tablet & phone) ----------
+  /* ---------- Mobile: horario-libre + Mi horario side by side ----------
      #rail-right-panel is physically moved (via JS) into #mihorario-slot-mobile
-     whenever the layout collapses to a single column (<=1180px), filling the
-     space that would otherwise sit empty beside the picker, and moved back
-     into .rail-right when there's room for the 3-column desktop layout. */
+     when the viewport is narrow, and back into .rail-right when it's wide. */
   .mobile-split{ display:contents; }
   #mihorario-slot-mobile{ display:none; }
-  @media (max-width: 1180px){
-    .mobile-split{ display:flex; gap:14px; align-items:stretch; background:var(--bg); }
-    .mobile-split > .panel{ flex:0 0 auto; min-width:0; }
+  @media (max-width: 700px){
+    .mobile-split{ display:flex; gap:10px; align-items:stretch; }
+    .mobile-split > .panel{ flex:1 1 0; min-width:0; padding:12px; }
     #mihorario-slot-mobile{ display:contents; }
     .mobile-split #rail-right-panel{
-      flex:1 1 0; min-width:240px; padding:14px; display:flex; flex-direction:column;
-    }
-  }
-  @media (max-width: 700px){
-    .mobile-split{ gap:10px; }
-    .mobile-split > .panel{ flex:1 1 0; padding:12px; }
-    .mobile-split #rail-right-panel{
-      min-width:0; padding:12px;
+      flex:1 1 0; min-width:0; padding:12px; display:flex; flex-direction:column;
     }
     .mobile-split #rail-right-panel .week-grid{ max-width:none; grid-template-columns:16px repeat(6,1fr); }
     .mobile-split #rail-right-panel .sched-summary{ flex-wrap:wrap; row-gap:4px; margin-bottom:8px; }
@@ -380,7 +365,6 @@
   .stat-line b{ color:var(--ink); font-family:'IBM Plex Mono',monospace; }
 
   /* ---------- Center: results ---------- */
-  main{ scroll-margin-top:112px; }
   .results-head{
     display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; gap:10px; flex-wrap:wrap;
   }
@@ -563,14 +547,9 @@
   footer .disclaimer strong{ color:var(--ink-soft); }
 
   @media print{
-    /* #rail-right-panel ("Mi horario") may currently live inside .rail-left
-       (moved there by JS on narrow/tablet layouts) or inside .rail-right —
-       hide everything else in the left rail by id instead of hiding
-       .rail-left wholesale, so the schedule always prints regardless of
-       where it physically sits in the DOM at print time. */
-    .topbar, #picker-panel, #dataset-panel, footer, .results-head, .course-card, .guide-panel, .bottom-guide-wrap, .big-schedule-wrap{ display:none !important; }
+    .topbar, .rail-left, footer, .results-head, .course-card, .guide-panel, .bottom-guide-wrap, .big-schedule-wrap{ display:none !important; }
     .layout{ grid-template-columns: 1fr; display:block; }
-    .rail-left, .rail-right{ position:static; }
+    .rail-right{ position:static; }
   }
 </style>
 </head>
@@ -592,10 +571,6 @@
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
       <input id="q" type="text" placeholder="Buscar por código, ramo o profesor… (ej: 352410, Álgebra, Meza)" autocomplete="off">
     </div>
-    <button class="btn-goto-results" id="btn-goto-results" type="button" title="Ir directo al listado de asignaturas">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-      <span>Buscar</span>
-    </button>
     <select id="f-nivel" class="filter-select"><option value="">Todos los semestres</option></select>
     <select id="f-area" class="filter-select"><option value="">Todas las áreas</option></select>
     <div class="pill-toggle" id="f-elect">
@@ -617,7 +592,7 @@
       </div>
       <div id="mihorario-slot-mobile"></div>
     </div>
-    <div class="panel" id="dataset-panel">
+    <div class="panel">
       <p class="rail-title">Dataset</p>
       <div class="stat-line"><span>Asignaturas</span><b id="stat-asigs">–</b></div>
       <div class="stat-line"><span>Secciones</span><b id="stat-seccs">–</b></div>
@@ -7654,9 +7629,6 @@ document.getElementById('q').addEventListener('input', e=>{
   const v = e.target.value;
   qDebounce = setTimeout(()=>{ query = norm(v.trim()); render(); }, 120);
 });
-document.getElementById('btn-goto-results').addEventListener('click', ()=>{
-  document.querySelector('main').scrollIntoView({behavior:'smooth', block:'start'});
-});
 selNivel.addEventListener('change', e=>{ fNivel = e.target.value; render(); });
 selArea.addEventListener('change', e=>{ fArea = e.target.value; render(); });
 document.getElementById('f-elect').addEventListener('click', e=>{
@@ -8002,12 +7974,12 @@ function renderSchedule(){
   });
 })();
 
-// ---------- Responsive reparenting: move "Mi horario" beside the picker whenever the layout is single-column ----------
+// ---------- Responsive reparenting: move "Mi horario" beside the picker on mobile ----------
 (function initSchedulePlacement(){
   const panel = document.getElementById('rail-right-panel');
   const mobileSlot = document.getElementById('mihorario-slot-mobile');
   const desktopSlot = document.querySelector('.rail-right');
-  const mq = window.matchMedia('(max-width: 1180px)');
+  const mq = window.matchMedia('(max-width: 700px)');
   function place(){
     const target = mq.matches ? mobileSlot : desktopSlot;
     if(panel.parentElement !== target) target.appendChild(panel);
