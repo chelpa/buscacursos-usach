@@ -227,41 +227,6 @@
     box-shadow:var(--shadow);
   }
 
-  /* ---------- Guide panel ---------- */
-  .guide-panel{
-    grid-column: 1 / -1;
-    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
-    box-shadow:var(--shadow); overflow:hidden;
-  }
-  .guide-head{
-    display:flex; align-items:center; gap:10px; padding:14px 18px;
-    cursor:pointer; user-select:none; background:var(--surface-2);
-  }
-  .guide-head:hover{ background:var(--surface-3); }
-  .guide-head svg{ color:var(--ink-faint); flex:none; transition:transform .18s ease; }
-  .guide-panel[data-open="true"] .guide-head svg{ transform:rotate(180deg); }
-  .guide-head .t{ flex:1; min-width:0; }
-  .guide-head h2{ margin:0; font-size:14.5px; font-weight:800; }
-  .guide-head p{ margin:2px 0 0; font-size:12px; color:var(--ink-soft); }
-  .guide-body{
-    display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:14px;
-    padding:18px; border-top:1px solid var(--border);
-  }
-  .guide-panel[data-open="false"] .guide-body{ display:none; }
-  .guide-step{ display:flex; gap:12px; }
-  .guide-step .num{
-    flex:none; width:26px; height:26px; border-radius:50%;
-    background:var(--accent-btn-bg); color:var(--accent-btn-text);
-    display:flex; align-items:center; justify-content:center;
-    font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:12.5px;
-  }
-  .guide-step h3{ margin:2px 0 3px; font-size:13px; font-weight:700; }
-  .guide-step p{ margin:0; font-size:12.5px; color:var(--ink-soft); line-height:1.5; }
-  .guide-step kbd{
-    font-family:'IBM Plex Mono',monospace; font-size:11px; background:var(--surface-3);
-    border:1px solid var(--border-strong); border-radius:4px; padding:1px 5px;
-  }
-
   /* ---------- Left rail: time grid + area/nivel filters ---------- */
   .rail-left{ position:sticky; top:96px; display:flex; flex-direction:column; gap:14px; }
   .rail-left .panel{ padding:14px; }
@@ -278,7 +243,6 @@
     display:grid;
     grid-template-columns: 30px repeat(6, 1fr);
     gap:2px;
-    max-width:300px;
   }
   .grid-picker .hdr{
     font-size:10px; font-weight:700; text-align:center; color:var(--ink-faint);
@@ -381,7 +345,6 @@
     grid-template-columns: 30px repeat(6, 1fr);
     gap:2px;
     margin-bottom:4px;
-    max-width:300px;
   }
   .week-grid .hdr{ font-size:9.5px; font-weight:800; text-align:center; color:var(--ink-faint); padding-bottom:3px; }
   .week-grid .rowlabel{
@@ -463,7 +426,7 @@
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
       <input id="q" type="text" placeholder="Buscar por código, ramo o profesor… (ej: 352410, Álgebra, Meza)" autocomplete="off">
     </div>
-    <select id="f-nivel" class="filter-select"><option value="">Todos los semestres</option></select>
+    <select id="f-nivel" class="filter-select"><option value="">Todos los niveles</option></select>
     <select id="f-area" class="filter-select"><option value="">Todas las áreas</option></select>
     <div class="pill-toggle" id="f-elect">
       <button data-v="" aria-pressed="true">Todos</button>
@@ -474,53 +437,6 @@
 </div>
 
 <div class="layout">
-
-  <section class="guide-panel" id="guide-panel" data-open="true">
-    <div class="guide-head" id="guide-toggle" role="button" tabindex="0" aria-expanded="true" aria-controls="guide-body">
-      <div class="t">
-        <h2>Cómo usar este buscador</h2>
-        <p>Guía rápida en 5 pasos — haz clic para ocultar o mostrar</p>
-      </div>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-    </div>
-    <div class="guide-body" id="guide-body">
-      <div class="guide-step">
-        <span class="num">1</span>
-        <div>
-          <h3>Busca tu ramo</h3>
-          <p>Escribe el código, el nombre de la asignatura o el apellido de un profesor en la barra de arriba.</p>
-        </div>
-      </div>
-      <div class="guide-step">
-        <span class="num">2</span>
-        <div>
-          <h3>Filtra (opcional)</h3>
-          <p>Acota por semestre, área o electivos/obligatorios, o haz clic en bloques de la grilla <kbd>Horario libre</kbd> para ver sólo lo que calza con tu disponibilidad.</p>
-        </div>
-      </div>
-      <div class="guide-step">
-        <span class="num">3</span>
-        <div>
-          <h3>Compara secciones</h3>
-          <p>Cada asignatura lista sus secciones con profesor, cupos y horario para que elijas la que más te acomode.</p>
-        </div>
-      </div>
-      <div class="guide-step">
-        <span class="num">4</span>
-        <div>
-          <h3>Arma tu horario</h3>
-          <p>Pulsa <kbd>Agregar</kbd> en las secciones que quieras. Se suman al panel <strong>Mi horario</strong>, con su propia grilla semanal.</p>
-        </div>
-      </div>
-      <div class="guide-step">
-        <span class="num">5</span>
-        <div>
-          <h3>Revisa choques y guarda</h3>
-          <p>Los bloques en rojo marcan choques de horario. Cuando quede sin choques, usa <kbd>Imprimir horario</kbd> para guardarlo.</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <aside class="rail-left">
     <div class="panel">
@@ -611,7 +527,7 @@ function hueFor(codigo){
 const nivelSet = Array.from(new Set(SECTIONS.map(s=>s.nivel).filter(n=>n!=null))).sort((a,b)=>a-b);
 const areaSet = Array.from(new Set(SECTIONS.map(s=>s.area).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'es'));
 const selNivel = document.getElementById('f-nivel');
-nivelSet.forEach(n=>{ const o=document.createElement('option'); o.value=n; o.textContent='Semestre '+n; selNivel.appendChild(o); });
+nivelSet.forEach(n=>{ const o=document.createElement('option'); o.value=n; o.textContent='Nivel '+n; selNivel.appendChild(o); });
 const selArea = document.getElementById('f-area');
 areaSet.forEach(a=>{ const o=document.createElement('option'); o.value=a; o.textContent=a.charAt(0)+a.slice(1).toLowerCase(); selArea.appendChild(o); });
 
@@ -797,7 +713,7 @@ function render(){
           <span class="course-code">${course.codigo}</span>
           <div class="course-title">${course.asignatura}</div>
           <div class="course-tags">
-            ${course.nivel!=null ? `<span class="tag nivel">Semestre ${course.nivel}</span>` : ''}
+            ${course.nivel!=null ? `<span class="tag nivel">Nivel ${course.nivel}</span>` : ''}
             ${course.area ? `<span class="tag area">${course.area}</span>` : ''}
             ${course.sct!=null ? `<span class="tag sct">${course.sct} SCT</span>` : ''}
           </div>
@@ -908,28 +824,6 @@ document.getElementById('btn-clear').addEventListener('click', ()=>{
   selected.clear(); saveSelection(); render();
 });
 document.getElementById('btn-print').addEventListener('click', ()=> window.print());
-
-// ---------- Guide panel (collapsible, remembers state) ----------
-(function initGuide(){
-  const panel = document.getElementById('guide-panel');
-  const toggle = document.getElementById('guide-toggle');
-  let open = true;
-  try{
-    const saved = localStorage.getItem('bc-usach-guide-open');
-    if(saved !== null) open = saved === 'true';
-  }catch(e){}
-  function setOpen(v){
-    open = v;
-    panel.dataset.open = String(open);
-    toggle.setAttribute('aria-expanded', String(open));
-    try{ localStorage.setItem('bc-usach-guide-open', String(open)); }catch(e){}
-  }
-  setOpen(open);
-  toggle.addEventListener('click', ()=> setOpen(!open));
-  toggle.addEventListener('keydown', e=>{
-    if(e.key===' '||e.key==='Enter'){ e.preventDefault(); setOpen(!open); }
-  });
-})();
 
 render();
 </script>
