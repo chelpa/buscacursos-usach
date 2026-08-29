@@ -423,17 +423,6 @@
   .add-btn:hover{ border-color:var(--accent); }
   .add-btn.added{ background:var(--accent-btn-bg); border-color:var(--accent-btn-bg); color:var(--accent-btn-text); }
   .swatch-dot{ width:9px;height:9px;border-radius:50%; display:inline-block; flex:none; }
-  .add-icon{ display:none; font-weight:800; font-size:14px; line-height:1; }
-
-  .add-th{ width:120px; }
-  @media (max-width: 700px){
-    .add-th, .add-cell{ width:1%; white-space:nowrap; }
-    .add-th{ font-size:0; } /* icon-only column on mobile: header text hidden, still announced to screen readers via the cells' aria-label */
-    .add-btn{ padding:7px 8px; gap:0; }
-    .add-btn .add-label{ display:none; }
-    .add-btn .add-icon{ display:inline-block; }
-    .add-btn .swatch-dot{ display:none; }
-  }
 
   .empty-state{
     text-align:center; padding:60px 20px; color:var(--ink-faint);
@@ -454,7 +443,7 @@
     grid-template-columns: 30px repeat(6, 1fr);
     gap:2px;
     margin-bottom:4px;
-    width:100%;
+    max-width:300px;
   }
   .week-grid .hdr{ font-size:9.5px; font-weight:800; text-align:center; color:var(--ink-faint); padding-bottom:3px; }
   .week-grid .rowlabel{
@@ -945,11 +934,10 @@ function render(){
           <td>${s.profesor || '—'}${s.electividad!=='0' ? '<br><span class="tag elect" style="margin-top:3px;display:inline-block;">Electivo</span>':''}</td>
           <td class="cupo-badge">${s.cupo ?? '—'}</td>
           <td><div class="horario-chips">${chips || '<span class="mono" style="color:var(--ink-faint)">—</span>'}</div></td>
-          <td class="add-cell">
-            <button class="add-btn ${isAdded?'added':''}" data-key="${key}" data-codigo="${course.codigo}" data-seccion="${s.seccion}" aria-label="${isAdded ? 'Quitar de mi horario' : 'Agregar a mi horario'}">
+          <td>
+            <button class="add-btn ${isAdded?'added':''}" data-key="${key}" data-codigo="${course.codigo}" data-seccion="${s.seccion}">
               <span class="swatch-dot" style="background:hsl(${hue} 60% 50%)"></span>
-              <span class="add-label">${isAdded ? 'Agregada' : 'Agregar'}</span>
-              <span class="add-icon" aria-hidden="true">${isAdded ? '✓' : '+'}</span>
+              ${isAdded ? 'Agregada' : 'Agregar'}
             </button>
           </td>
         </tr>`;
@@ -966,7 +954,7 @@ function render(){
         </div>
         <div style="overflow-x:auto;">
         <table class="secc-table">
-          <thead><tr><th style="width:50px;">Sec.</th><th>Profesor</th><th style="width:60px;">Cupo</th><th>Horario</th><th class="add-th">Agregar</th></tr></thead>
+          <thead><tr><th style="width:50px;">Sec.</th><th>Profesor</th><th style="width:60px;">Cupo</th><th>Horario</th><th style="width:120px;"></th></tr></thead>
           <tbody>${rows}</tbody>
         </table>
         </div>
