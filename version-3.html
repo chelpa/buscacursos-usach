@@ -299,24 +299,16 @@
   .mock-grid .c{ aspect-ratio:1/1; border-radius:3px; background:var(--surface-3); border:1px solid var(--border); }
   .mock-grid .c.on{ background:hsl(var(--h) 55% 45%); border-color:hsl(var(--h) 55% 35%); }
 
-  /* ---------- Mobile: horario-libre + Mi horario side by side ----------
-     #rail-right-panel is physically moved (via JS) into #mihorario-slot-mobile
-     when the viewport is narrow, and back into .rail-right when it's wide. */
+  /* ---------- Mobile: horario-libre + mini schedule side by side ---------- */
   .mobile-split{ display:contents; }
-  #mihorario-slot-mobile{ display:none; }
+  .schedule-mini{ display:none; }
   @media (max-width: 700px){
     .mobile-split{ display:flex; gap:10px; align-items:stretch; }
     .mobile-split > .panel{ flex:1 1 0; min-width:0; padding:12px; }
-    #mihorario-slot-mobile{ display:contents; }
-    .mobile-split #rail-right-panel{
-      flex:1 1 0; min-width:0; padding:12px; display:flex; flex-direction:column;
-    }
-    .mobile-split #rail-right-panel .week-grid{ max-width:none; grid-template-columns:16px repeat(6,1fr); }
-    .mobile-split #rail-right-panel .sched-summary{ flex-wrap:wrap; row-gap:4px; margin-bottom:8px; }
-    .mobile-split #rail-right-panel .sched-stat .n{ font-size:16px; }
-    .mobile-split #rail-right-panel .sched-stat .l{ font-size:9px; }
-    .mobile-split #rail-right-panel .actions-row{ flex-direction:column; }
-    .mobile-split #rail-right-panel .selected-list{ max-height:220px; overflow-y:auto; }
+    .schedule-mini{ display:flex; flex-direction:column; }
+    .schedule-mini .week-grid{ max-width:none; }
+    .schedule-mini .week-grid.mini{ grid-template-columns: 16px repeat(6,1fr); }
+    .schedule-mini .mini-link{ margin-top:8px; font-size:11px; }
   }
 
   /* ---------- Left rail: time grid + area/nivel filters ---------- */
@@ -543,7 +535,11 @@
         <div class="grid-picker" id="picker"></div>
         <p class="grid-hint">Clic en un bloque para mostrar sólo secciones que se dictan en ese horario. <button class="link-btn" id="clear-picker">Limpiar</button></p>
       </div>
-      <div id="mihorario-slot-mobile"></div>
+      <div class="panel schedule-mini">
+        <p class="rail-title">Mi horario</p>
+        <div class="week-grid mini" id="week-grid-mini"></div>
+        <a class="link-btn mini-link" href="#rail-right-panel">Ver detalle ↓</a>
+      </div>
     </div>
     <div class="panel">
       <p class="rail-title">Dataset</p>
@@ -581,7 +577,7 @@
 
 </div>
 
-<div class="bottom-guide-wrap" id="bottom-guide-wrap">
+<div class="bottom-guide-wrap">
   <section class="guide-panel" id="guide-panel" data-open="true">
     <div class="guide-head" id="guide-toggle" role="button" tabindex="0" aria-expanded="true" aria-controls="guide-body">
       <div class="t">
@@ -886,19 +882,16 @@ function welcomeGuideHTML(){
 // ---------- Render: results ----------
 const resultsEl = document.getElementById('results');
 const resultsHeadEl = document.querySelector('.results-head');
-const bottomGuideEl = document.getElementById('bottom-guide-wrap');
 function render(){
   const noFiltersActive = !query && !fNivel && !fArea && !fElect && pickedSlots.size===0;
 
   if(noFiltersActive){
     resultsHeadEl.style.display = 'none';
-    bottomGuideEl.style.display = 'none';
     resultsEl.innerHTML = welcomeGuideHTML();
     renderSchedule();
     return;
   }
   resultsHeadEl.style.display = '';
-  bottomGuideEl.style.display = '';
 
   const matched = [];
   COURSES.forEach(course=>{
@@ -967,6 +960,7 @@ function render(){
 
 // ---------- Render: my schedule (right rail + mobile mini preview) ----------
 const weekGridEl = document.getElementById('week-grid');
+const weekGridMiniEl = document.getElementById('week-grid-mini');
 
 function buildWeekGrid(container, occ, conflictSlots, showAbbr){
   container.innerHTML = '';
@@ -1022,6 +1016,7 @@ function renderSchedule(){
   });
 
   buildWeekGrid(weekGridEl, occ, conflictSlots, true);
+  if(weekGridMiniEl) buildWeekGrid(weekGridMiniEl, occ, conflictSlots, false);
 
   const noteWrap = document.getElementById('conflict-note-wrap');
   noteWrap.innerHTML = conflictSlots.size
@@ -1079,21 +1074,6 @@ document.getElementById('btn-print').addEventListener('click', ()=> window.print
   toggle.addEventListener('keydown', e=>{
     if(e.key===' '||e.key==='Enter'){ e.preventDefault(); setOpen(!open); }
   });
-})();
-
-// ---------- Responsive reparenting: move "Mi horario" beside the picker on mobile ----------
-(function initSchedulePlacement(){
-  const panel = document.getElementById('rail-right-panel');
-  const mobileSlot = document.getElementById('mihorario-slot-mobile');
-  const desktopSlot = document.querySelector('.rail-right');
-  const mq = window.matchMedia('(max-width: 700px)');
-  function place(){
-    const target = mq.matches ? mobileSlot : desktopSlot;
-    if(panel.parentElement !== target) target.appendChild(panel);
-  }
-  place();
-  if(mq.addEventListener) mq.addEventListener('change', place);
-  else if(mq.addListener) mq.addListener(place); // older Safari
 })();
 
 render();
