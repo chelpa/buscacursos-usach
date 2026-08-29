@@ -247,8 +247,7 @@
     display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:14px;
     padding:18px; border-top:1px solid var(--border);
   }
-  .guide-panel[data-open="false"] .guide-body,
-  .guide-panel[data-open="false"] .guide-mock{ display:none; }
+  .guide-panel[data-open="false"] .guide-body{ display:none; }
   .guide-step{ display:flex; gap:12px; }
   .guide-step .num{
     flex:none; width:26px; height:26px; border-radius:50%;
@@ -261,54 +260,6 @@
   .guide-step kbd{
     font-family:'IBM Plex Mono',monospace; font-size:11px; background:var(--surface-3);
     border:1px solid var(--border-strong); border-radius:4px; padding:1px 5px;
-  }
-  .guide-panel.inline{ box-shadow:none; }
-
-  /* ---------- Guide illustration (mock) ---------- */
-  .guide-mock{
-    display:flex; align-items:center; gap:14px;
-    margin:0 18px 18px; padding-top:16px; border-top:1px solid var(--border);
-  }
-  @media (max-width: 700px){
-    .guide-mock{ flex-direction:column; align-items:stretch; }
-    .guide-mock .mock-arrow svg{ transform:rotate(90deg); }
-  }
-  .mock-frame{
-    flex:1; min-width:200px; background:var(--surface-2); border:1px solid var(--border);
-    border-radius:8px; padding:11px 13px;
-  }
-  .mock-label{
-    font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint);
-    font-weight:800; margin-bottom:9px;
-  }
-  .mock-row{
-    display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--border);
-    border-radius:6px; padding:8px 10px; font-size:12px;
-  }
-  .mock-code{
-    font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ink-soft);
-    background:var(--surface-3); border-radius:4px; padding:2px 5px; flex:none;
-  }
-  .mock-name{ flex:1; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .mock-btn{
-    flex:none; background:var(--accent-btn-bg); color:var(--accent-btn-text);
-    border-radius:6px; padding:4px 9px; font-size:10.5px; font-weight:700; white-space:nowrap;
-  }
-  .mock-arrow{ flex:none; color:var(--ink-faint); display:flex; align-items:center; justify-content:center; }
-  .mock-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:3px; }
-  .mock-grid .c{ aspect-ratio:1/1; border-radius:3px; background:var(--surface-3); border:1px solid var(--border); }
-  .mock-grid .c.on{ background:hsl(var(--h) 55% 45%); border-color:hsl(var(--h) 55% 35%); }
-
-  /* ---------- Mobile: horario-libre + mini schedule side by side ---------- */
-  .mobile-split{ display:contents; }
-  .schedule-mini{ display:none; }
-  @media (max-width: 700px){
-    .mobile-split{ display:flex; gap:10px; align-items:stretch; }
-    .mobile-split > .panel{ flex:1 1 0; min-width:0; padding:12px; }
-    .schedule-mini{ display:flex; flex-direction:column; }
-    .schedule-mini .week-grid{ max-width:none; }
-    .schedule-mini .week-grid.mini{ grid-template-columns: 16px repeat(6,1fr); }
-    .schedule-mini .mini-link{ margin-top:8px; font-size:11px; }
   }
 
   /* ---------- Left rail: time grid + area/nivel filters ---------- */
@@ -479,10 +430,6 @@
   }
   .btn-secondary:hover{ border-color:var(--accent); }
 
-  .bottom-guide-wrap{
-    max-width:1440px; margin:0 auto; padding:0 20px 22px;
-  }
-
   footer{
     max-width:1440px; margin:0 auto; padding:0 20px 40px;
     color:var(--ink-faint); font-size:12px; line-height:1.6;
@@ -494,7 +441,7 @@
   footer .disclaimer strong{ color:var(--ink-soft); }
 
   @media print{
-    .topbar, .rail-left, footer, .results-head, .course-card, .guide-panel, .bottom-guide-wrap{ display:none !important; }
+    .topbar, .rail-left, footer, .results-head, .course-card{ display:none !important; }
     .layout{ grid-template-columns: 1fr; display:block; }
     .rail-right{ position:static; }
   }
@@ -528,56 +475,6 @@
 
 <div class="layout">
 
-  <aside class="rail-left">
-    <div class="mobile-split">
-      <div class="panel" id="picker-panel">
-        <p class="rail-title">Filtrar por horario libre</p>
-        <div class="grid-picker" id="picker"></div>
-        <p class="grid-hint">Clic en un bloque para mostrar sólo secciones que se dictan en ese horario. <button class="link-btn" id="clear-picker">Limpiar</button></p>
-      </div>
-      <div class="panel schedule-mini">
-        <p class="rail-title">Mi horario</p>
-        <div class="week-grid mini" id="week-grid-mini"></div>
-        <a class="link-btn mini-link" href="#rail-right-panel">Ver detalle ↓</a>
-      </div>
-    </div>
-    <div class="panel">
-      <p class="rail-title">Dataset</p>
-      <div class="stat-line"><span>Asignaturas</span><b id="stat-asigs">–</b></div>
-      <div class="stat-line"><span>Secciones</span><b id="stat-seccs">–</b></div>
-      <div class="stat-line"><span>Áreas</span><b id="stat-areas">–</b></div>
-    </div>
-  </aside>
-
-  <main>
-    <div class="results-head">
-      <div class="results-count"><b id="count-n">0</b> asignaturas encontradas</div>
-    </div>
-    <div id="results"></div>
-  </main>
-
-  <aside class="rail-right">
-    <div class="panel" id="rail-right-panel">
-      <p class="rail-title">Mi horario</p>
-      <div class="sched-summary">
-        <div class="sched-stat"><div class="n" id="sum-secc">0</div><div class="l">Secciones</div></div>
-        <div class="sched-stat"><div class="n" id="sum-sct">0</div><div class="l">Créditos SCT</div></div>
-        <div class="sched-stat"><div class="n" id="sum-conf">0</div><div class="l">Choques</div></div>
-      </div>
-      <div class="week-grid" id="week-grid"></div>
-      <div id="conflict-note-wrap"></div>
-      <div class="selected-list" id="selected-list"></div>
-      <div id="rail-empty-wrap"></div>
-      <div class="actions-row">
-        <button class="btn-secondary" id="btn-print">Imprimir horario</button>
-        <button class="btn-secondary" id="btn-clear">Vaciar</button>
-      </div>
-    </div>
-  </aside>
-
-</div>
-
-<div class="bottom-guide-wrap">
   <section class="guide-panel" id="guide-panel" data-open="true">
     <div class="guide-head" id="guide-toggle" role="button" tabindex="0" aria-expanded="true" aria-controls="guide-body">
       <div class="t">
@@ -623,28 +520,48 @@
         </div>
       </div>
     </div>
-    <div class="guide-mock">
-      <div class="mock-frame">
-        <div class="mock-label">Resultados</div>
-        <div class="mock-row">
-          <span class="mock-code">352410</span>
-          <span class="mock-name">Principios de Microeconomía</span>
-          <span class="mock-btn">+ Agregar</span>
-        </div>
+  </section>
+
+  <aside class="rail-left">
+    <div class="panel">
+      <p class="rail-title">Filtrar por horario libre</p>
+      <div class="grid-picker" id="picker"></div>
+      <p class="grid-hint">Clic en un bloque para mostrar sólo secciones que se dictan en ese horario. <button class="link-btn" id="clear-picker">Limpiar</button></p>
+    </div>
+    <div class="panel">
+      <p class="rail-title">Dataset</p>
+      <div class="stat-line"><span>Asignaturas</span><b id="stat-asigs">–</b></div>
+      <div class="stat-line"><span>Secciones</span><b id="stat-seccs">–</b></div>
+      <div class="stat-line"><span>Áreas</span><b id="stat-areas">–</b></div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="results-head">
+      <div class="results-count"><b id="count-n">0</b> asignaturas encontradas</div>
+    </div>
+    <div id="results"></div>
+  </main>
+
+  <aside class="rail-right">
+    <div class="panel">
+      <p class="rail-title">Mi horario</p>
+      <div class="sched-summary">
+        <div class="sched-stat"><div class="n" id="sum-secc">0</div><div class="l">Secciones</div></div>
+        <div class="sched-stat"><div class="n" id="sum-sct">0</div><div class="l">Créditos SCT</div></div>
+        <div class="sched-stat"><div class="n" id="sum-conf">0</div><div class="l">Choques</div></div>
       </div>
-      <div class="mock-arrow">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </div>
-      <div class="mock-frame">
-        <div class="mock-label">Mi horario</div>
-        <div class="mock-grid">
-          <div class="c"></div><div class="c on" style="--h:210"></div><div class="c"></div><div class="c"></div><div class="c"></div>
-          <div class="c"></div><div class="c on" style="--h:210"></div><div class="c"></div><div class="c on" style="--h:152"></div><div class="c"></div>
-          <div class="c"></div><div class="c"></div><div class="c"></div><div class="c on" style="--h:152"></div><div class="c"></div>
-        </div>
+      <div class="week-grid" id="week-grid"></div>
+      <div id="conflict-note-wrap"></div>
+      <div class="selected-list" id="selected-list"></div>
+      <div id="rail-empty-wrap"></div>
+      <div class="actions-row">
+        <button class="btn-secondary" id="btn-print">Imprimir horario</button>
+        <button class="btn-secondary" id="btn-clear">Vaciar</button>
       </div>
     </div>
-  </section>
+  </aside>
+
 </div>
 
 <footer>
@@ -837,62 +754,9 @@ function computeConflicts(){
   return {conflictSlots, conflictKeys};
 }
 
-// ---------- Empty state: onboarding guide shown before any search ----------
-function welcomeGuideHTML(){
-  const steps = [
-    ['1','Busca tu ramo','Escribe el código, el nombre de la asignatura o el apellido de un profesor en la barra de arriba.'],
-    ['2','Filtra (opcional)','Acota por semestre, área o electivos/obligatorios, o haz clic en bloques de la grilla <kbd>Horario libre</kbd> para ver sólo lo que calza con tu disponibilidad.'],
-    ['3','Compara secciones','Cada asignatura lista sus secciones con profesor, cupos y horario para que elijas la que más te acomode.'],
-    ['4','Arma tu horario','Pulsa <kbd>Agregar</kbd> en las secciones que quieras. Se suman al panel <strong>Mi horario</strong>, con su propia grilla semanal.'],
-    ['5','Revisa choques y guarda','Los bloques en rojo marcan choques de horario. Cuando quede sin choques, usa <kbd>Imprimir horario</kbd> para guardarlo.'],
-  ].map(([n,t,d])=>`<div class="guide-step"><span class="num">${n}</span><div><h3>${t}</h3><p>${d}</p></div></div>`).join('');
-
-  return `<div class="guide-panel inline" data-open="true">
-    <div class="guide-head" style="cursor:default;">
-      <div class="t">
-        <h2>Cómo usar este buscador</h2>
-        <p>Aún no has buscado nada — así arma tu horario en 5 pasos.</p>
-      </div>
-    </div>
-    <div class="guide-body">${steps}</div>
-    <div class="guide-mock">
-      <div class="mock-frame">
-        <div class="mock-label">Resultados</div>
-        <div class="mock-row">
-          <span class="mock-code">352410</span>
-          <span class="mock-name">Principios de Microeconomía</span>
-          <span class="mock-btn">+ Agregar</span>
-        </div>
-      </div>
-      <div class="mock-arrow">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </div>
-      <div class="mock-frame">
-        <div class="mock-label">Mi horario</div>
-        <div class="mock-grid">
-          <div class="c"></div><div class="c on" style="--h:210"></div><div class="c"></div><div class="c"></div><div class="c"></div>
-          <div class="c"></div><div class="c on" style="--h:210"></div><div class="c"></div><div class="c on" style="--h:152"></div><div class="c"></div>
-          <div class="c"></div><div class="c"></div><div class="c"></div><div class="c on" style="--h:152"></div><div class="c"></div>
-        </div>
-      </div>
-    </div>
-  </div>`;
-}
-
 // ---------- Render: results ----------
 const resultsEl = document.getElementById('results');
-const resultsHeadEl = document.querySelector('.results-head');
 function render(){
-  const noFiltersActive = !query && !fNivel && !fArea && !fElect && pickedSlots.size===0;
-
-  if(noFiltersActive){
-    resultsHeadEl.style.display = 'none';
-    resultsEl.innerHTML = welcomeGuideHTML();
-    renderSchedule();
-    return;
-  }
-  resultsHeadEl.style.display = '';
-
   const matched = [];
   COURSES.forEach(course=>{
     const seccs = courseMatches(course);
@@ -958,44 +822,8 @@ function render(){
   renderSchedule();
 }
 
-// ---------- Render: my schedule (right rail + mobile mini preview) ----------
+// ---------- Render: my schedule (right rail) ----------
 const weekGridEl = document.getElementById('week-grid');
-const weekGridMiniEl = document.getElementById('week-grid-mini');
-
-function buildWeekGrid(container, occ, conflictSlots, showAbbr){
-  container.innerHTML = '';
-  container.appendChild(document.createElement('div'));
-  DIAS.forEach(d=>{ const h=document.createElement('div'); h.className='hdr'; h.textContent=DIA_LABEL[d]; container.appendChild(h); });
-  BLOQUES.forEach(b=>{
-    const rl=document.createElement('div'); rl.className='rowlabel'; rl.textContent='M'+b; container.appendChild(rl);
-    DIAS.forEach(d=>{
-      const key = d+'-'+b;
-      const cellData = occ[key];
-      const slot = document.createElement('div');
-      slot.className = 'slot';
-      slot.title = DIA_LABEL_FULL[d]+' · '+MODULOS[b][0]+'–'+MODULOS[b][1];
-      if(cellData && cellData.length){
-        slot.classList.add('filled');
-        if(conflictSlots.has(key)){
-          slot.classList.add('conflict');
-        } else {
-          const hue = cellData[0].hue;
-          slot.style.background = `hsl(${hue} 55% 45%)`;
-          slot.style.borderColor = `hsl(${hue} 55% 35%)`;
-          if(showAbbr){
-            const abbr = document.createElement('span');
-            abbr.className = 'abbr';
-            abbr.style.color = '#fff';
-            abbr.textContent = cellData[0].codigo.slice(-3);
-            slot.appendChild(abbr);
-          }
-        }
-      }
-      container.appendChild(slot);
-    });
-  });
-}
-
 function renderSchedule(){
   const {conflictSlots, conflictKeys} = computeConflicts();
 
@@ -1015,8 +843,35 @@ function renderSchedule(){
     });
   });
 
-  buildWeekGrid(weekGridEl, occ, conflictSlots, true);
-  if(weekGridMiniEl) buildWeekGrid(weekGridMiniEl, occ, conflictSlots, false);
+  weekGridEl.innerHTML = '';
+  weekGridEl.appendChild(document.createElement('div'));
+  DIAS.forEach(d=>{ const h=document.createElement('div'); h.className='hdr'; h.textContent=DIA_LABEL[d]; weekGridEl.appendChild(h); });
+  BLOQUES.forEach(b=>{
+    const rl=document.createElement('div'); rl.className='rowlabel'; rl.textContent='M'+b; weekGridEl.appendChild(rl);
+    DIAS.forEach(d=>{
+      const key = d+'-'+b;
+      const cellData = occ[key];
+      const slot = document.createElement('div');
+      slot.className = 'slot';
+      slot.title = DIA_LABEL_FULL[d]+' · '+MODULOS[b][0]+'–'+MODULOS[b][1];
+      if(cellData && cellData.length){
+        slot.classList.add('filled');
+        if(conflictSlots.has(key)){
+          slot.classList.add('conflict');
+        } else {
+          const hue = cellData[0].hue;
+          slot.style.background = `hsl(${hue} 55% 45%)`;
+          slot.style.borderColor = `hsl(${hue} 55% 35%)`;
+          const abbr = document.createElement('span');
+          abbr.className = 'abbr';
+          abbr.style.color = '#fff';
+          abbr.textContent = cellData[0].codigo.slice(-3);
+          slot.appendChild(abbr);
+        }
+      }
+      weekGridEl.appendChild(slot);
+    });
+  });
 
   const noteWrap = document.getElementById('conflict-note-wrap');
   noteWrap.innerHTML = conflictSlots.size
@@ -1058,7 +913,7 @@ document.getElementById('btn-print').addEventListener('click', ()=> window.print
 (function initGuide(){
   const panel = document.getElementById('guide-panel');
   const toggle = document.getElementById('guide-toggle');
-  let open = false;
+  let open = true;
   try{
     const saved = localStorage.getItem('bc-usach-guide-open');
     if(saved !== null) open = saved === 'true';
