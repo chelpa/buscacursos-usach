@@ -189,21 +189,12 @@
   }
   .context strong{ color:var(--ink); }
 
-  .theme-toggle, .icon-btn{
+  .theme-toggle{
     flex:none; width:34px; height:34px; border-radius:999px;
     border:1px solid var(--border-strong); background:var(--surface-2); color:var(--ink-soft);
     display:inline-flex; align-items:center; justify-content:center; cursor:pointer;
   }
-  .theme-toggle:hover, .icon-btn:hover{ border-color:var(--accent); color:var(--ink); }
-  .icon-btn[hidden]{ display:none; }
-
-  .btn-view-mode{
-    margin-top:10px; width:100%; display:inline-flex; align-items:center; justify-content:center; gap:6px;
-    border:1px solid var(--border-strong); background:var(--surface-2); color:var(--ink-soft);
-    border-radius:var(--radius); padding:8px; font-size:12px; font-weight:700; cursor:pointer;
-  }
-  .btn-view-mode:hover{ border-color:var(--accent); color:var(--ink); }
-  .btn-view-mode[hidden]{ display:none; }
+  .theme-toggle:hover{ border-color:var(--accent); color:var(--ink); }
 
   .search-row{
     max-width:1440px; margin:0 auto; padding:0 20px 14px;
@@ -612,9 +603,6 @@
     <button class="theme-toggle" id="theme-toggle" type="button" title="Cambiar a modo oscuro" aria-label="Cambiar a modo oscuro">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
     </button>
-    <button class="icon-btn" id="view-mode-toggle-top" type="button" title="Ver como iPad" aria-label="Ver como iPad" hidden>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
-    </button>
   </div>
   <div class="search-row">
     <div class="search-box">
@@ -643,10 +631,6 @@
         <p class="rail-title">Filtrar por horario libre</p>
         <div class="grid-picker" id="picker"></div>
         <p class="grid-hint">Clic en un bloque para mostrar sólo secciones que se dictan en ese horario. <button class="link-btn" id="clear-picker">Limpiar</button></p>
-        <button class="btn-view-mode" id="view-mode-toggle-bottom" type="button" hidden>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
-          <span>Ver como iPhone</span>
-        </button>
       </div>
       <div id="mihorario-slot-mobile"></div>
     </div>
@@ -8084,56 +8068,6 @@ function renderSchedule(){
     try{ localStorage.setItem('bc-usach-theme', next); }catch(e){}
     updateIcon();
   });
-})();
-
-// ---------- View mode override: force the "iPad" tablet layout on a phone,
-// and back ----------
-// Real mobile browsers size their CSS viewport (and every @media query) off
-// the <meta name="viewport"> tag, not the physical screen — that's exactly
-// how "Request desktop site" works in Chrome/Safari. Swapping that tag's
-// content between the normal device-width value and a fixed wide value
-// (with no explicit scale, so the browser auto-zooms to fit) makes the page
-// render — and the existing 700px/1180px breakpoints kick in — as if the
-// phone were a tablet, with zero other CSS/JS changes needed. This has no
-// effect on desktop browsers, which ignore the viewport meta tag entirely.
-(function initViewMode(){
-  const VIEWPORT_DEFAULT = 'width=device-width, initial-scale=1';
-  const VIEWPORT_WIDE = 'width=1024';
-  const metaViewport = document.querySelector('meta[name="viewport"]');
-  const btnTop = document.getElementById('view-mode-toggle-top');
-  const btnBottom = document.getElementById('view-mode-toggle-bottom');
-  const mqCompact = window.matchMedia('(max-width: 700px)');
-
-  let forcedWide = false;
-  try{ forcedWide = localStorage.getItem('bc-usach-view-mode') === 'wide'; }catch(e){}
-
-  function applyViewport(){
-    metaViewport.setAttribute('content', forcedWide ? VIEWPORT_WIDE : VIEWPORT_DEFAULT);
-  }
-  function updateButtons(){
-    // Offer "Ver como iPad" only while the layout is actually showing the
-    // compact phone arrangement and hasn't already been forced wide.
-    btnTop.hidden = forcedWide || !mqCompact.matches;
-    // Offer "Ver como iPhone" only while the wide override is the reason
-    // we're in the tablet layout.
-    btnBottom.hidden = !forcedWide;
-  }
-  function setForcedWide(v){
-    forcedWide = v;
-    try{ localStorage.setItem('bc-usach-view-mode', v ? 'wide' : 'auto'); }catch(e){}
-    applyViewport();
-    // The browser recomputes the CSS viewport (and matchMedia results) after
-    // a viewport-meta change asynchronously, so re-check on the next frame;
-    // the 'change' listener below is the authoritative catch-all.
-    requestAnimationFrame(updateButtons);
-  }
-
-  applyViewport();
-  updateButtons();
-  btnTop.addEventListener('click', ()=> setForcedWide(true));
-  btnBottom.addEventListener('click', ()=> setForcedWide(false));
-  if(mqCompact.addEventListener) mqCompact.addEventListener('change', updateButtons);
-  else if(mqCompact.addListener) mqCompact.addListener(updateButtons); // older Safari
 })();
 
 // ---------- Guide panel (collapsible, remembers state) ----------
