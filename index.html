@@ -626,7 +626,23 @@
 
   /* ---------- "Mi horario" view switch: Horario semanal / Calendario de pruebas ---------- */
   .sched-tabs{ margin-bottom:12px; }
-  .sched-tabs button{ flex:1; text-align:center; }
+  .sched-tabs button{
+    flex:1; text-align:center;
+    display:flex; align-items:center; justify-content:center; gap:5px;
+    padding:9px 6px; font-size:11.5px; white-space:nowrap;
+  }
+  .sched-tabs .tab-icon{ flex:none; }
+  /* Small rail panel ("Mi horario" compacto): icon-only once the layout
+     collapses below the 1180px breakpoint where it shares width with the
+     "Filtrar por horario libre" panel (.mobile-split) — full label +
+     icon otherwise. The big bottom panel (.big-schedule-wrap) always keeps
+     both, since it never gets squeezed the same way. */
+  @media (max-width: 1180px){
+    #rail-right-panel .sched-tabs .tab-label{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+    }
+  }
   .sched-view[hidden]{ display:none; }
 
   /* Always stack months vertically, never side-by-side: the narrowest place
@@ -838,8 +854,14 @@
     <div class="panel" id="rail-right-panel">
       <p class="rail-title">Mi horario</p>
       <div class="pill-toggle sched-tabs">
-        <button id="tab-horario" aria-pressed="true" type="button">Horario semanal</button>
-        <button id="tab-examenes" aria-pressed="false" type="button">Calendario de pruebas</button>
+        <button id="tab-horario" aria-pressed="true" type="button" title="Horario semanal">
+          <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>
+          <span class="tab-label">Horario semanal</span>
+        </button>
+        <button id="tab-examenes" aria-pressed="false" type="button" title="Calendario de pruebas">
+          <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"/><line x1="16" y1="2.5" x2="16" y2="6.5"/><line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="tab-label">Calendario de pruebas</span>
+        </button>
       </div>
       <div class="sched-summary">
         <div class="sched-stat"><div class="n" id="sum-secc">0</div><div class="l">Secciones</div></div>
@@ -984,8 +1006,14 @@
   <div class="panel">
     <p class="rail-title">Mi horario</p>
     <div class="pill-toggle sched-tabs">
-      <button id="tab-horario-big" aria-pressed="true" type="button">Horario semanal</button>
-      <button id="tab-examenes-big" aria-pressed="false" type="button">Calendario de pruebas</button>
+      <button id="tab-horario-big" aria-pressed="true" type="button" title="Horario semanal">
+        <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>
+        <span class="tab-label">Horario semanal</span>
+      </button>
+      <button id="tab-examenes-big" aria-pressed="false" type="button" title="Calendario de pruebas">
+        <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"/><line x1="16" y1="2.5" x2="16" y2="6.5"/><line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="tab-label">Calendario de pruebas</span>
+      </button>
     </div>
     <div class="sched-summary">
       <div class="sched-stat"><div class="n" id="sum-secc-big">0</div><div class="l">Secciones</div></div>
