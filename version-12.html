@@ -7825,7 +7825,6 @@ btnGotoResults.addEventListener('click', ()=>{
 });
 selNivel.addEventListener('change', e=>{ fNivel = e.target.value; render(); });
 selArea.addEventListener('change', e=>{ fArea = e.target.value; render(); });
-const mqCompactLayout = window.matchMedia('(max-width: 1180px)');
 document.getElementById('f-elect').addEventListener('click', e=>{
   const btn = e.target.closest('button'); if(!btn) return;
   const alreadyActive = fElectTouched && btn.getAttribute('aria-pressed') === 'true';
@@ -7838,11 +7837,6 @@ document.getElementById('f-elect').addEventListener('click', e=>{
     fElect = btn.dataset.v;
     fElectTouched = true;
     document.querySelectorAll('#f-elect button').forEach(b=>b.setAttribute('aria-pressed', b===btn?'true':'false'));
-    // On iPad/iPhone widths the results list isn't visible without scrolling —
-    // jump to the "N asignaturas encontradas" line so the filtered list is in view.
-    if(mqCompactLayout.matches){
-      document.querySelector('main').scrollIntoView({behavior:'smooth', block:'start'});
-    }
   }
   render();
 });
