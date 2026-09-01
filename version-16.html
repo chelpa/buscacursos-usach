@@ -281,19 +281,6 @@
   .pill-toggle button + button{ border-left:1px solid var(--border-strong); }
   .pill-toggle button[aria-pressed="true"]{ background:var(--accent-btn-bg); color:var(--accent-btn-text); }
 
-  .rail-title-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 0 10px; }
-  .rail-title-row .rail-title{ margin:0; }
-  .visual-toggle{ display:flex; gap:4px; flex:none; }
-  .visual-toggle button{
-    display:flex; align-items:center; justify-content:center;
-    width:28px; height:28px; border-radius:8px; flex:none;
-    border:1px solid var(--border-strong); background:var(--surface-2); color:var(--ink-faint); cursor:pointer;
-  }
-  .visual-toggle button:hover{ color:var(--ink); }
-  .visual-toggle button[aria-pressed="true"]{
-    background:var(--accent-btn-bg); border-color:var(--accent-btn-bg); color:var(--accent-btn-text);
-  }
-
   select.filter-select{
     border:1px solid var(--border-strong); border-radius:var(--radius);
     background:var(--surface-2); color:var(--ink); padding:9px 30px 9px 12px;
@@ -622,33 +609,6 @@
     border-radius:8px; padding:8px 10px; font-size:12px; font-weight:600; margin-top:8px;
   }
 
-  /* "Vista de lista por día" — an alternate, agenda-style read of the same
-     selection as the week grid, grouped by day and sorted by start time. */
-  .day-agenda{ display:flex; flex-direction:column; gap:14px; }
-  /* Both .week-grid (display:grid) and .day-agenda (display:flex) are author
-     rules that would otherwise beat the browser's default [hidden]{display:
-     none} — these two selectors outrank them on specificity so toggling the
-     `hidden` attribute in JS actually hides whichever view is inactive. */
-  .week-grid[hidden], .day-agenda[hidden]{ display:none; }
-  .agenda-day-hdr{
-    font-family:'Bebas Neue', 'Nunito Sans', sans-serif;
-    font-size:13px; font-weight:400; text-transform:uppercase; letter-spacing:.09em;
-    color:var(--ink-faint); margin-bottom:6px; padding-bottom:4px; border-bottom:1px solid var(--border);
-  }
-  .agenda-item{
-    display:flex; align-items:center; gap:10px; padding:8px 9px; margin-bottom:6px;
-    border:1px solid var(--border); border-radius:8px; background:var(--surface-2);
-  }
-  .agenda-item.conflict{ border-color:var(--red); }
-  .agenda-bar{ width:4px; align-self:stretch; border-radius:3px; flex:none; }
-  .agenda-time{
-    flex:none; width:74px; font-size:11px; font-weight:700; color:var(--ink-soft);
-    font-family:'IBM Plex Mono',monospace; line-height:1.3;
-  }
-  .agenda-txt{ flex:1; min-width:0; }
-  .agenda-txt .name{ font-size:12.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .agenda-txt .meta{ font-size:11px; color:var(--ink-faint); font-family:'IBM Plex Mono',monospace; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-
   .selected-list{ margin-top:12px; display:flex; flex-direction:column; gap:7px; }
   .selected-item{
     display:flex; align-items:center; gap:8px; padding:8px 9px;
@@ -764,10 +724,7 @@
     max-width:1440px; margin:0 auto; padding:0 20px 22px;
   }
   .big-schedule-wrap .panel{ padding:22px 24px; }
-  .big-schedule-wrap .rail-title{ font-size:18px; }
-  .big-schedule-wrap .rail-title-row{ margin-bottom:16px; }
-  .big-schedule-wrap .visual-toggle button{ width:32px; height:32px; }
-  .big-schedule-wrap .day-agenda{ max-width:640px; }
+  .big-schedule-wrap .rail-title{ font-size:18px; margin-bottom:16px; }
   .big-schedule-wrap .sched-summary{ max-width:480px; gap:22px; margin-bottom:20px; }
   .big-schedule-wrap .sched-stat .n{ font-size:30px; }
   .big-schedule-wrap .sched-stat .l{ font-size:12px; }
@@ -1047,17 +1004,7 @@
 
 <div class="big-schedule-wrap" id="big-schedule-wrap">
   <div class="panel">
-    <div class="rail-title-row">
-      <p class="rail-title">Mi horario</p>
-      <div class="visual-toggle" id="visual-toggle-big">
-        <button id="visual-grid-big" aria-pressed="true" type="button" title="Vista de grilla" aria-label="Vista de grilla">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        </button>
-        <button id="visual-list-big" aria-pressed="false" type="button" title="Vista de lista por día" aria-label="Vista de lista por día">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-        </button>
-      </div>
-    </div>
+    <p class="rail-title">Mi horario</p>
     <div class="pill-toggle sched-tabs">
       <button id="tab-horario-big" aria-pressed="true" type="button" title="Horario semanal">
         <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>
@@ -1075,7 +1022,6 @@
     </div>
     <div class="sched-view" id="view-horario-big">
       <div class="week-grid" id="week-grid-big"></div>
-      <div class="day-agenda" id="day-agenda-big" hidden></div>
       <div id="conflict-note-wrap-big"></div>
       <div class="selected-list" id="selected-list-big"></div>
       <div id="rail-empty-wrap-big"></div>
@@ -10884,11 +10830,7 @@ const SCHEDULE_TARGETS = [
     view:'horario' },
   { grid:'week-grid-big', secc:'sum-secc-big', sct:'sum-sct-big', conf:'sum-conf-big', note:'conflict-note-wrap-big', list:'selected-list-big', empty:'rail-empty-wrap-big',
     tabH:'tab-horario-big', tabE:'tab-examenes-big', viewH:'view-horario-big', viewE:'view-examenes-big', examCal:'exam-cal-big', printBtn:'btn-print-big',
-    view:'horario',
-    // Only the big bottom panel offers a second "visual" of the weekly
-    // schedule (grid vs. day-by-day agenda list) — the small rail panel
-    // stays grid-only to keep it compact.
-    agenda:'day-agenda-big', toggleGrid:'visual-grid-big', toggleList:'visual-list-big', visual:'grid' },
+    view:'horario' },
 ];
 
 // "Calendario de pruebas": a second view inside "Mi horario" (toggled via the
@@ -11053,55 +10995,6 @@ function buildWeekGrid(container, occ, conflictSlots, showAbbr){
   });
 }
 
-// "Vista de lista por día" — same selection as the week grid, read as a
-// day-by-day agenda instead. Consecutive bloques for one section on the same
-// day are merged into a single time range; a section meeting twice the same
-// day in non-consecutive bloques gets two entries.
-// NOTE: this list intentionally shows no room/"sala" — the source data
-// (Excel de programación for INGECO, PDF for Mención Economía) has no room
-// column in what BuscaCursos parses, so nothing is fabricated here.
-function buildDayAgenda(container, conflictKeys){
-  if(!selected.size){
-    container.innerHTML = '<div class="rail-empty">Aún no agregas secciones.<br>Usa “Agregar” en los resultados.</div>';
-    return;
-  }
-  const byDay = {}; DIAS.forEach(d=> byDay[d] = []);
-  selected.forEach((v,key)=>{
-    const hue = hueFor(v.course.codigo);
-    const blocksByDay = {};
-    v.section.bloques.forEach(b=>{ (blocksByDay[b.dia]=blocksByDay[b.dia]||[]).push(b.bloque); });
-    Object.entries(blocksByDay).forEach(([d, blist])=>{
-      blist.sort((a,b)=>a-b);
-      let start = blist[0], prev = blist[0];
-      const flush = (s,e)=> byDay[d].push({start:s, end:e, key, hue, course:v.course, section:v.section});
-      for(let i=1;i<blist.length;i++){
-        if(blist[i] === prev+1){ prev = blist[i]; continue; }
-        flush(start, prev); start = blist[i]; prev = blist[i];
-      }
-      flush(start, prev);
-    });
-  });
-
-  const dayBlocks = DIAS.map(d=>{
-    const items = byDay[d].sort((a,b)=>a.start-b.start);
-    if(!items.length) return '';
-    const rows = items.map(it=>{
-      const inConflict = conflictKeys.has(it.key);
-      return `<div class="agenda-item ${inConflict?'conflict':''}">
-        <span class="agenda-bar" style="background:hsl(${it.hue} 55% 45%)"></span>
-        <div class="agenda-time">${MODULOS[it.start][0]}–${MODULOS[it.end][1]}</div>
-        <div class="agenda-txt">
-          <div class="name">${it.course.asignatura}</div>
-          <div class="meta">${it.course.codigo} · Sec. ${sectionLabel(it.course, it.section)}${it.section.profesor ? ' · '+it.section.profesor : ''}</div>
-        </div>
-      </div>`;
-    }).join('');
-    return `<div class="agenda-day"><div class="agenda-day-hdr">${DIA_LABEL_FULL[d]}</div>${rows}</div>`;
-  }).join('');
-
-  container.innerHTML = dayBlocks || '<div class="rail-empty">No hay bloques asignados esta semana.</div>';
-}
-
 function renderSchedule(){
   const {conflictSlots, conflictKeys} = computeConflicts();
 
@@ -11149,15 +11042,6 @@ function renderSchedule(){
 
     buildWeekGrid(document.getElementById(t.grid), occ, conflictSlots, true);
 
-    if(t.agenda){
-      const showList = t.visual === 'list';
-      document.getElementById(t.grid).hidden = showList;
-      document.getElementById(t.agenda).hidden = !showList;
-      if(showList) buildDayAgenda(document.getElementById(t.agenda), conflictKeys);
-      document.getElementById(t.toggleGrid).setAttribute('aria-pressed', String(!showList));
-      document.getElementById(t.toggleList).setAttribute('aria-pressed', String(showList));
-    }
-
     document.getElementById(t.note).innerHTML = conflictNoteHTML;
 
     const listEl = document.getElementById(t.list);
@@ -11189,10 +11073,6 @@ function setScheduleView(target, view){
 SCHEDULE_TARGETS.forEach(t=>{
   document.getElementById(t.tabH).addEventListener('click', ()=> setScheduleView(t, 'horario'));
   document.getElementById(t.tabE).addEventListener('click', ()=> setScheduleView(t, 'examenes'));
-  if(t.toggleGrid){
-    document.getElementById(t.toggleGrid).addEventListener('click', ()=>{ t.visual = 'grid'; renderSchedule(); });
-    document.getElementById(t.toggleList).addEventListener('click', ()=>{ t.visual = 'list'; renderSchedule(); });
-  }
 });
 
 // ---------- Confirm dialog (used for "Vaciar horario") ----------
