@@ -210,6 +210,21 @@
   :root[data-theme="amigable"] #rail-right-panel .actions-row{
     display:none;
   }
+  /* Modo amigable también esconde del todo la caja "Cómo usar este
+     buscador" (cubre las dos formas en que aparece: el panel fijo de abajo,
+     #guide-panel, y la variante .inline que se muestra dentro de #results
+     cuando todavía no se ha buscado nada) — el usuario la vio muy grande /
+     "sucia" para este modo y pidió que desaparezca entera, no sólo que se
+     colapse. */
+  :root[data-theme="amigable"] .guide-panel{ display:none !important; }
+  /* Y colapsa por defecto "Filtrar por horario libre" (#picker-panel) — el
+     bloque de la grilla de disponibilidad más el texto de ayuda quedan
+     ocultos, con un botón chevron junto al título para desplegarlos cuando
+     realmente se necesiten. Fuera de modo amigable este panel se ve exactamente
+     igual que siempre (el botón #picker-toggle está oculto por CSS y el
+     estado data-open no tiene ningún efecto ahí). */
+  :root[data-theme="amigable"] .picker-toggle-btn{ display:flex; }
+  :root[data-theme="amigable"] #picker-panel[data-open="false"] #picker-body{ display:none; }
 
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -287,6 +302,10 @@
   .amigable-btn[aria-pressed="true"]{
     background:var(--accent-btn-bg); border-color:var(--accent-btn-bg);
   }
+  .sim-btn{ font-size:16px; line-height:1; }
+  .sim-btn[aria-pressed="true"]{
+    background:var(--accent-btn-bg); border-color:var(--accent-btn-bg); color:var(--accent-btn-text);
+  }
 
   .btn-view-mode{
     margin-top:10px; width:100%; display:inline-flex; align-items:center; justify-content:center; gap:6px;
@@ -338,6 +357,19 @@
   .visual-toggle button[aria-pressed="true"]{
     background:var(--accent-btn-bg); border-color:var(--accent-btn-bg); color:var(--accent-btn-text);
   }
+
+  /* Chevron para colapsar/desplegar "Filtrar por horario libre" — sólo se
+     muestra en modo amigable (ver regla :root[data-theme="amigable"] arriba
+     en la sección del tema); en el resto de los temas queda display:none y
+     el panel se ve exactamente igual que siempre. */
+  .picker-toggle-btn{
+    display:none; align-items:center; justify-content:center;
+    width:26px; height:26px; border-radius:8px; flex:none;
+    border:1px solid var(--border-strong); background:var(--surface-2); color:var(--ink-faint); cursor:pointer;
+  }
+  .picker-toggle-btn:hover{ color:var(--ink); }
+  .picker-toggle-btn svg{ transition:transform .18s ease; }
+  #picker-panel[data-open="true"] .picker-toggle-btn svg{ transform:rotate(180deg); }
 
   select.filter-select{
     border:1px solid var(--border-strong); border-radius:var(--radius);
@@ -803,6 +835,39 @@
     border-radius:8px; padding:8px; font-size:12px; font-weight:700; cursor:pointer;
   }
   .btn-danger:hover{ background:var(--red); color:#fff; }
+  .btn-accent{
+    flex:1; border:1px solid var(--accent-btn-bg); background:var(--accent-btn-bg); color:var(--accent-btn-text);
+    border-radius:8px; padding:8px; font-size:12px; font-weight:700; cursor:pointer;
+  }
+  .btn-accent:hover{ filter:brightness(0.96); }
+
+  /* ---------- Simulación de postulación ---------- */
+  .sim-setup-box{ max-width:400px; }
+  .sim-setup-box p{ font-weight:700; }
+  .sim-setup-desc{ font-size:12.5px; color:var(--ink-soft); font-weight:400 !important; margin:0 0 10px !important; line-height:1.5; }
+  .sim-setup-note{
+    background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:8px 10px;
+  }
+  .sim-setup-label{ display:block; font-size:12px; font-weight:700; color:var(--ink-soft); margin:2px 0 6px; }
+  .sim-setup-box select.filter-select{ width:100%; }
+
+  .sim-status-bar{
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    margin-top:10px; padding:10px 14px; border-radius:var(--radius);
+    background:var(--accent-tint); border:1px solid var(--border-strong);
+  }
+  .sim-status-bar[hidden]{ display:none; }
+  .sim-status-icon{ font-size:18px; flex:none; }
+  .sim-status-text{ flex:1; min-width:200px; font-size:12.5px; color:var(--ink); line-height:1.45; }
+  .sim-status-text strong{ display:block; color:var(--ink); }
+  .sim-status-text span{ color:var(--ink-soft); }
+  .sim-advance-btn{
+    flex:none; border:1px solid var(--accent-btn-bg); background:var(--accent-btn-bg); color:var(--accent-btn-text);
+    border-radius:8px; padding:8px 14px; font-size:12px; font-weight:700; cursor:pointer;
+  }
+  .sim-advance-btn:hover{ filter:brightness(0.96); }
+  .sim-advance-btn[hidden]{ display:none; }
+  .sim-exit-btn{ flex:none; }
 
   .bottom-guide-wrap{
     max-width:1440px; margin:0 auto; padding:0 20px 22px;
@@ -863,6 +928,8 @@
     padding:14px 16px;
   }
   footer .disclaimer strong{ color:var(--ink-soft); }
+  footer .disclaimer p{ margin:0; }
+  footer .disclaimer p + p{ margin-top:8px; }
 
   @media print{
     /* #rail-right-panel ("Mi horario") may currently live inside .rail-left
@@ -894,6 +961,7 @@
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
     </button>
     <button class="icon-btn amigable-btn" id="amigable-toggle" type="button" aria-pressed="false" title="Activar modo amigable" aria-label="Activar modo amigable">🎀</button>
+    <button class="icon-btn sim-btn" id="sim-toggle" type="button" aria-pressed="false" title="Simular proceso de postulación por nivel" aria-label="Simular proceso de postulación por nivel">🎓</button>
     <button class="icon-btn" id="view-mode-toggle-top" type="button" title="Ver como iPad" aria-label="Ver como iPad" hidden>
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
     </button>
@@ -915,24 +983,40 @@
       <button data-v="1" aria-pressed="false">Electivos</button>
     </div>
   </div>
+  <div class="sim-status-bar" id="sim-status-bar" hidden>
+    <span class="sim-status-icon" aria-hidden="true">🎓</span>
+    <div class="sim-status-text">
+      <strong>Simulación de postulación activa — es referencial, no garantiza cupo.</strong>
+      <span id="sim-status-detail">Niveles desbloqueados: —</span>
+    </div>
+    <button class="sim-advance-btn" id="sim-advance-btn" type="button" hidden>Ya postulé → desbloquear siguiente nivel</button>
+    <button class="link-btn sim-exit-btn" id="sim-exit-btn" type="button">Salir de la simulación</button>
+  </div>
 </div>
 
 <div class="layout">
 
   <aside class="rail-left">
     <div class="mobile-split">
-      <div class="panel" id="picker-panel">
-        <p class="rail-title">Filtrar por horario libre</p>
-        <div class="grid-picker" id="picker"></div>
-        <p class="grid-hint">Clic en un bloque para mostrar sólo secciones que se dictan en ese horario. <button class="link-btn" id="clear-picker">Limpiar</button></p>
-        <button class="btn-view-mode" id="view-mode-toggle-bottom" type="button" hidden>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
-          <span>Ver como iPhone</span>
-        </button>
+      <div class="panel" id="picker-panel" data-open="false">
+        <div class="rail-title-row">
+          <p class="rail-title">Filtrar por horario libre</p>
+          <button class="picker-toggle-btn" id="picker-toggle" type="button" aria-expanded="false" aria-controls="picker-body" title="Mostrar/ocultar filtro de horario libre">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+        <div class="picker-body" id="picker-body">
+          <div class="grid-picker" id="picker"></div>
+          <p class="grid-hint">Clic en un bloque para mostrar sólo secciones que se dictan en ese horario. <button class="link-btn" id="clear-picker">Limpiar</button></p>
+          <button class="btn-view-mode" id="view-mode-toggle-bottom" type="button" hidden>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+            <span>Ver como iPhone</span>
+          </button>
+        </div>
       </div>
       <div id="mihorario-slot-mobile"></div>
     </div>
-    <div class="panel" id="dataset-panel">
+    <div class="panel" id="dataset-panel" hidden>
       <p class="rail-title">Dataset</p>
       <div class="stat-line"><span>Asignaturas</span><b id="stat-asigs">–</b></div>
       <div class="stat-line"><span>Secciones</span><b id="stat-seccs">–</b></div>
@@ -1148,7 +1232,8 @@
 
 <footer>
   <div class="disclaimer">
-    <strong>Proyecto estudiantil no oficial.</strong> Esta página no es un sitio de la Universidad de Santiago de Chile ni de su Dirección de Registro Académico — es una herramienta construida a partir de un archivo de programación de horarios (<span id="ctx-programa-footer">Ingeniería Comercial</span>, <span id="ctx-semestre-footer">2026-2</span>, marcado como versión "prueba"). Los horarios, cupos y profesores pueden cambiar antes del inicio de clases: confirma siempre la información oficial en tu facultad o en Registro Académico antes de tomar decisiones de inscripción.
+    <p><strong>Proyecto estudiantil no oficial.</strong> Esta página no es un sitio de la Universidad de Santiago de Chile ni de su Dirección de Registro Académico — es una herramienta construida a partir de un archivo de programación de horarios (<span id="ctx-programa-footer">Ingeniería Comercial</span>, <span id="ctx-semestre-footer">2026-2</span>, marcado como versión "prueba"). Los horarios, cupos y profesores pueden cambiar antes del inicio de clases: confirma siempre la información oficial en tu facultad o en Registro Académico antes de tomar decisiones de inscripción.</p>
+    <p><strong>Es una ayuda referencial para explorar horarios posibles, no un resultado garantizado.</strong> La asignación final de ramos depende del Proceso de Postulación de Ramos, que no siempre coincide con lo que armes acá: el sistema oficial va habilitando la postulación por nivel — primero muestra las asignaturas de nivel inferior, y una vez realizada esa postulación recién habilita las del nivel siguiente, y así sucesivamente. Usa este sitio para explorar combinaciones de horario, no como garantía de en qué ramos vas a quedar.</p>
   </div>
 </footer>
 
@@ -1158,6 +1243,20 @@
     <div class="confirm-actions">
       <button class="btn-secondary" id="confirm-cancel" type="button">Cancelar</button>
       <button class="btn-danger" id="confirm-accept" type="button">Vaciar horario</button>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-overlay" id="sim-setup-overlay" hidden>
+  <div class="confirm-box sim-setup-box" role="alertdialog" aria-modal="true" aria-labelledby="sim-setup-title">
+    <p id="sim-setup-title">Simular proceso de postulación</p>
+    <p class="sim-setup-desc">Este modo imita cómo funciona la postulación real: en vez de ver y agregar ramos de cualquier nivel a la vez, primero sólo vas a ver los ramos del nivel en que estás pendiente de postular. Los niveles siguientes se desbloquean uno por uno, a medida que avanzás.</p>
+    <p class="sim-setup-desc sim-setup-note">Ojo: esto simula el <strong>orden</strong> en que se habilitan los niveles, no el resultado — no sabemos cuántos cupos vas a conseguir de verdad, eso depende del proceso oficial de la universidad.</p>
+    <label class="sim-setup-label" for="sim-nivel-inicial">¿Desde qué nivel estás pendiente de postular?</label>
+    <select id="sim-nivel-inicial" class="filter-select"></select>
+    <div class="confirm-actions" style="margin-top:14px;">
+      <button class="btn-secondary" id="sim-setup-cancel" type="button">Cancelar</button>
+      <button class="btn-accent" id="sim-setup-start" type="button">Comenzar simulación</button>
     </div>
   </div>
 </div>
@@ -1283,6 +1382,10 @@ let fNivel = '';
 let fArea = '';
 let fElect = '';
 let fElectTouched = false;
+// "Simulación de postulación" — ver bloque dedicado más abajo, después de
+// switchProgram(). simUnlocked guarda los niveles ya "postulados" (números).
+let simMode = false;
+let simUnlocked = new Set();
 let qDebounce = null;
 function norm(str){
   return (str||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
@@ -1378,8 +1481,14 @@ function switchProgram(key){
   // "Mi horario" is intentionally left untouched here — it's one shared
   // schedule across both programs (see SELECTION_STORAGE_KEY above), so
   // switching the browse/search view never clears or reloads it.
+  // La simulación de postulación (si está activa) tampoco se resetea acá
+  // a propósito — mismo criterio que "Mi horario": es un estado del
+  // alumno, no del catálogo que está mirando en este momento. Sólo hace
+  // falta refrescar el botón de "siguiente nivel", porque nivelSet cambia
+  // de un programa a otro (ver updateSimStatusBar más abajo).
   rebuildProgramDerived();
   updateProgramUI();
+  updateSimStatusBar();
   render();
   renderSchedule();
   window.scrollTo({top:0, behavior:'smooth'});
@@ -1388,7 +1497,109 @@ programSwitchBtn.addEventListener('click', ()=>{
   switchProgram(programKey === 'ingeco' ? 'economia' : 'ingeco');
 });
 
+// ---------- Simulación de postulación por nivel ----------
+// A pedido del usuario, tras el correo del jefe de carrera explicando que
+// la Postulación de Ramos real habilita los niveles de a uno (primero el
+// nivel pendiente actual; recién tras postular a esos se ve el siguiente).
+// Este modo imita ESE MECANISMO (qué niveles se pueden ver/agregar y en
+// qué orden) — no predice el resultado real de la postulación (cupos,
+// prioridad, etc.), algo que este sitio no tiene forma de conocer. Por
+// eso el aviso permanente en la barra de estado mientras está activo.
+const simToggleBtn = document.getElementById('sim-toggle');
+const simSetupOverlay = document.getElementById('sim-setup-overlay');
+const simNivelInicialSel = document.getElementById('sim-nivel-inicial');
+const simStatusBar = document.getElementById('sim-status-bar');
+const simStatusDetail = document.getElementById('sim-status-detail');
+const simAdvanceBtn = document.getElementById('sim-advance-btn');
+const fNivelSelectEl = document.getElementById('f-nivel');
+
+// Próximo nivel a desbloquear: el siguiente valor de nivelSet (los niveles
+// que de verdad tienen ramos en el programa activo) después del máximo ya
+// desbloqueado — no simplemente +1, porque algún nivel puede no tener
+// ningún ramo en el dataset (ej. Mención Economía no tiene nivel 3) y un
+// +1 ciego dejaría el botón "avanzando" a un nivel que sigue mostrando
+// resultados vacíos.
+function simNextNivel(){
+  if(!simUnlocked.size) return null;
+  const max = Math.max(...simUnlocked);
+  const idx = nivelSet.indexOf(max);
+  if(idx === -1 || idx === nivelSet.length - 1) return null;
+  return nivelSet[idx+1];
+}
+function updateSimStatusBar(){
+  if(!simMode){ simStatusBar.hidden = true; return; }
+  simStatusBar.hidden = false;
+  const niveles = Array.from(simUnlocked).sort((a,b)=>a-b);
+  const plural = niveles.length > 1;
+  simStatusDetail.textContent = `Nivel${plural?'es':''} desbloqueado${plural?'s':''} hasta ahora: ${niveles.join(', ')}`;
+  const next = simNextNivel();
+  if(next != null){
+    simAdvanceBtn.hidden = false;
+    simAdvanceBtn.textContent = `Ya postulé → desbloquear Nivel ${next}`;
+  } else {
+    simAdvanceBtn.hidden = true;
+  }
+}
+function startSimulation(nivelInicial){
+  simMode = true;
+  simUnlocked = new Set([nivelInicial]);
+  simToggleBtn.setAttribute('aria-pressed', 'true');
+  // El filtro manual de "Nivel" queda oculto mientras la simulación manda
+  // sobre qué niveles se pueden ver — tenerlo visible a la vez sería un
+  // segundo control compitiendo por lo mismo y confundiría cuál manda.
+  fNivelSelectEl.hidden = true;
+  fNivel = ''; selNivel.value = '';
+  updateSimStatusBar();
+  render();
+  document.querySelector('main').scrollIntoView({behavior:'smooth', block:'start'});
+}
+function exitSimulation(){
+  simMode = false;
+  simUnlocked = new Set();
+  simToggleBtn.setAttribute('aria-pressed', 'false');
+  fNivelSelectEl.hidden = false;
+  updateSimStatusBar();
+  render();
+}
+function openSimSetup(){
+  simNivelInicialSel.innerHTML = '';
+  nivelSet.forEach(n=>{
+    const o = document.createElement('option');
+    o.value = n; o.textContent = 'Nivel ' + n;
+    simNivelInicialSel.appendChild(o);
+  });
+  simSetupOverlay.hidden = false;
+}
+function closeSimSetup(){ simSetupOverlay.hidden = true; }
+simToggleBtn.addEventListener('click', ()=>{
+  if(simMode) exitSimulation();
+  else openSimSetup();
+});
+document.getElementById('sim-setup-cancel').addEventListener('click', closeSimSetup);
+document.getElementById('sim-setup-start').addEventListener('click', ()=>{
+  const n = Number(simNivelInicialSel.value);
+  closeSimSetup();
+  startSimulation(n);
+});
+simSetupOverlay.addEventListener('click', e=>{ if(e.target === simSetupOverlay) closeSimSetup(); });
+document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && !simSetupOverlay.hidden) closeSimSetup(); });
+simAdvanceBtn.addEventListener('click', ()=>{
+  const next = simNextNivel();
+  if(next == null) return;
+  simUnlocked.add(next);
+  updateSimStatusBar();
+  render();
+});
+document.getElementById('sim-exit-btn').addEventListener('click', exitSimulation);
+
 function courseMatches(course){
+  // Modo simulación: mientras esté activo, un ramo de un nivel todavía no
+  // desbloqueado directamente no aparece en los resultados — fiel al
+  // proceso real, donde ese nivel ni siquiera se ofrece para postular
+  // todavía. Los ramos sin nivel conocido (nivel==null, un puñado de casos
+  // como Prácticas o el electivo sin nivel confirmado) se dejan pasar
+  // siempre, porque no hay forma de saber en qué momento "desbloquearían".
+  if(simMode && course.nivel != null && !simUnlocked.has(course.nivel)) return false;
   if(fNivel && String(course.nivel) !== fNivel) return false;
   if(fArea && course.area !== fArea) return false;
   let seccs = course.secciones;
@@ -1591,7 +1802,11 @@ const resultsEl = document.getElementById('results');
 const resultsHeadEl = document.querySelector('.results-head');
 const bottomGuideEl = document.getElementById('bottom-guide-wrap');
 function render(){
-  const noFiltersActive = !query && !fNivel && !fArea && !fElectTouched && pickedSlots.size===0;
+  // En modo simulación siempre se muestran resultados reales (los del/los
+  // nivel(es) desbloqueado(s)) en vez de la guía de bienvenida, aunque no
+  // haya ningún otro filtro activo — apenas arranca la simulación el
+  // alumno quiere ver esos ramos, no la guía de "cómo usar el buscador".
+  const noFiltersActive = !simMode && !query && !fNivel && !fArea && !fElectTouched && pickedSlots.size===0;
 
   if(noFiltersActive){
     resultsHeadEl.style.display = 'none';
@@ -1813,7 +2028,13 @@ function buildWeekGrid(container, occ, conflictSlots, showAbbr, detailEl, confli
       slot.title = DIA_LABEL_FULL[d]+' · '+MODULOS[b][0]+'–'+MODULOS[b][1];
       if(cellData && cellData.length){
         slot.classList.add('filled');
-        if(detailEl){
+        // Sólo se activa la tarjeta de detalle al apretar el bloque cuando la
+        // lista completa de "Mi horario" NO está visible en este panel (ver
+        // comentario junto a showCellDetail más abajo) — si la lista ya se ve,
+        // el nombre del ramo ya está en pantalla ahí, así que la celda queda
+        // como un bloque de color normal, sin listener ni afordancia de botón,
+        // para no mostrar el mismo ramo duplicado en dos lugares a la vez.
+        if(detailEl && allowRemoveFromDetail){
           slot.tabIndex = 0;
           slot.setAttribute('role', 'button');
           slot.setAttribute('aria-label', 'Ver ramo(s) de este bloque');
@@ -1860,14 +2081,15 @@ function buildWeekGrid(container, occ, conflictSlots, showAbbr, detailEl, confli
 }
 
 // Al presionar un bloque ocupado de la grilla, muestra abajo el/los ramo(s)
-// de ese bloque (mismo diseño de tarjeta que .selected-list). Si la lista
-// completa de "Mi horario" ya está visible en pantalla en ese mismo panel
-// (siempre en el panel grande; en el chico, salvo en modo amigable donde se
-// esconde) esta tarjeta es sólo informativa y NO trae botón de quitar — ya
-// hay un botón × para ese mismo ramo en la lista de abajo, y mostrar dos
-// controles de borrado para el mismo ramo a la vez es confuso y se sentía
-// como un duplicado. Sólo se puede quitar desde acá cuando es la única
-// forma de verlo (panel chico en modo amigable, donde la lista está oculta).
+// de ese bloque (mismo diseño de tarjeta que .selected-list) — pero SÓLO
+// cuando la lista completa de "Mi horario" no está visible en ese mismo
+// panel (panel chico en modo amigable, donde la lista se esconde por CSS;
+// ver buildWeekGrid más arriba, que ni siquiera activa el listener del
+// bloque si la lista ya se ve). Antes esta tarjeta aparecía siempre y sólo
+// se le quitaba el botón de quitar cuando era redundante; el usuario pidió
+// ir un paso más allá y que directamente no aparezca nada al apretar el
+// bloque si el nombre del ramo ya se puede ver en la lista de abajo — así
+// nunca se repite el mismo ramo dos veces en pantalla.
 function showCellDetail(detailEl, cellData, conflictKeys, allowRemove){
   if(!detailEl || !cellData || !cellData.length) return;
   const html = cellData.map(cd=>{
@@ -2249,6 +2471,55 @@ document.getElementById('app-mark').addEventListener('click', ()=>{
     panel.dataset.open = String(open);
     toggle.setAttribute('aria-expanded', String(open));
     try{ localStorage.setItem('bc-usach-guide-open', String(open)); }catch(e){}
+  }
+  setOpen(open);
+  toggle.addEventListener('click', ()=> setOpen(!open));
+  toggle.addEventListener('keydown', e=>{
+    if(e.key===' '||e.key==='Enter'){ e.preventDefault(); setOpen(!open); }
+  });
+})();
+
+// ---------- Panel "Dataset" (Asignaturas/Secciones/Áreas): oculto para
+// todo el mundo por defecto (el usuario lo encontró poco útil para el
+// alumno normal, se ve más limpio sin él) — sólo se muestra en una
+// "versión de administración": visitar la página una vez con ?admin en la
+// URL (ej. index.html?admin) lo activa y lo deja recordado en ese
+// navegador (localStorage), sin tener que repetir el parámetro cada vez.
+// No hay login real porque el sitio no tiene backend — esto es sólo un
+// interruptor oculto, no seguridad de verdad; cualquiera que sepa el
+// parámetro puede activarlo. Visitar con ?admin=0 lo vuelve a esconder. ----------
+(function initDatasetPanel(){
+  const panel = document.getElementById('dataset-panel');
+  if(!panel) return;
+  try{
+    const params = new URLSearchParams(location.search);
+    if(params.has('admin')){
+      const off = params.get('admin') === '0';
+      localStorage.setItem('bc-usach-admin', off ? '0' : '1');
+    }
+    if(localStorage.getItem('bc-usach-admin') === '1') panel.hidden = false;
+  }catch(e){}
+})();
+
+// ---------- Picker panel ("Filtrar por horario libre"), collapsible in modo
+// amigable (mismo patrón que el guide panel de arriba). Fuera de modo
+// amigable el CSS no usa data-open para nada, así que este estado no cambia
+// el aspecto del panel en los otros temas — sólo importa cuando 🎀 está
+// activo. ----------
+(function initPickerCollapse(){
+  const panel = document.getElementById('picker-panel');
+  const toggle = document.getElementById('picker-toggle');
+  if(!panel || !toggle) return;
+  let open = false;
+  try{
+    const saved = localStorage.getItem('bc-usach-picker-open');
+    if(saved !== null) open = saved === 'true';
+  }catch(e){}
+  function setOpen(v){
+    open = v;
+    panel.dataset.open = String(open);
+    toggle.setAttribute('aria-expanded', String(open));
+    try{ localStorage.setItem('bc-usach-picker-open', String(open)); }catch(e){}
   }
   setOpen(open);
   toggle.addEventListener('click', ()=> setOpen(!open));
