@@ -36,6 +36,11 @@
     else if(t === 'dark' || t === 'light'){ document.documentElement.setAttribute('data-theme', t); }
   }catch(e){}
 </script>
+<!-- Tailwind CDN — sólo para el bloque de prueba "nuevo concepto de firma"
+     dentro de la Malla curricular (ver #malla-footer-preview más abajo). Es
+     temporal, para visualizar cómo se ve un rediseño de la firma antes de
+     decidir si reemplaza a la actual; el resto del sitio no usa Tailwind. -->
+<script src="https://cdn.tailwindcss.com"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
@@ -975,6 +980,38 @@
     .malla-info-cols{ grid-template-columns:1fr; }
   }
 
+  /* ---------- Segunda firma, sólo dentro de la Malla curricular (temporal
+     por naturaleza, no "de prueba"): marca esta sección como todavía en
+     construcción, mientras la Malla no tenga guardado/conexión real con el
+     resto del sitio. La firma original (#chelpaHazeFooter, en el footer de
+     la página principal) queda intacta — esto NO la reemplaza ni la
+     duplica, es una firma aparte, propia de esta sección. Cuando la Malla
+     esté terminada, este bloque debería sacarse. Va al fondo de
+     #malla-body, debajo de la grilla. No usa las variables de tema del
+     sitio (--ink, --surface, etc.) a propósito — tiene su propia estética
+     fija oscura, igual que la firma original. ---------- */
+  .malla-footer-preview{
+    max-width:1500px; margin:34px auto 0; padding-top:20px; border-top:1px dashed var(--border-strong);
+  }
+  .malla-footer-preview-label{
+    font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em;
+    color:var(--ink-faint); margin:0 0 14px; text-align:center;
+  }
+  .nano-graffiti-text{
+    font-family:'Rubik Wet Paint', cursive;
+    background:linear-gradient(180deg, #32e0c4 0%, #ff5722 60%, #e8e8e8 100%);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;
+    filter:drop-shadow(3px 3px 0 #000) drop-shadow(-2px -2px 0 #ff3d00);
+  }
+  .nano-font-burned{ font-family:'Rubik Burned', system-ui; }
+  .nano-bud-wrap canvas{ position:absolute; inset:0; pointer-events:none; }
+  /* El SVG del cogollo no cubre todo el cuadro (tiene fondo transparente
+     fuera del dibujo), a diferencia de la foto que tenía antes — se le pone
+     un fondo oscuro acá en CSS plana (no depende de que cargue Tailwind)
+     para que no se vea transparente/roto. */
+  .nano-bud-wrap{ background:radial-gradient(circle at 50% 40%, #141a0c 0%, #0a0a0a 70%); }
+  .nano-bud-wrap svg{ display:block; }
+
   .bottom-guide-wrap{
     max-width:1440px; margin:0 auto; padding:0 20px 22px;
   }
@@ -1657,11 +1694,16 @@
 </div>
 </footer>
 <script>
-(function(){
-  var footer = document.getElementById('chelpaHazeFooter');
+// Función reutilizable (antes era una IIFE fija a los ids del footer
+// principal) — hay una segunda copia de la firma dentro de la Malla
+// curricular, sólo de prueba (ver "Vista previa de firma dentro de la
+// Malla" más abajo), que necesita su propia instancia de este humo animado
+// con su propio canvas.
+function initChzSmoke(footerId, canvasId){
+  var footer = document.getElementById(footerId);
   if (!footer) return;
   var banner = footer.querySelector('.chz-banner');
-  var canvas = document.getElementById('chzSmoke');
+  var canvas = document.getElementById(canvasId);
   if (!banner || !canvas) return;
   var ctx = canvas.getContext('2d');
   if (!ctx) return;
@@ -1729,7 +1771,8 @@
   } else {
     start();
   }
-})();
+}
+initChzSmoke('chelpaHazeFooter', 'chzSmoke');
 </script>
 
 <div class="confirm-overlay" id="confirm-overlay" hidden>
@@ -1792,6 +1835,103 @@
       </div>
     </div>
     <p class="malla-progress" id="malla-progress"></p>
+
+    <div class="malla-footer-preview" id="malla-footer-preview">
+      <p class="malla-footer-preview-label">Firma de "sección en construcción" — la Malla todavía no está completa (falta guardar los ramos aprobados y conectarla con el resto del sitio)</p>
+
+      <div class="bg-neutral-950 text-white font-mono rounded-2xl overflow-hidden border border-neutral-800 p-6 md:p-10">
+        <div class="flex flex-col items-center">
+          <div class="inline-block bg-black/80 border border-orange-500/40 px-3 py-1 rounded text-xs tracking-widest text-neutral-300">
+            <span class="text-emerald-400">.html</span> / <span class="text-cyan-400">.css</span> / <span class="text-orange-400">.js</span> / <span class="text-purple-400">.git</span>
+          </div>
+          <div class="nano-bud-wrap relative w-56 h-56 mt-4 overflow-hidden rounded-b-full">
+            <svg viewBox="0 0 500 500" width="100%" height="100%" class="relative z-0" role="img" aria-label="Cogollo Super Lemon Haze">
+              <defs>
+                <style>
+                  .nano-bud-fill { fill: #99B018; }
+                  .nano-leaf-fill { fill: #10682B; }
+                  .nano-stroke-main { stroke: #1A1A1A; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+                  .nano-stroke-inner { stroke: #1A1A1A; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+                </style>
+              </defs>
+              <g id="marijuana-bud">
+                <path class="nano-leaf-fill nano-stroke-main" d="M 220 120 C 210 100 225 70 230 65 C 235 85 228 100 240 105 C 248 90 242 75 248 70 C 255 85 250 100 258 115 Z" />
+                <path class="nano-leaf-fill nano-stroke-main" d="M 285 110 C 295 90 310 70 315 70 C 312 85 300 98 312 105 C 322 92 328 85 332 80 C 328 98 315 115 310 125 Z" />
+                <path class="nano-leaf-fill nano-stroke-main" d="M 175 220 C 150 200 120 185 120 185 C 135 200 150 212 142 220 C 130 215 122 210 125 218 C 140 230 155 240 170 245 Z" />
+                <path class="nano-leaf-fill nano-stroke-main" d="M 320 205 C 335 185 350 170 350 170 C 345 185 335 195 348 202 C 358 192 368 180 370 175 C 362 195 348 215 330 225 Z" />
+                <path class="nano-leaf-fill nano-stroke-main" d="M 335 270 C 365 260 385 230 385 230 C 375 248 355 262 368 272 C 380 268 390 260 392 258 C 380 280 355 288 330 292 Z" />
+                <path class="nano-leaf-fill nano-stroke-main" d="M 205 330 C 180 350 185 390 185 390 C 200 370 210 355 215 375 C 220 385 222 390 222 390 C 228 370 230 348 225 335 Z" />
+                <path class="nano-leaf-fill nano-stroke-main" d="M 255 335 C 265 355 280 375 280 375 C 270 358 262 342 278 340 C 288 348 298 358 300 360 C 292 342 278 330 265 320 Z" />
+                <path class="nano-leaf-fill nano-stroke-main" d="M 230 330 L 240 400 C 242 405 252 405 250 395 L 248 330 Z" />
+                <path class="nano-bud-fill nano-stroke-main" d="
+                  M 235 125
+                  C 220 115, 185 140, 180 160
+                  C 170 175, 170 195, 185 210
+                  C 165 215, 140 240, 142 265
+                  C 140 285, 145 310, 170 325
+                  C 180 335, 200 330, 215 335
+                  C 225 345, 250 350, 270 340
+                  C 290 335, 310 320, 315 300
+                  C 330 290, 345 270, 340 245
+                  C 345 225, 325 200, 315 190
+                  C 320 170, 310 140, 290 125
+                  C 270 110, 245 115, 235 125 Z" />
+                <path class="nano-leaf-fill nano-stroke-main" d="M 210 240 C 200 255 205 270 205 270 C 220 260 230 250 240 230 C 228 232 218 235 210 240 Z" />
+                <path class="nano-leaf-fill nano-stroke-main" d="M 260 270 C 265 285 275 295 275 295 C 280 280 275 268 260 270 Z" />
+                <path class="nano-stroke-inner" d="M 180 160 C 200 170, 210 160, 220 150" />
+                <path class="nano-stroke-inner" d="M 185 210 C 205 210, 225 195, 215 180" />
+                <path class="nano-stroke-inner" d="M 142 265 C 165 260, 185 245, 195 220" />
+                <path class="nano-stroke-inner" d="M 170 325 C 185 300, 200 290, 205 270" />
+                <path class="nano-stroke-inner" d="M 250 120 C 240 145, 260 165, 280 155" />
+                <path class="nano-stroke-inner" d="M 280 155 C 295 165, 285 190, 270 195" />
+                <path class="nano-stroke-inner" d="M 245 200 C 270 205, 285 220, 280 240" />
+                <path class="nano-stroke-inner" d="M 280 240 C 300 245, 315 230, 315 190" />
+                <path class="nano-stroke-inner" d="M 235 300 C 260 305, 280 320, 310 300" />
+                <path class="nano-stroke-inner" d="M 280 240 C 290 265, 310 270, 340 245" />
+              </g>
+            </svg>
+            <canvas id="nano-smoke" aria-hidden="true"></canvas>
+          </div>
+          <div class="text-center mt-4">
+            
+            <h2 class="nano-graffiti-text text-4xl md:text-5xl tracking-wider uppercase transform -rotate-2">CHELPA<br>HAZE</h2>
+            <div class="mt-3 inline-block bg-black/80 border border-orange-500/40 px-3 py-1 rounded text-xs tracking-widest text-neutral-300">
+              <span class="text-emerald-400">No sé</span> / <span class="text-cyan-400">lo</span> / <span class="text-orange-400">que</span> / <span class="text-purple-400">hago</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative w-full max-w-4xl mx-auto mt-8 bg-neutral-900 border border-neutral-800 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div class="relative w-56 h-56 shrink-0 rounded-2xl overflow-hidden border border-emerald-500/30 bg-black shadow-[0_0_20px_rgba(16,185,129,0.15)]">
+            <div class="absolute inset-0 opacity-20 font-mono text-[10px] text-emerald-400 overflow-hidden leading-tight select-none pointer-events-none break-all p-2 pt-8">
+              01000011 01001000 01000101 01001100 01010000 01000001 00100000 01001000 01000001 01011010 01000101
+              const haze = () =&gt; { return "chelpa"; }; &lt;div class="code"&gt;&lt;/div&gt; 01010111 01100001 01110010 01110000
+              git commit -m "super haze" 01000011 01001000 01000101 01001100 01010000 01000001
+            </div>
+            <div class="absolute top-0 inset-x-0 h-6 bg-neutral-900/90 border-b border-neutral-800 flex items-center px-3 gap-1.5 z-10">
+              <div class="w-2.5 h-2.5 rounded-full bg-red-500/80"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></div>
+              <span class="ml-auto font-mono text-[10px] text-neutral-500">chelpa.sh</span>
+            </div>
+            <div class="absolute bottom-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-500 via-orange-500 to-amber-400 shadow-[0_0_10px_#ff5722]"></div>
+          </div>
+          <div class="flex-1 text-center md:text-left">
+            <span class="text-xs font-mono text-orange-400 tracking-widest uppercase bg-orange-950/40 border border-orange-800/50 px-2.5 py-1 rounded-md">Open Source</span>
+            <h3 class="nano-font-burned text-3xl md:text-4xl tracking-wide mt-2 text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-yellow-400 to-orange-500">DEVELOPER</h3>
+            <p class="text-neutral-400 mt-2 font-mono text-sm max-w-md">Creative Code &amp; High-Performance Web Development.</p>
+            <div class="flex flex-wrap gap-2 mt-4 justify-center md:justify-start font-mono text-xs">
+              <span class="bg-neutral-800 text-emerald-300 border border-emerald-500/30 px-3 py-1 rounded-full">SASS</span>
+              <span class="bg-neutral-800 text-cyan-300 border border-cyan-500/30 px-3 py-1 rounded-full">Ruby</span>
+              <span class="bg-neutral-800 text-amber-300 border border-amber-500/30 px-3 py-1 rounded-full">Python</span>
+              <span class="bg-neutral-800 text-purple-300 border border-purple-500/30 px-3 py-1 rounded-full">scrappy-coco</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
   </div>
 </div>
 
@@ -11743,6 +11883,12 @@ function openMalla(){
   renderMalla();
   mallaOverlay.hidden = false;
   document.getElementById('malla-close').focus();
+  // El overlay entero está oculto (display:none) hasta acá, así que
+  // cualquier canvas adentro (el humo del cogollo de la segunda firma)
+  // medía 0×0 la primera vez que se calculó su tamaño. Forzamos un
+  // "resize" ahora que ya es visible para que recalculen bien — mismo
+  // truco que ya usa initChzToggle() al desplegar la firma principal.
+  window.dispatchEvent(new Event('resize'));
 }
 function closeMalla(){
   mallaOverlay.hidden = true;
@@ -12693,15 +12839,21 @@ document.getElementById('app-mark').addEventListener('click', ()=>{
 // Colapsada por defecto: sólo se ve la barra + la vista previa "dev/Chelpa
 // · Haze". Al desplegar aparece la firma completa (banner, tarjeta,
 // tuercas). "Francisco · chazeware" queda fuera de #chz-body a propósito,
-// así que se ve siempre, esté desplegado o no. ----------
-(function initChzToggle(){
-  const toggle = document.getElementById('chz-toggle');
-  const body = document.getElementById('chz-body');
-  const preview = document.getElementById('chz-preview');
+// así que se ve siempre, esté desplegado o no.
+//
+// Refactorizada a función reutilizable (antes era una IIFE fija a los ids
+// del footer principal) porque ahora hay una segunda copia de la firma
+// dentro de la Malla curricular, sólo de prueba — ver "Vista previa de
+// firma dentro de la Malla" más abajo. Cada llamado recibe sus propios ids
+// y su propia clave de localStorage para que las dos copias no se pisen. ----------
+function initChzToggle(toggleId, bodyId, previewId, storageKey){
+  const toggle = document.getElementById(toggleId);
+  const body = document.getElementById(bodyId);
+  const preview = document.getElementById(previewId);
   if(!toggle || !body || !preview) return;
   let open = false;
   try{
-    const saved = localStorage.getItem('bc-usach-chz-open');
+    const saved = localStorage.getItem(storageKey);
     if(saved !== null) open = saved === 'true';
   }catch(e){}
   function setOpen(v){
@@ -12709,11 +12861,11 @@ document.getElementById('app-mark').addEventListener('click', ()=>{
     toggle.setAttribute('aria-expanded', String(open));
     body.hidden = !open;
     preview.hidden = open;
-    try{ localStorage.setItem('bc-usach-chz-open', String(open)); }catch(e){}
-    // El canvas de humo (#chzSmoke) mide el banner con getBoundingClientRect()
-    // sólo al cargar y en window "resize". Mientras #chz-body está oculto ese
-    // banner mide 0×0, así que al desplegar hay que forzar un recálculo para
-    // que el humo no quede con un canvas de tamaño cero.
+    try{ localStorage.setItem(storageKey, String(open)); }catch(e){}
+    // El canvas de humo mide el banner con getBoundingClientRect() sólo al
+    // cargar y en window "resize". Mientras el body está oculto ese banner
+    // mide 0×0, así que al desplegar hay que forzar un recálculo para que
+    // el humo no quede con un canvas de tamaño cero.
     if(open) window.dispatchEvent(new Event('resize'));
   }
   setOpen(open);
@@ -12721,6 +12873,73 @@ document.getElementById('app-mark').addEventListener('click', ()=>{
   toggle.addEventListener('keydown', e=>{
     if(e.key===' '||e.key==='Enter'){ e.preventDefault(); setOpen(!open); }
   });
+}
+initChzToggle('chz-toggle', 'chz-body', 'chz-preview', 'bc-usach-chz-open');
+
+// ---------- Segunda firma, sólo dentro de la Malla curricular ----------
+// #malla-footer-preview, al fondo de la Malla: la firma nueva ("nano_gollo",
+// con Tailwind, aceptada por el usuario) que marca esta sección como
+// todavía en construcción. Es una firma propia y aparte — no reemplaza ni
+// duplica la firma original de la página principal (#chelpaHazeFooter),
+// que sigue intacta con su propio initChzSmoke/initChzToggle más arriba.
+// Humo ambiente detrás del cogollo — mismo motor de partículas que
+// initChzSmoke, pero sale siempre que el elemento esté visible (no depende
+// de un toggle desplegable) y nace del centro del círculo del dibujo en vez
+// del banner.
+(function initNanoSmoke(){
+  const wrap = document.querySelector('#malla-footer-preview .nano-bud-wrap');
+  const canvas = document.getElementById('nano-smoke');
+  if(!wrap || !canvas) return;
+  const ctx = canvas.getContext('2d');
+  if(!ctx) return;
+  let particles = [];
+  let running = false;
+  let raf = null;
+  function resize(){
+    const rect = wrap.getBoundingClientRect();
+    canvas.width = Math.max(1, Math.round(rect.width));
+    canvas.height = Math.max(1, Math.round(rect.height));
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  function spawn(){
+    for(let i=0;i<3;i++){
+      particles.push({
+        x: canvas.width/2 + (Math.random()-0.5)*36,
+        y: canvas.height*0.5 + (Math.random()-0.5)*30,
+        r: 4 + Math.random()*9,
+        vy: -0.35 - Math.random()*0.6,
+        vx: (Math.random()-0.5)*0.35,
+        alpha: 0.55 + Math.random()*0.3,
+        color: Math.random()>0.5 ? '235,235,235' : '82,224,196'
+      });
+    }
+  }
+  function tick(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.r+=0.07; p.alpha-=0.0045;
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba('+p.color+','+Math.max(p.alpha,0)+')';
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fill();
+    });
+    particles = particles.filter(p=> p.alpha>0 && p.y>-20);
+    if(running){
+      if(Math.random()<0.25) spawn();
+      raf = requestAnimationFrame(tick);
+    }
+  }
+  function start(){ if(running) return; running=true; tick(); }
+  function stop(){ running=false; if(raf) cancelAnimationFrame(raf); raf=null; }
+  if('IntersectionObserver' in window){
+    const io = new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{ if(entry.isIntersecting) start(); else stop(); });
+    }, {threshold:0.1});
+    io.observe(wrap);
+  } else {
+    start();
+  }
 })();
 
 // ---------- Responsive reparenting: move "Mi horario" beside the picker whenever the layout is single-column ----------
