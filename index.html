@@ -997,6 +997,60 @@
     font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em;
     color:var(--ink-faint); margin:0 0 14px; text-align:center;
   }
+
+  /* ---------- Firma nano ahora colapsable, igual patrón que #chelpaHazeFooter
+     en el inicio: barra "Sitio en Construcción // WIP v0.9" cerrada por
+     defecto, al apretarla despliega el mensaje de "sección en construcción"
+     + todo el cogollo. Mismo comportamiento (initChzToggle, con sus propios
+     ids/localStorage para no pisar la firma principal). Como esta firma vive
+     adentro del modal de la Malla (no de borde a borde como la del inicio),
+     se le agrega borde + esquinas redondeadas para que se vea contenida y
+     prolija en vez de recortada. */
+  #chelpaHazeFooterMalla{
+    --chz-ink:#f2f2f0;
+    max-width:none; margin:0; padding:0;
+    color:var(--chz-ink); font-family:'Fira Code','IBM Plex Mono',monospace;
+    isolation:isolate; border-radius:16px; overflow:hidden; border:1px solid #2a2a2a;
+  }
+  #chelpaHazeFooterMalla *{ box-sizing:border-box; }
+  #chelpaHazeFooterMalla .chz-construction-bar{
+    background:#0d0d0d; border-top:2px solid #e0ac54; border-bottom:1px solid #2a2a2a;
+    border-left:none; border-right:none; padding:12px 20px; display:flex; align-items:center;
+    justify-content:center; gap:10px; font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:#e0ac54; width:100%; font-family:inherit; cursor:pointer; -webkit-appearance:none;
+    appearance:none; transition:background .15s ease;
+  }
+  #chelpaHazeFooterMalla .chz-construction-bar:hover{ background:#141414; }
+  #chelpaHazeFooterMalla .chz-construction-bar:focus-visible{ outline:2px solid #e0ac54; outline-offset:-2px; }
+  #chelpaHazeFooterMalla .chz-construction-dot{
+    width:8px; height:8px; background:#ff5f57; border-radius:50%; box-shadow:0 0 8px #ff5f57;
+    animation:chzBlink 1.2s infinite alternate;
+  }
+  #chelpaHazeFooterMalla .chz-toggle-chevron{ flex:none; transition:transform .18s ease; }
+  #chelpaHazeFooterMalla #chz-toggleMalla[aria-expanded="true"] .chz-toggle-chevron{ transform:rotate(180deg); }
+  #chelpaHazeFooterMalla .chz-preview{
+    display:flex; align-items:baseline; justify-content:center; gap:6px; padding:22px 20px; background:#0a0a0a;
+  }
+  #chelpaHazeFooterMalla .chz-preview[hidden]{ display:none; }
+  #chelpaHazeFooterMalla .chz-preview-title{ font-size:15px; letter-spacing:.02em; color:#f2c14e; font-weight:600; }
+  #chelpaHazeFooterMalla .chz-preview-sep{ color:#5a3d12; }
+  #chelpaHazeFooterMalla .chz-preview-sub{ font-size:15px; color:#c9a6f2; font-weight:600; }
+  #chelpaHazeFooterMalla .chz-body{ background:#0a0a0a; padding:22px 16px 26px; }
+  #chelpaHazeFooterMalla .malla-footer-preview-label{ color:#a8a8a4; margin:0 0 18px; }
+
+  /* Barra de esta firma con dos líneas (a diferencia de la firma original,
+     que trae una sola): arriba el texto de siempre con un sufijo tipo rama
+     de git ("Branch - 210"), abajo el nombre del archivo fuente
+     (malla_grid.html) en minúscula, sin el uppercase del resto de la barra —
+     mismo espíritu que ".chz-terminal-label" (que muestra "chelpa.sh" así). */
+  #chelpaHazeFooterMalla .chz-construction-bar{ padding:10px 20px; }
+  #chelpaHazeFooterMalla .chz-construction-bar-text{
+    display:flex; flex-direction:column; align-items:center; gap:2px; line-height:1.3;
+  }
+  #chelpaHazeFooterMalla .chz-construction-bar-line2{
+    text-transform:none; letter-spacing:.02em; font-size:10px; font-weight:400; color:#8a8a86;
+  }
+
   .nano-graffiti-text{
     font-family:'Rubik Wet Paint', cursive;
     background:linear-gradient(180deg, #32e0c4 0%, #ff5722 60%, #e8e8e8 100%);
@@ -1837,6 +1891,24 @@ initChzSmoke('chelpaHazeFooter', 'chzSmoke');
     <p class="malla-progress" id="malla-progress"></p>
 
     <div class="malla-footer-preview" id="malla-footer-preview">
+      <footer id="chelpaHazeFooterMalla">
+
+        <button class="chz-construction-bar" id="chz-toggleMalla" type="button" aria-expanded="false" aria-controls="chz-bodyMalla">
+          <span class="chz-construction-dot"></span>
+          <span class="chz-construction-bar-text">
+            <span class="chz-construction-bar-line1">Sección en Construcción </span>
+            <span class="chz-construction-bar-line2">// WIP v0.9 Branch - 210</span>
+          </span>
+          <svg class="chz-toggle-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+
+        <div class="chz-preview" id="chz-previewMalla">
+          <span class="chz-preview-title">malla_grid</span>
+          <span class="chz-preview-sep">·</span>
+          <span class="chz-preview-sub">#bug67</span>
+        </div>
+
+        <div class="chz-body" id="chz-bodyMalla" hidden>
       <p class="malla-footer-preview-label">Firma de "sección en construcción" — la Malla todavía no está completa (falta guardar los ramos aprobados y conectarla con el resto del sitio)</p>
 
       <div class="bg-neutral-950 text-white font-mono rounded-2xl overflow-hidden border border-neutral-800 p-6 md:p-10">
@@ -1893,7 +1965,6 @@ initChzSmoke('chelpaHazeFooter', 'chzSmoke');
             <canvas id="nano-smoke" aria-hidden="true"></canvas>
           </div>
           <div class="text-center mt-4">
-            
             <h2 class="nano-graffiti-text text-4xl md:text-5xl tracking-wider uppercase transform -rotate-2">CHELPA<br>HAZE</h2>
             <div class="mt-3 inline-block bg-black/80 border border-orange-500/40 px-3 py-1 rounded text-xs tracking-widest text-neutral-300">
               <span class="text-emerald-400">No sé</span> / <span class="text-cyan-400">lo</span> / <span class="text-orange-400">que</span> / <span class="text-purple-400">hago</span>
@@ -1921,15 +1992,338 @@ initChzSmoke('chelpaHazeFooter', 'chzSmoke');
             <h3 class="nano-font-burned text-3xl md:text-4xl tracking-wide mt-2 text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-yellow-400 to-orange-500">DEVELOPER</h3>
             <p class="text-neutral-400 mt-2 font-mono text-sm max-w-md">Creative Code &amp; High-Performance Web Development.</p>
             <div class="flex flex-wrap gap-2 mt-4 justify-center md:justify-start font-mono text-xs">
-              <span class="bg-neutral-800 text-emerald-300 border border-emerald-500/30 px-3 py-1 rounded-full">SASS</span>
-              <span class="bg-neutral-800 text-cyan-300 border border-cyan-500/30 px-3 py-1 rounded-full">Ruby</span>
-              <span class="bg-neutral-800 text-amber-300 border border-amber-500/30 px-3 py-1 rounded-full">Python</span>
-              <span class="bg-neutral-800 text-purple-300 border border-purple-500/30 px-3 py-1 rounded-full">scrappy-coco</span>
+              <span class="bg-neutral-800 text-emerald-300 border border-emerald-500/30 px-3 py-1 rounded-full">Frontend</span>
+              <span class="bg-neutral-800 text-cyan-300 border border-cyan-500/30 px-3 py-1 rounded-full">Backend</span>
+              <span class="bg-neutral-800 text-amber-300 border border-amber-500/30 px-3 py-1 rounded-full">UI/UX</span>
+              <span class="bg-neutral-800 text-purple-300 border border-purple-500/30 px-3 py-1 rounded-full">.ai</span>
             </div>
           </div>
         </div>
       </div>
+        </div>
+      </footer>
     </div>
+
+    <!-- ---------- Copia completa de la firma original del sitio
+         (#chelpaHazeFooter), reintroducida acá a pedido del usuario, esta
+         vez para quedarse: va al fondo de todo dentro de la Malla, de
+         borde a borde (igual que en el inicio), con su propia barra
+         colapsable "Sitio en Construcción // WIP v0.9". Es una copia
+         aparte con sus propios ids (sufijo MallaOriginal) y su propia
+         clave de localStorage, para no pisar ni la firma real del inicio
+         ni la firma nueva del cogollo (arriba, en .malla-footer-preview).
+         La firma del inicio (#chelpaHazeFooter) sigue completamente
+         intacta — esto NO la reemplaza, es una copia. ---------- -->
+<footer id="chelpaHazeFooterMallaOriginal">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Rubik+Burned&family=Rubik+Wet+Paint&family=Fira+Code:wght@400;700&display=swap');
+
+  #chelpaHazeFooterMallaOriginal{
+    --chz-ink:#f2f2f0;
+    /* El sitio tiene una regla genérica "footer{ max-width:1440px;
+       margin:0 auto; padding:0 20px 40px; }" (ver más abajo, es la que usa
+       el footer del disclaimer) que por defecto también encajona esta
+       firma, porque es un elemento <footer> igual que el otro. Acá se
+       anula eso a propósito para que la firma vaya de borde a borde: cada
+       sección interna (.chz-construction-bar, .chz-banner, .chz-card,
+       .chz-gears-wrapper, .chz-signoff) ya trae su propio padding lateral
+       para el contenido, así que sólo hace falta que el contenedor del
+       footer deje de estar limitado en ancho. */
+    max-width:none;
+    margin:56px -20px 0;
+    padding:0;
+    color:var(--chz-ink);
+    font-family:'Fira Code','IBM Plex Mono',monospace;
+    isolation:isolate;
+  }
+  #chelpaHazeFooterMallaOriginal *{ box-sizing:border-box; }
+
+  /* 1. SECCIÓN: SITIO EN CONSTRUCCIÓN */
+  #chelpaHazeFooterMallaOriginal .chz-construction-bar {
+    background: #0d0d0d;
+    border-top: 2px solid #e0ac54;
+    border-bottom: 1px solid #2a2a2a;
+    border-left: none;
+    border-right: none;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #e0ac54;
+    /* .chz-construction-bar es un <button> (para poder desplegar/colapsar
+       la firma completa), así que se le resetea el estilo nativo de botón
+       del navegador y se le deja el mismo look que tenía como <div>. */
+    width: 100%;
+    font-family: inherit;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: background .15s ease;
+  }
+  #chelpaHazeFooterMallaOriginal .chz-construction-bar:hover {
+    background: #141414;
+  }
+  #chelpaHazeFooterMallaOriginal .chz-construction-bar:focus-visible {
+    outline: 2px solid #e0ac54;
+    outline-offset: -2px;
+  }
+  #chelpaHazeFooterMallaOriginal .chz-construction-dot {
+    width: 8px;
+    height: 8px;
+    background: #ff5f57;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #ff5f57;
+    animation: chzBlink 1.2s infinite alternate;
+  }
+  @keyframes chzBlink {
+    from { opacity: 0.3; }
+    to { opacity: 1; }
+  }
+  #chelpaHazeFooterMallaOriginal .chz-toggle-chevron {
+    flex: none;
+    transition: transform .18s ease;
+  }
+  #chelpaHazeFooterMallaOriginal #chz-toggleMallaOriginal[aria-expanded="true"] .chz-toggle-chevron {
+    transform: rotate(180deg);
+  }
+
+  /* Vista previa condensada: lo único que se ve antes de desplegar la
+     firma completa. Tiene su propia regla display:flex, así que —a
+     diferencia de .chz-body, que es un wrapper simple sin display propio—
+     necesita el override [hidden] explícito para que el atributo hidden
+     gane por sobre esta regla más específica. */
+  #chelpaHazeFooterMallaOriginal .chz-preview {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 6px;
+    padding: 22px 20px;
+    background: #0a0a0a;
+  }
+  #chelpaHazeFooterMallaOriginal .chz-preview[hidden] {
+    display: none;
+  }
+  #chelpaHazeFooterMallaOriginal .chz-preview-title {
+    font-size: 15px;
+    letter-spacing: .02em;
+    color: #f2c14e;
+    font-weight: 600;
+  }
+  #chelpaHazeFooterMallaOriginal .chz-preview-sep {
+    color: #5a3d12;
+  }
+  #chelpaHazeFooterMallaOriginal .chz-preview-sub {
+    font-size: 15px;
+    color: #c9a6f2;
+    font-weight: 600;
+  }
+
+  #chelpaHazeFooterMallaOriginal .chz-banner{
+    position:relative;
+    overflow:hidden;
+    background:radial-gradient(120% 140% at 50% -10%, #241a08 0%, #0a0a0a 55%, #050505 100%);
+    padding:40px 20px 34px;
+    text-align:center;
+    border-top:1px solid #2a2a2a;
+  }
+  #chelpaHazeFooterMallaOriginal .chz-banner canvas{
+    position:absolute; inset:0; width:100%; height:100%; pointer-events:none;
+  }
+  #chelpaHazeFooterMallaOriginal .chz-banner-inner{ position:relative; z-index:1; }
+
+  #chelpaHazeFooterMallaOriginal .chz-badges-row{
+    display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:0;
+  }
+  #chelpaHazeFooterMallaOriginal .chz-badges-row--alt{ margin-top:14px; }
+
+  #chelpaHazeFooterMallaOriginal .chz-badge{
+    font-size:10px; letter-spacing:.06em; text-transform:uppercase; font-weight:600;
+    padding:4px 10px; border-radius:999px; border:1px solid #3a3a3a; color:#c9c9c6; background:#141414;
+  }
+  #chelpaHazeFooterMallaOriginal .chz-badge--alt{ border-color:#5a3d12; color:#e0ac54; background:#1c1406; }
+  #chelpaHazeFooterMallaOriginal .chz-badge--dev{ border-color:#3a2350; color:#c9a6f2; background:#160f1f; }
+
+  #chelpaHazeFooterMallaOriginal .chz-title{
+    font-family:'Rubik Wet Paint', cursive;
+    font-size:clamp(2.2rem, 7vw, 4.2rem);
+    line-height:1;
+    margin:14px 0;
+    font-weight:400;
+    background:linear-gradient(180deg, #fff2c4 0%, #f2c14e 28%, #d67d1f 55%, #7a9c3f 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter:drop-shadow(0 2px 0 rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(224,172,84,.25));
+  }
+
+  #chelpaHazeFooterMallaOriginal .chz-card{
+    display:flex; flex-wrap:wrap; gap:24px; align-items:stretch; justify-content:center;
+    background:#0a0a0a; padding:28px 20px 40px;
+  }
+  #chelpaHazeFooterMallaOriginal .chz-card-logo{
+    position:relative; width:min(320px, 90vw); border-radius:14px; overflow:hidden;
+    background:#0d0d0d; border:1px solid #262626; box-shadow:0 12px 30px rgba(0,0,0,.45);
+    align-self:flex-start;
+  }
+  #chelpaHazeFooterMallaOriginal .chz-matrix{
+    height:150px; position:relative; overflow:hidden;
+    background-image:repeating-linear-gradient(90deg, rgba(74,222,128,.16) 0 2px, transparent 2px 18px);
+    background-size:18px 100%;
+    animation:chzMatrixDrift 6s linear infinite;
+  }
+  #chelpaHazeFooterMallaOriginal .chz-matrix::after{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(10,10,10,0) 0%, rgba(10,10,10,.92) 100%);
+  }
+  @keyframes chzMatrixDrift{ from{ background-position:0 0; } to{ background-position:0 220px; } }
+
+  #chelpaHazeFooterMallaOriginal .chz-terminal-bar{
+    display:flex; align-items:center; gap:6px; padding:8px 12px; background:#141414;
+    border-top:1px solid #262626; border-bottom:1px solid #262626;
+  }
+  #chelpaHazeFooterMallaOriginal .chz-dot{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+  #chelpaHazeFooterMallaOriginal .chz-dot--r{ background:#ff5f57; }
+  #chelpaHazeFooterMallaOriginal .chz-dot--y{ background:#febc2e; }
+  #chelpaHazeFooterMallaOriginal .chz-dot--g{ background:#28c840; }
+  #chelpaHazeFooterMallaOriginal .chz-terminal-label{ margin-left:8px; font-size:11px; color:#8a8a86; }
+
+  #chelpaHazeFooterMallaOriginal .chz-ember-line{
+    height:4px; margin:0;
+    background:linear-gradient(90deg, #7a1f0a, #e0ac54, #f2c14e, #e0ac54, #7a1f0a);
+    background-size:200% 100%;
+    animation:chzFlicker 2.4s ease-in-out infinite;
+  }
+  @keyframes chzFlicker{
+    0%,100%{ background-position:0% 50%; opacity:.85; }
+    50%{ background-position:100% 50%; opacity:1; }
+  }
+
+  #chelpaHazeFooterMallaOriginal .chz-card-info{ max-width:360px; padding-top:6px; }
+  #chelpaHazeFooterMallaOriginal .chz-open-badge{
+    display:inline-block; font-size:10px; letter-spacing:.08em; text-transform:uppercase; font-weight:600;
+    padding:4px 10px; border-radius:6px; border:1px solid #5a3d12; color:#e0ac54; background:#1c1406;
+    margin-bottom:10px;
+  }
+  #chelpaHazeFooterMallaOriginal .chz-dev-title{
+    font-family:'Rubik Burned', cursive; font-weight:400;
+    font-size:clamp(1.6rem, 4vw, 2.2rem); margin:0 0 8px;
+    color:#f2c14e; text-shadow:0 2px 0 rgba(0,0,0,.5);
+  }
+  #chelpaHazeFooterMallaOriginal .chz-dev-tagline{ margin:0 0 14px; color:#a8a8a4; font-size:13px; line-height:1.5; }
+
+  /* 2. SECCIÓN: TUERCAS MOVIÉNDOSE */
+  #chelpaHazeFooterMallaOriginal .chz-gears-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 0;
+    background: #0a0a0a;
+    border-top: 1px solid #1c1c1c;
+  }
+  #chelpaHazeFooterMallaOriginal .chz-gear {
+    width: 24px;
+    height: 24px;
+    fill: #5a3d12;
+  }
+  #chelpaHazeFooterMallaOriginal .chz-gear--left {
+    animation: chzSpin 4s linear infinite;
+  }
+  #chelpaHazeFooterMallaOriginal .chz-gear--right {
+    width: 18px;
+    height: 18px;
+    fill: #e0ac54;
+    animation: chzSpinRev 3s linear infinite;
+  }
+  @keyframes chzSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes chzSpinRev { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+
+  #chelpaHazeFooterMallaOriginal .chz-signoff{
+    text-align:center; padding:0px 20px 30px; background:#0a0a0a;
+    color:#6f6f6b; font-size:11px; letter-spacing:.04em;
+  }
+
+  @media (max-width:640px){
+    #chelpaHazeFooterMallaOriginal .chz-card{ flex-direction:column; align-items:center; text-align:center; }
+    #chelpaHazeFooterMallaOriginal .chz-card-info{ text-align:center; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    #chelpaHazeFooterMallaOriginal .chz-matrix,
+    #chelpaHazeFooterMallaOriginal .chz-ember-line,
+    #chelpaHazeFooterMallaOriginal .chz-gear--left,
+    #chelpaHazeFooterMallaOriginal .chz-gear--right { animation:none; }
+  }
+</style>
+
+<button class="chz-construction-bar" id="chz-toggleMallaOriginal" type="button" aria-expanded="false" aria-controls="chz-bodyMallaOriginal">
+  <span class="chz-construction-dot"></span>
+  <span>Sitio en Construcción // WIP v0.9</span>
+  <svg class="chz-toggle-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+</button>
+
+<div class="chz-preview" id="chz-previewMallaOriginal">
+  <span class="chz-preview-title">dev/Chelpa</span>
+  <span class="chz-preview-sep">·</span>
+  <span class="chz-preview-sub">Haze</span>
+</div>
+
+<div class="chz-body" id="chz-bodyMallaOriginal" hidden>
+  <div class="chz-banner">
+    <canvas id="chzSmokeMallaOriginal" aria-hidden="true"></canvas>
+    <div class="chz-banner-inner">
+      <div class="chz-badges-row">
+        <span class="chz-badge">git</span>
+        <span class="chz-badge">fork</span>
+        <span class="chz-badge">?-v</span>
+        <span class="chz-badge">210</span>
+      </div>
+      <h2 class="chz-title">dev/Chelpa</h2>
+      <div class="chz-badges-row chz-badges-row--alt">
+        <span class="chz-badge chz-badge--alt">pull request</span>
+        <span class="chz-badge chz-badge--alt">error en datos?</span>
+        <span class="chz-badge chz-badge--alt">report bug</span>
+      </div>
+      <h3 class="chz-dev-title">Haze</h3>
+    </div>
+  </div>
+
+  <div class="chz-card">
+    <div class="chz-card-logo">
+      <div class="chz-matrix"></div>
+      <div class="chz-terminal-bar">
+        <span class="chz-dot chz-dot--r"></span><span class="chz-dot chz-dot--y"></span><span class="chz-dot chz-dot--g"></span>
+        <span class="chz-terminal-label">chelpa.sh</span>
+      </div>
+      <div class="chz-ember-line"></div>
+    </div>
+    <div class="chz-card-info">
+      <span class="chz-open-badge">Open Source</span>
+      <h3 class="chz-dev-title">Programmer</h3>
+      <p class="chz-dev-tagline">Creative Code &amp; High-Performance Web Development.</p>
+      <div class="chz-badges-row">
+        <span class="chz-badge chz-badge--dev">SASS</span>
+        <span class="chz-badge chz-badge--dev">Ruby</span>
+        <span class="chz-badge chz-badge--dev">Python</span>
+        <span class="chz-badge chz-badge--dev">scrappy-coco</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chz-gears-wrapper">
+    <svg class="chz-gear chz-gear--left" viewBox="0 0 24 24">
+      <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+    <svg class="chz-gear chz-gear--right" viewBox="0 0 24 24">
+      <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+  </div>
+  <p class="chz-signoff">Francisco · chazeware</p>
+</div>
+</footer>
 
 
   </div>
@@ -12875,6 +13269,17 @@ function initChzToggle(toggleId, bodyId, previewId, storageKey){
   });
 }
 initChzToggle('chz-toggle', 'chz-body', 'chz-preview', 'bc-usach-chz-open');
+
+// Misma barra colapsable "Sitio en Construcción // WIP v0.9", ahora también
+// para la firma nueva dentro de la Malla — ids y localStorage propios para
+// no pisar la firma principal de arriba.
+initChzToggle('chz-toggleMalla', 'chz-bodyMalla', 'chz-previewMalla', 'bc-usach-chz-open-malla');
+
+// Copia completa de la firma original del inicio, reintroducida al fondo de
+// la Malla (ver #chelpaHazeFooterMallaOriginal más abajo en el HTML) — ids y
+// clave de localStorage propios, no pisa ni la firma real ni la del cogollo.
+initChzToggle('chz-toggleMallaOriginal', 'chz-bodyMallaOriginal', 'chz-previewMallaOriginal', 'bc-usach-chz-open-malla-original');
+initChzSmoke('chelpaHazeFooterMallaOriginal', 'chzSmokeMallaOriginal');
 
 // ---------- Segunda firma, sólo dentro de la Malla curricular ----------
 // #malla-footer-preview, al fondo de la Malla: la firma nueva ("nano_gollo",
