@@ -61,13 +61,12 @@ tocar un HTML de 600KB", y eso ya lo resuelve la separación
 
 ## Qué trae esta versión
 
-Esta es la versión final consolidada, con el `index_1.html`/`template.html`
-de la auditoría más reciente como base (tarjetas de ramo colapsables,
-semáforo de color en el cupo, separación Buscar/×/"Limpiar todo", guía de
-5 pasos unificada, panel "Mi horario" más grande, panel lateral "Dataset"),
-más lo que esa auditoría no incluía todavía, más lo que faltaba comparado
-con el `index.html` real que estaba publicado en GitHub Pages (comparación
-hecha campo por campo, no a ojo):
+Esta es la versión final consolidada: parte del rediseño/auditoría más
+reciente (tarjetas de ramo colapsables, semáforo de color en el cupo,
+separación Buscar/×/"Limpiar todo", guía de 5 pasos unificada, panel
+"Mi horario" más grande, panel lateral "Dataset" con el conteo del
+catálogo, sin el aviso de "Sección en construcción" que traía la Malla) y
+le suma lo que esa auditoría no incluía todavía:
 
 - **Recodificación de color de botones** (verde/naranjo/azul): naranjo
   reservado para Buscar/Agregar, verde para el estado activo de los
@@ -90,43 +89,6 @@ hecha campo por campo, no a ojo):
   + profesor + cupo arriba, horario en su propia línea a lo ancho,
   Agregar abajo a lo ancho con el texto completo) — sin scroll oculto, sin
   overflow, probado de 375px a 1440px.
-- **Las tres firmas restauradas**, exactamente como estaban en el
-  `index.html` real (se habían perdido al usar la auditoría como base):
-  `#chelpaHazeFooter` al fondo de la página principal, la copia completa
-  reintroducida al fondo de la Malla curricular (`#chelpaHazeFooterMallaOriginal`,
-  con su propia barra colapsable "Sección en construcción"), y la firma
-  nueva "nano_gollo" (`.malla-footer-preview`, con Tailwind vía CDN sólo
-  para ese bloque) también dentro de la Malla, marcándola como todavía en
-  construcción. Las tres son colapsables por separado, cada una con su
-  propia clave de `localStorage`, y no se pisan entre sí.
-- **Segundo párrafo del disclaimer del pie de página**, sobre cómo el
-  Proceso de Postulación de Ramos real habilita los niveles de a uno (a
-  partir de lo que explicó el jefe de carrera) — se había perdido en la
-  auditoría, junto con el primer párrafo.
-- **Panel "Dataset" oculto por defecto**: sólo se muestra visitando
-  `index.html?admin` una vez (queda recordado en ese navegador); antes de
-  esta corrección se veía siempre, para cualquier visitante.
-- **"Filtrar por horario libre" colapsable en modo amigable**: en ese tema
-  el panel se ve cerrado por defecto, con un botón chevron para
-  desplegarlo; en el resto de los temas se ve exactamente igual que
-  siempre.
-- **Fix: la Simulación no mostraba ramos.** `render()` decidía mostrar la
-  guía de bienvenida (en vez de la lista de ramos) cada vez que no había
-  búsqueda/filtro escrito a mano — pero no consideraba que la Simulación
-  estuviera activa, así que al arrancarla sin buscar nada antes se veía la
-  guía en vez de los ramos ya desbloqueados. Bug ya presente en la
-  auditoría usada como base, no introducido por las firmas.
-- **Fix: Tailwind (CDN) rompía el estilo del resto del sitio con conexión
-  real a internet.** El script de Tailwind agregado para la firma nueva
-  (`.malla-footer-preview`) aplica por defecto un reset global
-  ("Preflight") a toda la página, no sólo a ese bloque — cambiaba en
-  silencio el aspecto de la tabla de secciones y los botones
-  Agregar/Agregada en el resto del sitio apenas el navegador lograba bajar
-  el CDN (en el sandbox de pruebas ese script queda bloqueado por la red,
-  así que no se detectó hasta que el usuario lo vio en su propio
-  navegador). Se desactivó el Preflight (`tailwind.config = {
-  corePlugins: { preflight: false } }`) para que Tailwind sólo aporte sus
-  clases utilitarias dentro de la firma nueva.
 
 ## Features
 
@@ -142,29 +104,20 @@ hecha campo por campo, no a ojo):
   seguimiento de ramos aprobados/prerrequisitos/disponibles, para ambos
   programas.
 - Modo oscuro, modo amigable (tema alternativo), semáforo de color en el
-  cupo de cada sección, panel "Dataset" con el conteo del catálogo activo
-  (visible sólo con `?admin`).
-- Tres firmas de autor ("chazeware"), colapsables, en el pie de página y al
-  fondo de la Malla curricular — decorativas, no afectan la funcionalidad.
+  cupo de cada sección, panel "Dataset" con el conteo del catálogo activo.
 - Sin backend, sin `localStorage` de terceros — todo el estado del alumno
-  (horario armado, ramos aprobados, tema, panel admin, firmas
-  abiertas/cerradas) vive en el propio navegador.
+  (horario armado, ramos aprobados, tema) vive en el propio navegador.
 
 ## Verificación
 
 Probado con Playwright contra el `index.html` generado por `node build.js`:
 meta tags y topbar muestran el programa/semestre reales (no placeholders
-literales); acordeón de tarjetas colapsa/expande sin errores; semáforo de
-cupo y colores verde/naranjo/azul correctos en claro, oscuro y amigable;
-cambio de programa ida y vuelta; Malla curricular con datos reales para
-ambos programas; Simulación completa (abrir, elegir nivel, comenzar); vista
-de horario grande alterna sola entre nombres (≥1180px) y números (<1180px);
-tabla de secciones se apila en tarjetas sin scroll oculto ni overflow en
-375/390/430/700/900/1180/1440px; las tres firmas presentes y funcionales
-(se abren/cierran, el humo animado corre sin error); panel Dataset oculto
-por defecto y visible con `?admin` (se recuerda tras recargar sin el
-parámetro); "Filtrar por horario libre" colapsado por defecto en modo
-amigable y desplegable con el chevron. Cero errores de consola en todos los
-casos (fuera de los `ERR_TUNNEL_CONNECTION_FAILED` de Google Fonts/Tailwind
-CDN/Google Tag Manager, esperables en este sandbox de pruebas sin salida a
-internet real).
+literales); "Todos" filtra a 54 resultados; acordeón de tarjetas
+colapsa/expande sin errores; semáforo de cupo y colores verde/naranjo/azul
+correctos en claro, oscuro y amigable; cambio de programa ida y vuelta;
+Malla curricular con datos reales para ambos programas y sin ningún rastro
+del aviso de "construcción"; Simulación completa (abrir, elegir nivel,
+comenzar); vista de horario grande alterna sola entre nombres (≥1180px) y
+números (<1180px); tabla de secciones se apila en tarjetas sin scroll
+oculto ni overflow en 375/390/430/700/900/1180/1440px. Cero errores de
+consola en todos los casos.

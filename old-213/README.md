@@ -110,23 +110,6 @@ hecha campo por campo, no a ojo):
   el panel se ve cerrado por defecto, con un botón chevron para
   desplegarlo; en el resto de los temas se ve exactamente igual que
   siempre.
-- **Fix: la Simulación no mostraba ramos.** `render()` decidía mostrar la
-  guía de bienvenida (en vez de la lista de ramos) cada vez que no había
-  búsqueda/filtro escrito a mano — pero no consideraba que la Simulación
-  estuviera activa, así que al arrancarla sin buscar nada antes se veía la
-  guía en vez de los ramos ya desbloqueados. Bug ya presente en la
-  auditoría usada como base, no introducido por las firmas.
-- **Fix: Tailwind (CDN) rompía el estilo del resto del sitio con conexión
-  real a internet.** El script de Tailwind agregado para la firma nueva
-  (`.malla-footer-preview`) aplica por defecto un reset global
-  ("Preflight") a toda la página, no sólo a ese bloque — cambiaba en
-  silencio el aspecto de la tabla de secciones y los botones
-  Agregar/Agregada en el resto del sitio apenas el navegador lograba bajar
-  el CDN (en el sandbox de pruebas ese script queda bloqueado por la red,
-  así que no se detectó hasta que el usuario lo vio en su propio
-  navegador). Se desactivó el Preflight (`tailwind.config = {
-  corePlugins: { preflight: false } }`) para que Tailwind sólo aporte sus
-  clases utilitarias dentro de la firma nueva.
 
 ## Features
 
