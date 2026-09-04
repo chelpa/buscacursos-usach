@@ -1072,13 +1072,14 @@
     text-transform:none; letter-spacing:.02em; font-size:10px; font-weight:400; color:#8a8a86;
   }
 
-  /* Gradiente verde (antes teal→naranjo→blanco) — a pedido del usuario,
-     ahora que la página está estable. */
+  /* Gradiente teal→naranjo→blanco (vuelto a este estado: la Malla todavía
+     no está integrada al resto del sitio, así que esta firma sigue "en
+     construcción" — ver #chelpaEnConstru). */
   .nano-graffiti-text{
     font-family:'Rubik Wet Paint', cursive;
-    background:linear-gradient(180deg, #0d5c3d 0%, #32e07a 55%, #e8fff2 100%);
+    background:linear-gradient(180deg, #32e0c4 0%, #ff5722 60%, #e8e8e8 100%);
     -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;
-    filter:drop-shadow(3px 3px 0 #000) drop-shadow(-2px -2px 0 #22c55e);
+    filter:drop-shadow(3px 3px 0 #000) drop-shadow(-2px -2px 0 #ff3d00);
   }
   .nano-font-burned{ font-family:'Rubik Burned', system-ui; }
   .nano-bud-wrap canvas{ position:absolute; inset:0; pointer-events:none; }
@@ -1668,9 +1669,9 @@
     line-height:1;
     margin:14px 0;
     font-weight:400;
-    background:linear-gradient(180deg, #fff2c4 0%, #f2c14e 28%, #d67d1f 55%, #7a9c3f 100%);
+    background:linear-gradient(180deg, #e8fff2 0%, #7ef2b0 28%, #22c55e 55%, #0d5c3d 100%);
     -webkit-background-clip:text; background-clip:text; color:transparent;
-    filter:drop-shadow(0 2px 0 rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(224,172,84,.25));
+    filter:drop-shadow(0 2px 0 rgba(0,0,0,.55)) drop-shadow(0 0 18px rgba(34,197,94,.25));
   }
 
   #chelpaHazeFooter .chz-card{
@@ -1724,7 +1725,7 @@
   #chelpaHazeFooter .chz-dev-title{
     font-family:'Rubik Burned', cursive; font-weight:400;
     font-size:clamp(1.6rem, 4vw, 2.2rem); margin:0 0 8px;
-    color:#f2c14e; text-shadow:0 2px 0 rgba(0,0,0,.5);
+    color:#32e07a; text-shadow:0 2px 0 rgba(0,0,0,.5);
   }
   #chelpaHazeFooter .chz-dev-tagline{ margin:0 0 14px; color:#a8a8a4; font-size:13px; line-height:1.5; }
 

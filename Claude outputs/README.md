@@ -166,6 +166,49 @@ hecha campo por campo, no a ojo):
   repuso un reset de márgenes para los encabezados/párrafos dentro de la
   firma nueva (`#chelpaHazeFooterMalla`) que dependían del Preflight de
   Tailwind (desactivado la ronda pasada) para no tener el mismo problema.
+- **Firmas — segunda ronda de ajustes**, para diferenciar los tres estados
+  (lista / estable / en construcción):
+  - `#chelpaHazeFooterMalla` (graffiti verde "CHELPA HAZE", dentro de la
+    Malla): la barra pasó de "Sección en Construcción // WIP v0.9
+    Branch - 212" a **"Sección Lista // v1.0 Branch - 215"**, y su punto
+    (antes rojo) ahora es **amarillo/ámbar** — el usuario aclaró que
+    aunque el graffiti ya está "lista", falta integrar la Malla al resto
+    del sitio, así que ni rojo ni verde todavía. Sus badges de
+    "DEVELOPER" pasaron de `SASS / Ruby / Python / scrappy-coco`
+    (duplicados de las otras dos firmas) a **`Frontend / Backend / UI/UX
+    / .ai`**.
+  - `#chelpaHazeFooterMallaOriginal` (copia completa al fondo de la
+    Malla, badge "GIT / FORK / ?-V / 211"): pasó de decir **"STABLE"**
+    (punto verde) a **"Sitio en Construcción"** (punto amarillo/ámbar,
+    mismo tono que el resto de la firma).
+  - `#chelpaHazeFooter` (firma principal al fondo de la página, badge
+    "GIT / STATUS / ?-V / 220"): se mantiene en **"STABLE"** con su
+    punto verde de siempre, pero el título "dev/Chelpa" y "Haze" (antes
+    en gradiente ámbar/naranjo) ahora es **verde**, para que coincida
+    con el estado "stable" del badge.
+- **Firmas — corrección: dos de los cambios de la ronda anterior se
+  revirtieron**, a pedido del usuario, que mandó dos capturas de cómo se
+  veían antes (nombradas `#chelpaFooter` y `#chelpaEnConstru` para tener
+  una referencia clara al conversar) y pidió volver a esas dos:
+  - `#chelpaHazeFooterMalla` (el grafiti "CHELPA HAZE" dentro de la
+    Malla) vuelve a ser **`#chelpaEnConstru`**: la barra vuelve a decir
+    "Sección en Construcción // WIP v0.9 Branch - 212" (se deshace el
+    "Sección Lista // v1.0 Branch - 215" de la ronda pasada), su punto
+    vuelve a **rojo** (se deshace el ámbar), el grafiti vuelve al
+    gradiente **teal/naranjo/blanco** original (se deshace el verde de
+    hace dos rondas) y sus badges "DEVELOPER" vuelven a `SASS / Ruby /
+    Python / scrappy-coco` (se deshace `Frontend / Backend / UI/UX /
+    .ai`). Motivo: la Malla todavía no está integrada al resto del
+    sitio, así que el estado real sigue siendo "en construcción", no
+    "lista".
+  - `#chelpaHazeFooterMallaOriginal` (la copia al fondo de la Malla,
+    badge "GIT / FORK / ?-V / 211") vuelve a ser **`#chelpaFooter`**:
+    la barra vuelve a decir **"STABLE"** y su punto vuelve a **verde**
+    (se deshace el "Sitio en Construcción" + ámbar de la ronda pasada).
+  - `#chelpaHazeFooter` (la firma principal, badge "GIT / STATUS / ?-V /
+    220") NO cambia en esta corrección: sigue en "STABLE" con punto
+    verde y título "dev/Chelpa · Haze" en verde, como quedó confirmado
+    la ronda anterior.
 
 ## Features
 
@@ -207,3 +250,13 @@ amigable y desplegable con el chevron. Cero errores de consola en todos los
 casos (fuera de los `ERR_TUNNEL_CONNECTION_FAILED` de Google Fonts/Tailwind
 CDN/Google Tag Manager, esperables en este sandbox de pruebas sin salida a
 internet real).
+
+Ronda de firmas (con corrección posterior) verificada aparte:
+`#chelpaHazeFooterMalla` vuelve a mostrar "SECCIÓN EN CONSTRUCCIÓN // WIP
+v0.9 Branch - 212" con punto rojo, grafiti teal/naranjo/blanco y badges
+SASS/Ruby/Python/scrappy-coco; `#chelpaHazeFooterMallaOriginal` vuelve a
+mostrar "STABLE" con punto verde; `#chelpaHazeFooter` se mantiene en
+"STABLE" con punto verde y título "dev/Chelpa"/"Haze" en verde (sin
+cambios en esta corrección). Se reconfirmó el resto de la suite
+(simulador, "Limpiar todo", nombres de área, franja del footer) sin
+regresiones.
