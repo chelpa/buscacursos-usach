@@ -423,6 +423,7 @@
     display:inline-flex; align-items:center; gap:6px; white-space:nowrap;
   }
   .btn-clear-all:hover{ border-color:var(--red); color:var(--red-strong); background:var(--red-tint); }
+  .btn-clear-all[hidden]{ display:none; }
   .pill-toggle{
     display:flex; border:1px solid var(--border-strong); border-radius:999px; overflow:hidden;
   }
@@ -1359,7 +1360,7 @@
       <button data-v="0" aria-pressed="false">Obligatorios</button>
       <button data-v="1" aria-pressed="false">Electivos</button>
     </div>
-    <button class="btn-clear-all" id="btn-clear-all" type="button" title="Quitar la búsqueda y todos los filtros">
+    <button class="btn-clear-all" id="btn-clear-all" type="button" title="Quitar la búsqueda y todos los filtros" hidden>
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6 6 18M6 6l12 12"/></svg>
       <span>Limpiar todo</span>
     </button>
@@ -2963,7 +2964,16 @@ function resetAllFilters(){
   pickedSlots.clear();
   pickerEl.querySelectorAll('.cell').forEach(c=>c.setAttribute('aria-pressed', 'false'));
 }
-document.getElementById('btn-clear-all').addEventListener('click', ()=>{
+const btnClearAll = document.getElementById('btn-clear-all');
+// Sólo tiene sentido ofrecer "Limpiar todo" cuando efectivamente hay algo
+// que limpiar — búsqueda escrita o algún filtro de selección aplicado
+// (nivel, área, obligatorios/electivos, o algún bloque de horario libre
+// marcado). Se recalcula desde render() (ver más abajo) para no tener que
+// repetir esta misma condición en cada handler que cambia un filtro.
+function updateClearAllBtn(){
+  btnClearAll.hidden = !(query || fNivel || fArea || fElectTouched || pickedSlots.size);
+}
+btnClearAll.addEventListener('click', ()=>{
   resetAllFilters();
   render();
 });
@@ -3808,6 +3818,7 @@ const collapsedCourses = new Set();
 
 function render(){
   const noFiltersActive = !simMode && !query && !fNivel && !fArea && !fElectTouched && pickedSlots.size===0;
+  updateClearAllBtn();
 
   if(noFiltersActive){
     resultsHeadEl.style.display = 'none';

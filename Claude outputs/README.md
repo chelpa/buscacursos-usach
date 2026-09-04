@@ -127,6 +127,13 @@ hecha campo por campo, no a ojo):
   navegador). Se desactivó el Preflight (`tailwind.config = {
   corePlugins: { preflight: false } }`) para que Tailwind sólo aporte sus
   clases utilitarias dentro de la firma nueva.
+- **"Limpiar todo" ahora sólo aparece cuando hay algo que limpiar**: antes
+  se veía siempre en la barra de búsqueda, esté lo que esté aplicado. Ahora
+  queda oculto salvo que haya texto en el buscador o algún filtro de
+  selección activo (nivel, área, Obligatorios/Electivos, o algún bloque de
+  "Filtrar por horario libre" marcado) — aparece apenas se aplica el
+  primero de esos y vuelve a ocultarse en cuanto queda todo limpio de
+  nuevo, sea por el propio botón o quitando el último filtro a mano.
 
 ## Features
 
