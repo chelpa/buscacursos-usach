@@ -1023,6 +1023,17 @@
     isolation:isolate; border-radius:16px; overflow:hidden; border:1px solid #2a2a2a;
   }
   #chelpaHazeFooterMalla *{ box-sizing:border-box; }
+  /* Este bloque usa clases utilitarias de Tailwind (h2/h3/p con
+     text-4xl/mt-2/etc.) asumiendo que el Preflight de Tailwind ya puso
+     margin:0 en encabezados y párrafos — pero el Preflight quedó
+     desactivado a propósito (ver el <script> de configuración de Tailwind
+     en el <head>) para no romper el resto del sitio. Sin ese reset, el
+     navegador le pone su margen por defecto a cada h2/h3/p acá adentro y
+     aparecen espacios/franjas no buscados. Se repone ese reset, pero sólo
+     dentro de este bloque. */
+  #chelpaHazeFooterMalla h1, #chelpaHazeFooterMalla h2, #chelpaHazeFooterMalla h3,
+  #chelpaHazeFooterMalla h4, #chelpaHazeFooterMalla h5, #chelpaHazeFooterMalla h6,
+  #chelpaHazeFooterMalla p{ margin:0; }
   #chelpaHazeFooterMalla .chz-construction-bar{
     background:#0d0d0d; border-top:2px solid #e0ac54; border-bottom:1px solid #2a2a2a;
     border-left:none; border-right:none; padding:12px 20px; display:flex; align-items:center;
@@ -1061,11 +1072,13 @@
     text-transform:none; letter-spacing:.02em; font-size:10px; font-weight:400; color:#8a8a86;
   }
 
+  /* Gradiente verde (antes teal→naranjo→blanco) — a pedido del usuario,
+     ahora que la página está estable. */
   .nano-graffiti-text{
     font-family:'Rubik Wet Paint', cursive;
-    background:linear-gradient(180deg, #32e0c4 0%, #ff5722 60%, #e8e8e8 100%);
+    background:linear-gradient(180deg, #0d5c3d 0%, #32e07a 55%, #e8fff2 100%);
     -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;
-    filter:drop-shadow(3px 3px 0 #000) drop-shadow(-2px -2px 0 #ff3d00);
+    filter:drop-shadow(3px 3px 0 #000) drop-shadow(-2px -2px 0 #22c55e);
   }
   .nano-font-burned{ font-family:'Rubik Burned', system-ui; }
   .nano-bud-wrap canvas{ position:absolute; inset:0; pointer-events:none; }
@@ -1353,6 +1366,10 @@
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
       <span>Buscar</span>
     </button>
+    <button class="btn-clear-all" id="btn-clear-all" type="button" title="Quitar la búsqueda y todos los filtros" hidden>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      <span>Limpiar todo</span>
+    </button>
     <select id="f-nivel" class="filter-select"><option value="">Todos los niveles</option></select>
     <select id="f-area" class="filter-select"><option value="">Todas las áreas</option></select>
     <div class="pill-toggle" id="f-elect">
@@ -1360,10 +1377,6 @@
       <button data-v="0" aria-pressed="false">Obligatorios</button>
       <button data-v="1" aria-pressed="false">Electivos</button>
     </div>
-    <button class="btn-clear-all" id="btn-clear-all" type="button" title="Quitar la búsqueda y todos los filtros" hidden>
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-      <span>Limpiar todo</span>
-    </button>
   </div>
   <div class="sim-status-bar" id="sim-status-bar" hidden>
     <span class="sim-status-icon" aria-hidden="true">🎓</span>
@@ -1743,7 +1756,7 @@
   @keyframes chzSpinRev { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
 
   #chelpaHazeFooter .chz-signoff{
-    text-align:center; padding:0px 20px 30px; background:#0a0a0a;
+    margin:0; text-align:center; padding:0px 20px 30px; background:#0a0a0a;
     color:#6f6f6b; font-size:11px; letter-spacing:.04em;
   }
 
@@ -1769,7 +1782,7 @@
   
   <span class="chz-preview-title">v</span>
   <span class="chz-preview-sep">·</span>
-  <span class="chz-preview-sub">1.0</span>
+  <span class="chz-preview-sub">1.1</span>
 </div>
 
 <div class="chz-body" id="chz-body" hidden>
@@ -1778,9 +1791,9 @@
     <div class="chz-banner-inner">
       <div class="chz-badges-row">
         <span class="chz-badge">git</span>
-        <span class="chz-badge">fork</span>
+        <span class="chz-badge">status</span>
         <span class="chz-badge">?-v</span>
-        <span class="chz-badge">211</span>
+        <span class="chz-badge">220</span>
       </div>
       <h2 class="chz-title">dev/Chelpa</h2>
       <div class="chz-badges-row chz-badges-row--alt">
@@ -1989,7 +2002,7 @@ initChzSmoke('chelpaHazeFooter', 'chzSmoke');
           <span class="chz-construction-dot"></span>
           <span class="chz-construction-bar-text">
             <span class="chz-construction-bar-line1">Sección en Construcción </span>
-            <span class="chz-construction-bar-line2">// WIP v0.9 Branch - 211</span>
+            <span class="chz-construction-bar-line2">// WIP v0.9 Branch - 212</span>
           </span>
           <svg class="chz-toggle-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
@@ -2667,7 +2680,7 @@ initChzSmoke('chelpaHazeFooter', 'chzSmoke');
   @keyframes chzSpinRev { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
 
   #chelpaHazeFooterMallaOriginal .chz-signoff{
-    text-align:center; padding:0px 20px 30px; background:#0a0a0a;
+    margin:0; text-align:center; padding:0px 20px 30px; background:#0a0a0a;
     color:#6f6f6b; font-size:11px; letter-spacing:.04em;
   }
 
@@ -2791,6 +2804,35 @@ const DIA_LABEL = {L:'Lun', M:'Mar', W:'Mié', J:'Jue', V:'Vie', S:'Sáb'};
 const DIA_LABEL_FULL = {L:'Lunes', M:'Martes', W:'Miércoles', J:'Jueves', V:'Viernes', S:'Sábado'};
 const HUES = [210, 152, 271, 45, 190, 95, 255, 320];
 
+// ---------- Áreas: nombre amigable + normalización ----------
+// El catálogo trae el área como código crudo (ADM, FIN, RRHH, ...), y a
+// veces el mismo área con dos grafías distintas según de qué sección salió
+// (ECONOMIA sin tilde vs ECONOMÍA con tilde, FIN vs FINANZAS) — sin esto
+// esas dos grafías aparecían como dos áreas separadas en el filtro. Acá se
+// mapea a un nombre amigable y se usa ESE nombre como valor canónico del
+// filtro (no el código crudo), así "FIN" y "FINANZAS" quedan como una sola
+// opción "Finanzas" que matchea secciones de ambas grafías.
+const AREA_LABELS = {
+  'ADM': 'Administración',
+  'CONTABILIDAD': 'Contabilidad',
+  'DIRECCION': 'Dirección',
+  'ECONOMIA': 'Economía',
+  'ECONOMÍA': 'Economía',
+  'ESTRATEGIA': 'Estrategia',
+  'FIN': 'Finanzas',
+  'FINANZAS': 'Finanzas',
+  'INGLES': 'Inglés',
+  'MARKETING': 'Marketing',
+  'OPERACIÓN': 'Operación',
+  'ORG INDUSTRIAL': 'Organización Industrial',
+  'RRHH': 'Recursos Humanos',
+  'TALLERES': 'Talleres',
+};
+function areaLabel(raw){
+  if(!raw) return raw;
+  return AREA_LABELS[raw] || (raw.charAt(0) + raw.slice(1).toLowerCase());
+}
+
 // ---------- Build course groups (re-run on program switch) ----------
 let courseMap, COURSES, nivelSet, areaSet;
 const selNivel = document.getElementById('f-nivel');
@@ -2817,11 +2859,11 @@ function rebuildProgramDerived(){
 
   // ---------- Filter widgets: populate ----------
   nivelSet = Array.from(new Set(SECTIONS.map(s=>s.nivel).filter(n=>n!=null))).sort((a,b)=>a-b);
-  areaSet = Array.from(new Set(SECTIONS.map(s=>s.area).filter(Boolean))).sort((a,b)=>a.localeCompare(b,'es'));
+  areaSet = Array.from(new Set(SECTIONS.map(s=>s.area).filter(Boolean).map(areaLabel))).sort((a,b)=>a.localeCompare(b,'es'));
   resetSelect(selNivel);
   nivelSet.forEach(n=>{ const o=document.createElement('option'); o.value=n; o.textContent='Nivel '+n; selNivel.appendChild(o); });
   resetSelect(selArea);
-  areaSet.forEach(a=>{ const o=document.createElement('option'); o.value=a; o.textContent=a.charAt(0)+a.slice(1).toLowerCase(); selArea.appendChild(o); });
+  areaSet.forEach(a=>{ const o=document.createElement('option'); o.value=a; o.textContent=a; selArea.appendChild(o); });
 
   document.getElementById('stat-asigs').textContent = COURSES.length;
   document.getElementById('stat-seccs').textContent = SECTIONS.length;
@@ -2880,6 +2922,12 @@ let fNivel = '';
 let fArea = '';
 let fElect = '';
 let fElectTouched = false;
+// Se activa al apretar "Buscar" sin haber escrito ni filtrado nada — hace
+// que se muestren todos los ramos en vez de la guía de bienvenida (ver
+// btnGotoResults más abajo y noFiltersActive en render()). Vuelve a false
+// en resetAllFilters() (Limpiar todo / cambio de programa), para que la
+// guía reaparezca en un estado realmente "recién llegado".
+let showAllForced = false;
 let qDebounce = null;
 // "Simulación de postulación" — ver bloque dedicado más abajo, después de
 // switchProgram(). simUnlocked guarda los niveles ya "postulados" (números).
@@ -2917,10 +2965,17 @@ searchClearBtn.addEventListener('click', ()=>{
   render();
   qInput.focus();
 });
-// "Buscar" ahora tiene un solo trabajo, siempre: bajar hasta la lista de
-// resultados (útil en celular, donde la lista queda fuera de pantalla).
-// El filtrado en sí ya ocurre solo, al tipear — no depende de este botón.
+// "Buscar" baja hasta la lista de resultados (útil en celular, donde la
+// lista queda fuera de pantalla) — el filtrado en sí ya ocurre solo, al
+// tipear, no depende de este botón. Además: si se aprieta sin haber
+// escrito ni filtrado nada todavía, actúa como "mostrar todos" — en vez de
+// quedarse en la guía de bienvenida, muestra la lista completa de ramos.
 btnGotoResults.addEventListener('click', ()=>{
+  const nadaIngresadoAun = !query && !fNivel && !fArea && !fElectTouched && pickedSlots.size===0;
+  if(nadaIngresadoAun && !showAllForced){
+    showAllForced = true;
+    render();
+  }
   document.querySelector('main').scrollIntoView({behavior:'smooth', block:'start'});
 });
 selNivel.addEventListener('change', e=>{ fNivel = e.target.value; render(); });
@@ -2956,6 +3011,7 @@ function resetAllFilters(){
   qInput.value = '';
   clearTimeout(qDebounce);
   query = '';
+  showAllForced = false;
   updateSearchClearBtn();
   fNivel = ''; selNivel.value = '';
   fArea = ''; selArea.value = '';
@@ -2971,7 +3027,7 @@ const btnClearAll = document.getElementById('btn-clear-all');
 // marcado). Se recalcula desde render() (ver más abajo) para no tener que
 // repetir esta misma condición en cada handler que cambia un filtro.
 function updateClearAllBtn(){
-  btnClearAll.hidden = !(query || fNivel || fArea || fElectTouched || pickedSlots.size);
+  btnClearAll.hidden = !(query || fNivel || fArea || fElectTouched || pickedSlots.size || showAllForced);
 }
 btnClearAll.addEventListener('click', ()=>{
   resetAllFilters();
@@ -3597,7 +3653,7 @@ function courseMatches(course){
     if(simShowMode === 'current' && course.nivel !== simCurrentNivel()) return false;
   }
   if(fNivel && String(course.nivel) !== fNivel) return false;
-  if(fArea && course.area !== fArea) return false;
+  if(fArea && areaLabel(course.area) !== fArea) return false;
   let seccs = course.secciones;
   if(fElect){
     seccs = seccs.filter(s => fElect==='0' ? s.electividad==='0' : s.electividad!=='0');
@@ -3817,7 +3873,7 @@ const bottomGuideEl = document.getElementById('bottom-guide-wrap');
 const collapsedCourses = new Set();
 
 function render(){
-  const noFiltersActive = !simMode && !query && !fNivel && !fArea && !fElectTouched && pickedSlots.size===0;
+  const noFiltersActive = !simMode && !showAllForced && !query && !fNivel && !fArea && !fElectTouched && pickedSlots.size===0;
   updateClearAllBtn();
 
   if(noFiltersActive){
@@ -3873,7 +3929,7 @@ function render(){
           <div class="course-title">${course.asignatura}</div>
           <div class="course-tags">
             ${course.nivel!=null ? `<span class="tag nivel">Nivel ${course.nivel}</span>` : ''}
-            ${course.area ? `<span class="tag area">${course.area}</span>` : ''}
+            ${course.area ? `<span class="tag area">${areaLabel(course.area)}</span>` : ''}
             ${course.sct!=null ? `<span class="tag sct">${course.sct} SCT</span>` : ''}
           </div>
           <svg class="course-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>

@@ -127,13 +127,45 @@ hecha campo por campo, no a ojo):
   navegador). Se desactivó el Preflight (`tailwind.config = {
   corePlugins: { preflight: false } }`) para que Tailwind sólo aporte sus
   clases utilitarias dentro de la firma nueva.
-- **"Limpiar todo" ahora sólo aparece cuando hay algo que limpiar**: antes
-  se veía siempre en la barra de búsqueda, esté lo que esté aplicado. Ahora
-  queda oculto salvo que haya texto en el buscador o algún filtro de
-  selección activo (nivel, área, Obligatorios/Electivos, o algún bloque de
-  "Filtrar por horario libre" marcado) — aparece apenas se aplica el
-  primero de esos y vuelve a ocultarse en cuanto queda todo limpio de
-  nuevo, sea por el propio botón o quitando el último filtro a mano.
+- **"Limpiar todo" ahora sólo aparece cuando hay algo que limpiar**, y vive
+  justo al lado de "Buscar" (antes al final de la fila, después de los
+  filtros). Queda oculto salvo que haya texto en el buscador, algún filtro
+  de selección activo (nivel, área, Obligatorios/Electivos, algún bloque de
+  "Filtrar por horario libre" marcado), o se haya usado "Buscar" para
+  mostrar todos los ramos (ver el punto siguiente) — y vuelve a ocultarse
+  en cuanto queda todo limpio de nuevo, sea por el propio botón o quitando
+  el último filtro a mano.
+- **"Buscar" muestra todos los ramos cuando se aprieta sin haber escrito o
+  filtrado nada todavía**: antes, en ese estado, se quedaba mostrando la
+  guía de bienvenida sin importar cuántas veces se apretara. Ahora, la
+  primera vez que se aprieta "Buscar" sin ninguna búsqueda/filtro aplicado,
+  se muestra la lista completa de ramos en vez de la guía (y baja hasta
+  ahí, como siempre hacía este botón). "Limpiar todo" (recién visible en
+  ese momento) vuelve a dejar la guía de bienvenida.
+- **Firmas actualizadas**: la firma principal (al fondo de la página) pasó
+  de "v · 1.0" a "v · 1.1", y sus badges de "GIT / FORK / ?-V / 211" a
+  "GIT / STATUS / ?-V / 220". La firma nueva dentro de la Malla
+  ("Sección en Construcción // WIP v0.9") pasó de "Branch - 211" a
+  "Branch - 212" — se mantiene amarilla, sin cambios de color. El graffiti
+  "CHELPA HAZE" de esa misma firma pasó de un gradiente teal/naranjo/blanco
+  a uno verde, para reflejar que la página ya está estable.
+- **Nombres de área amigables**: el filtro de área y la etiqueta de área en
+  cada tarjeta de ramo mostraban el código crudo del catálogo tal cual
+  ("ADM", "FIN", "RRHH"...) sólo con la primera letra en mayúscula. Ahora
+  hay un mapeo a nombre completo (Administración, Finanzas, Recursos
+  Humanos, etc.) — y de paso corrige que "FIN"/"FINANZAS" y
+  "ECONOMIA"/"ECONOMÍA" (dos grafías del mismo área, según de qué sección
+  venían) aparecían como si fueran dos áreas distintas en el filtro; ahora
+  se unifican en una sola opción que matchea secciones de ambas grafías.
+- **Fix: franja blanca en el pie de la firma principal, arriba de "Francisco
+  · chazeware"**: el `<p class="chz-signoff">` no tenía `margin:0`, así que
+  el navegador le ponía su margen por defecto encima — como todo alrededor
+  es fondo oscuro, ese margen dejaba ver el fondo blanco de la página por
+  debajo, como una franja. Mismo fix aplicado a las tres firmas
+  (`#chelpaHazeFooter`, `#chelpaHazeFooterMallaOriginal`) y, de paso, se
+  repuso un reset de márgenes para los encabezados/párrafos dentro de la
+  firma nueva (`#chelpaHazeFooterMalla`) que dependían del Preflight de
+  Tailwind (desactivado la ronda pasada) para no tener el mismo problema.
 
 ## Features
 
