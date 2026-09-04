@@ -882,13 +882,6 @@
   .sim-advance-btn:hover{ filter:brightness(0.96); }
   .sim-advance-btn[hidden]{ display:none; }
   .sim-exit-btn{ flex:none; }
-  /* Elige si, mientras la simulación está activa, se ven los ramos de TODOS
-     los niveles desbloqueados hasta ahora (acumulativo, el comportamiento
-     por defecto) o sólo los del nivel más reciente — a pedido del usuario,
-     que preguntó si al desbloquear el siguiente nivel debían desaparecer
-     los ramos del anterior. */
-  .sim-view-toggle{ margin-top:8px; background:var(--surface); }
-  .sim-view-toggle button{ padding:5px 10px; font-size:11px; }
 
   /* ---------- Malla curricular interactiva (visor + marcado de ramos
      aprobados) — overlay a pantalla completa, abierto desde el ícono de
@@ -917,7 +910,6 @@
   .malla-legend .dot--sel{ background:var(--accent); }
   .malla-legend .dot--prereq{ background:var(--red); }
   .malla-legend .dot--unlocks{ background:var(--teal); }
-  .malla-legend .dot--habilitado{ background:var(--gold); }
   .malla-legend .dot--ok{ background:var(--malla-ok); }
   .malla-close{
     flex:none; width:34px; height:34px; border-radius:999px;
@@ -950,15 +942,6 @@
     transition:background .12s ease, border-color .12s ease, transform .12s ease;
   }
   .malla-card:hover{ border-color:var(--accent); }
-  /* Ramo no aprobado todavía pero con TODOS sus prerrequisitos directos ya
-     aprobados — "ya lo podrías tomar el próximo semestre". Sólo se calcula
-     para ramos que sí declaran prerrequisitos (req); los que no tienen
-     ninguno están disponibles desde siempre y no aportan nada marcándolos
-     aparte (serían la mayoría de la grilla). Va ANTES de .is-selected/
-     .is-prereq/.is-unlocks a propósito, para que esos estados de selección
-     (activados por clic) siempre se vean por encima de este indicador de
-     fondo si un ramo es ambas cosas a la vez. */
-  .malla-card.is-habilitado{ background:var(--gold-tint); border-color:var(--gold); border-style:dashed; }
   .malla-card.is-selected{
     background:var(--accent-tint); border-color:var(--accent); color:var(--ink);
     transform:scale(1.02); box-shadow:var(--shadow); z-index:2;
@@ -993,25 +976,6 @@
     max-width:1500px; margin:14px auto 0; font-size:12px; color:var(--ink-soft);
   }
   .malla-progress b{ color:var(--malla-ok-strong); font-family:'IBM Plex Mono',monospace; }
-  .malla-progress b.is-habilitado-count{ color:var(--gold); }
-
-  /* Puente hacia la Simulación de postulación por nivel: sugiere, sólo con
-     el número de nivel/semestre (no con ids de ramo — la Malla y el
-     catálogo de secciones son datasets separados, ver comentario arriba de
-     MALLA_MATRICES), desde qué nivel le conviene simular según lo que ya
-     marcó como aprobado acá. */
-  .malla-sim-bridge{
-    max-width:1500px; margin:14px auto 0; display:flex; align-items:center; gap:12px; flex-wrap:wrap;
-    padding:10px 14px; border-radius:var(--radius); background:var(--gold-tint); border:1px solid var(--border-strong);
-  }
-  .malla-sim-bridge[hidden]{ display:none; }
-  .malla-sim-bridge-icon{ font-size:18px; flex:none; }
-  .malla-sim-bridge-text{ flex:1; min-width:200px; font-size:12.5px; color:var(--ink); line-height:1.45; }
-  .malla-sim-bridge-btn{
-    flex:none; border:1px solid var(--accent-btn-bg); background:var(--accent-btn-bg); color:var(--accent-btn-text);
-    border-radius:8px; padding:8px 14px; font-size:12px; font-weight:700; cursor:pointer;
-  }
-  .malla-sim-bridge-btn:hover{ filter:brightness(0.96); }
   @media (max-width:720px){
     .malla-info-cols{ grid-template-columns:1fr; }
   }
@@ -1211,8 +1175,8 @@
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
       <span>Buscar</span>
     </button>
-    <select id="f-nivel" class="filter-select" aria-label="Filtrar por nivel"><option value="">Todos los niveles</option></select>
-    <select id="f-area" class="filter-select" aria-label="Filtrar por área"><option value="">Todas las áreas</option></select>
+    <select id="f-nivel" class="filter-select"><option value="">Todos los niveles</option></select>
+    <select id="f-area" class="filter-select"><option value="">Todas las áreas</option></select>
     <div class="pill-toggle" id="f-elect">
       <button data-v="" aria-pressed="false">Todos</button>
       <button data-v="0" aria-pressed="false">Obligatorios</button>
@@ -1224,10 +1188,6 @@
     <div class="sim-status-text">
       <strong>Simulación de postulación activa — es referencial, no garantiza cupo.</strong>
       <span id="sim-status-detail">Niveles desbloqueados: —</span>
-      <div class="pill-toggle sim-view-toggle" id="sim-view-toggle" role="group" aria-label="Qué niveles mostrar en la simulación">
-        <button type="button" data-v="all" aria-pressed="true">Todos los desbloqueados</button>
-        <button type="button" data-v="current" aria-pressed="false">Sólo el nivel actual</button>
-      </div>
     </div>
     <button class="sim-advance-btn" id="sim-advance-btn" type="button" hidden>Ya postulé → desbloquear siguiente nivel</button>
     <button class="link-btn sim-exit-btn" id="sim-exit-btn" type="button">Salir de la simulación</button>
@@ -1241,7 +1201,7 @@
       <div class="panel" id="picker-panel" data-open="false">
         <div class="rail-title-row">
           <p class="rail-title">Filtrar por horario libre</p>
-          <button class="picker-toggle-btn" id="picker-toggle" type="button" aria-expanded="false" aria-controls="picker-body" title="Mostrar/ocultar filtro de horario libre" aria-label="Mostrar/ocultar filtro de horario libre">
+          <button class="picker-toggle-btn" id="picker-toggle" type="button" aria-expanded="false" aria-controls="picker-body" title="Mostrar/ocultar filtro de horario libre">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
           </button>
         </div>
@@ -1903,7 +1863,6 @@ initChzSmoke('chelpaHazeFooter', 'chzSmoke');
       <span><span class="dot dot--sel"></span> Seleccionado</span>
       <span><span class="dot dot--prereq"></span> Prerrequisito</span>
       <span><span class="dot dot--unlocks"></span> Desbloquea</span>
-      <span><span class="dot dot--habilitado"></span> Disponible</span>
       <span><span class="dot dot--ok"></span> Aprobado</span>
     </div>
     <button class="malla-close" id="malla-close" type="button" title="Cerrar malla" aria-label="Cerrar malla">
@@ -1911,7 +1870,7 @@ initChzSmoke('chelpaHazeFooter', 'chzSmoke');
     </button>
   </div>
   <div class="malla-body">
-    <p class="malla-hint">Clic en un ramo para ver sus <strong>prerrequisitos</strong> y qué <strong>desbloquea</strong>. Clic en el círculo de la esquina para marcarlo como <strong>aprobado</strong> — queda guardado en este navegador. Los ramos con borde punteado dorado (<strong>disponible</strong>) ya tienen todos sus prerrequisitos aprobados. Esto es sólo una referencia armada a partir de la malla oficial; no reemplaza tu situación académica real.</p>
+    <p class="malla-hint">Clic en un ramo para ver sus <strong>prerrequisitos</strong> y qué <strong>desbloquea</strong>. Clic en el círculo de la esquina para marcarlo como <strong>aprobado</strong> — queda guardado en este navegador. Esto es sólo una referencia armada a partir de la malla oficial; no reemplaza tu situación académica real.</p>
     <div class="malla-grid-wrap">
       <div class="malla-grid-headers" id="malla-grid-headers"></div>
       <div class="malla-grid" id="malla-grid"></div>
@@ -1930,11 +1889,6 @@ initChzSmoke('chelpaHazeFooter', 'chzSmoke');
       </div>
     </div>
     <p class="malla-progress" id="malla-progress"></p>
-    <div class="malla-sim-bridge" id="malla-sim-bridge" hidden>
-      <span class="malla-sim-bridge-icon" aria-hidden="true">🎓</span>
-      <span class="malla-sim-bridge-text" id="malla-sim-bridge-text"></span>
-      <button class="malla-sim-bridge-btn" id="malla-sim-bridge-btn" type="button"></button>
-    </div>
 
     <div class="malla-footer-preview" id="malla-footer-preview">
       <footer id="chelpaHazeFooterMalla">
@@ -1942,16 +1896,16 @@ initChzSmoke('chelpaHazeFooter', 'chzSmoke');
         <button class="chz-construction-bar" id="chz-toggleMalla" type="button" aria-expanded="false" aria-controls="chz-bodyMalla">
           <span class="chz-construction-dot"></span>
           <span class="chz-construction-bar-text">
-            <span class="chz-construction-bar-line1">Sección en Construcción // WIP v0.9 Branch - 210</span>
-            <span class="chz-construction-bar-line2">malla_grid.html</span>
+            <span class="chz-construction-bar-line1">Sección en Construcción </span>
+            <span class="chz-construction-bar-line2">// WIP v0.9 Branch - 210</span>
           </span>
           <svg class="chz-toggle-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
 
         <div class="chz-preview" id="chz-previewMalla">
-          <span class="chz-preview-title">audit</span>
+          <span class="chz-preview-title">malla_grid</span>
           <span class="chz-preview-sep">·</span>
-          <span class="chz-preview-sub">grafo</span>
+          <span class="chz-preview-sub">#bug67</span>
         </div>
 
         <div class="chz-body" id="chz-bodyMalla" hidden>
@@ -2010,340 +1964,6 @@ initChzSmoke('chelpaHazeFooter', 'chzSmoke');
             </svg>
             <canvas id="nano-smoke" aria-hidden="true"></canvas>
           </div>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1200" width="100%" height="100%">
-  <defs>
-    <!-- Sky Gradient -->
-    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0066c8"/>
-      <stop offset="45%" stop-color="#2a8cdb"/>
-      <stop offset="75%" stop-color="#72bbf0"/>
-      <stop offset="100%" stop-color="#d0e8f9"/>
-    </linearGradient>
-
-    <!-- Glass Blue Gradient -->
-    <linearGradient id="glassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1a4a5e" stop-opacity="0.9"/>
-      <stop offset="30%" stop-color="#2c6d85" stop-opacity="0.85"/>
-      <stop offset="70%" stop-color="#418a9c" stop-opacity="0.9"/>
-      <stop offset="100%" stop-color="#12313f" stop-opacity="0.95"/>
-    </linearGradient>
-
-    <!-- Glass Highlight Reflection -->
-    <linearGradient id="glassReflect" x1="0%" y1="0%" x2="100%" y2="50%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.6"/>
-      <stop offset="30%" stop-color="#ffffff" stop-opacity="0.1"/>
-      <stop offset="70%" stop-color="#ffffff" stop-opacity="0.0"/>
-      <stop offset="100%" stop-color="#8ce1ff" stop-opacity="0.3"/>
-    </linearGradient>
-
-    <!-- Concrete Gradient -->
-    <linearGradient id="concrete" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#a8aaba"/>
-      <stop offset="50%" stop-color="#bebfc9"/>
-      <stop offset="100%" stop-color="#8a8c98"/>
-    </linearGradient>
-
-    <linearGradient id="concreteShadow" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#676975"/>
-      <stop offset="100%" stop-color="#41434c"/>
-    </linearGradient>
-
-    <!-- Dark Under-Soffit Gradient -->
-    <linearGradient id="soffitGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#111317"/>
-      <stop offset="50%" stop-color="#1a1c23"/>
-      <stop offset="100%" stop-color="#0a0b0d"/>
-    </linearGradient>
-
-    <!-- Ground / Plaza Gradient -->
-    <linearGradient id="plazaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#d5cbbe"/>
-      <stop offset="50%" stop-color="#b0a598"/>
-      <stop offset="100%" stop-color="#6e665d"/>
-    </linearGradient>
-
-    <!-- Plant Leaf Color -->
-    <linearGradient id="leafGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#699e23"/>
-      <stop offset="100%" stop-color="#21420b"/>
-    </linearGradient>
-  </defs>
-
-  <!-- BACKGROUND: SKY -->
-  <rect width="800" height="1200" fill="url(#skyGrad)"/>
-
-  <!-- CLOUDS -->
-  <g fill="#ffffff" opacity="0.75">
-    <!-- Top dynamic clouds -->
-    <path d="M -50 150 Q 80 80 220 120 Q 350 50 480 110 Q 600 40 750 90 Q 850 150 850 250 L -50 250 Z" opacity="0.4" />
-    <path d="M 100 80 Q 250 10 400 40 Q 550 -10 700 30 Q 820 10 850 100 L 100 100 Z" opacity="0.3"/>
-    <!-- Wispy clouds around structure -->
-    <path d="M 400 300 C 500 250, 650 270, 720 320 C 780 360, 820 420, 850 450 L 850 250 L 400 250 Z" opacity="0.5"/>
-    <path d="M -20 400 C 80 350, 180 380, 220 420 L -20 450 Z" opacity="0.3"/>
-  </g>
-
-  <!-- BACKGROUND BUILDINGS (RIGHT) -->
-  <g fill="#9cb3c1" stroke="#7a93a4" stroke-width="1">
-    <polygon points="680,730 800,710 800,850 680,850" />
-    <polygon points="700,680 780,670 780,710 700,710" />
-    <!-- Windows on background building -->
-    <path d="M 700 740 H 770 M 700 755 H 770 M 700 770 H 770 M 700 785 H 770 M 700 800 H 770" stroke="#7a93a4" stroke-width="2"/>
-  </g>
-
-  <!-- MAIN STRUCTURE: FAE BUILDING -->
-
-  <!-- 1. LEFT CONCRETE WALL (PERSP. SIDE) -->
-  <polygon points="210,110 240,118 135,730 70,720" fill="url(#concreteShadow)"/>
-  <!-- Structural tie-rod holes on left concrete wall -->
-  <g fill="#2b2c33">
-    <circle cx="200" cy="160" r="2.5"/><circle cx="200" cy="220" r="2.5"/>
-    <circle cx="185" cy="280" r="2.5"/><circle cx="170" cy="360" r="2.5"/>
-    <circle cx="155" cy="440" r="2.5"/><circle cx="140" cy="520" r="2.5"/>
-    <circle cx="125" cy="600" r="2.5"/><circle cx="110" cy="680" r="2.5"/>
-  </g>
-
-  <!-- 2. MAIN CANTILEVERED GLASS FAÇADE (ANGLED TOWER) -->
-  <!-- Glass Base Shape -->
-  <polygon points="240,118 550,265 520,740 135,730" fill="url(#glassGrad)" />
-
-  <!-- Diagonal Steel Trusses / Internal X-Bracing (Visible inside glass) -->
-  <g stroke="#1a313d" stroke-width="5" opacity="0.7">
-    <line x1="240" y1="118" x2="540" y2="350"/>
-    <line x1="550" y1="265" x2="210" y2="280"/>
-    <line x1="220" y1="230" x2="535" y2="450"/>
-    <line x1="535" y1="450" x2="170" y2="520"/>
-    <line x1="180" y1="460" x2="525" y2="600"/>
-    <line x1="525" y1="600" x2="135" y2="730"/>
-  </g>
-
-  <!-- Major Glass Floor Bands (Horizontal Mullions) -->
-  <g stroke="#0f212b" stroke-width="4">
-    <line x1="235" y1="140" x2="547" y2="280"/>
-    <line x1="228" y1="175" x2="544" y2="310"/>
-    <line x1="222" y1="210" x2="541" y2="340"/>
-    <line x1="215" y1="250" x2="538" y2="375"/>
-    <line x1="205" y1="300" x2="534" y2="420"/>
-    <line x1="195" y1="355" x2="531" y2="470"/>
-    <line x1="185" y1="415" x2="528" y2="525"/>
-    <line x1="172" y1="485" x2="525" y2="585"/>
-    <line x1="158" y1="565" x2="522" y2="650"/>
-    <line x1="145" y1="650" x2="521" y2="710"/>
-  </g>
-
-  <!-- Vertical Glass Grid Lines -->
-  <g stroke="#1a3847" stroke-width="2" opacity="0.8">
-    <!-- Vertical grid lines following perspective -->
-    <line x1="280" y1="137" x2="190" y2="731"/>
-    <line x1="320" y1="156" x2="240" y2="734"/>
-    <line x1="360" y1="175" x2="290" y2="736"/>
-    <line x1="400" y1="194" x2="340" y2="737"/>
-    <line x1="440" y1="213" x2="390" y2="738"/>
-    <line x1="480" y1="232" x2="440" y2="739"/>
-    <line x1="515" y1="248" x2="480" y2="739"/>
-  </g>
-
-  <!-- Glass Reflections (White Sheen Poly) -->
-  <polygon points="240,118 400,195 280,735 135,730" fill="url(#glassReflect)" />
-  <polygon points="450,218 550,265 528,525 410,410" fill="url(#glassReflect)" opacity="0.6"/>
-
-  <!-- Open Window Hinges / Panels (Details) -->
-  <g fill="#21424e" stroke="#8ce1ff" stroke-width="1" opacity="0.9">
-    <polygon points="310,510 330,512 328,535 308,533"/>
-    <polygon points="380,520 400,522 398,545 378,543"/>
-    <polygon points="290,440 310,442 308,462 288,460"/>
-    <polygon points="350,448 370,450 368,470 348,468"/>
-    <polygon points="410,455 430,457 428,477 408,475"/>
-    <polygon points="300,320 320,322 318,340 298,338"/>
-    <polygon points="360,330 380,332 378,350 358,348"/>
-  </g>
-
-  <!-- 3. CANTILEVER BOTTOM SLANTED SOFFIT (DARK UNDERSIDE) -->
-  <polygon points="135,730 520,740 500,775 145,745" fill="#141619"/>
-  <!-- Under-soffit illuminated stripes / lights -->
-  <g stroke="#e2f4ff" stroke-width="3" opacity="0.85">
-    <line x1="160" y1="743" x2="480" y2="769"/>
-    <line x1="200" y1="748" x2="470" y2="771"/>
-    <line x1="260" y1="753" x2="460" y2="772"/>
-  </g>
-
-  <!-- 4. RIGHT SIDE CONCRETE & BALCONIES STRUCTURE -->
-  <!-- Right Main Concrete Mass -->
-  <polygon points="550,265 670,300 660,830 520,830 520,740" fill="url(#concrete)"/>
-  <!-- Right Concrete Side Wall Perspective -->
-  <polygon points="670,300 690,290 680,820 660,830" fill="url(#concreteShadow)"/>
-
-  <!-- Protruding Concrete Balconies (Distinctive Feature) -->
-  <!-- Balcony 1 (Top) -->
-  <g>
-    <polygon points="460,320 570,340 600,360 480,340" fill="url(#concrete)"/>
-    <polygon points="480,340 600,360 600,370 480,348" fill="url(#concreteShadow)"/>
-    <!-- Glass railing -->
-    <polygon points="460,310 570,330 600,350 480,330" fill="#8ce1ff" opacity="0.4" stroke="#ffffff" stroke-width="1"/>
-  </g>
-
-  <!-- Balcony 2 (Middle-High) -->
-  <g>
-    <polygon points="540,430 670,450 680,480 550,460" fill="url(#concrete)"/>
-    <polygon points="550,460 680,480 670,495 550,470" fill="url(#concreteShadow)"/>
-    <polygon points="540,418 670,438 680,468 550,448" fill="#8ce1ff" opacity="0.4" stroke="#ffffff" stroke-width="1"/>
-  </g>
-
-  <!-- Balcony 3 (Middle-Low - Large Angular Box) -->
-  <g>
-    <polygon points="430,550 560,570 570,600 440,580" fill="url(#concrete)"/>
-    <polygon points="440,580 570,600 560,620 440,595" fill="url(#concreteShadow)"/>
-    <!-- Balcony Side undercut -->
-    <polygon points="570,600 670,580 660,610 560,620" fill="#41434c"/>
-    <polygon points="430,538 560,558 570,588 440,568" fill="#8ce1ff" opacity="0.4" stroke="#ffffff" stroke-width="1"/>
-  </g>
-
-  <!-- Deep Recessed Terrace Cutouts on Right -->
-  <polygon points="570,640 670,630 670,690 570,700" fill="#1a1c23"/>
-  <polygon points="570,710 670,700 670,770 570,780" fill="#1a1c23"/>
-  <!-- Terrace Glass Railings -->
-  <rect x="570" y="675" width="100" height="15" fill="#8ce1ff" opacity="0.3" transform="skewY(-5)"/>
-  <rect x="570" y="755" width="100" height="15" fill="#8ce1ff" opacity="0.3" transform="skewY(-5)"/>
-
-  <!-- Concrete Formwork Dots / Windows on Right Mass -->
-  <g fill="#43444d">
-    <circle cx="630" cy="330" r="2"/><circle cx="650" cy="335" r="2"/>
-    <circle cx="630" cy="380" r="2"/><circle cx="650" cy="385" r="2"/>
-    <rect x="600" y="735" width="20" height="20" fill="#1e2026"/>
-    <rect x="630" y="733" width="20" height="20" fill="#1e2026"/>
-  </g>
-
-  <!-- GROUND LEVEL / ENTRANCE / BASE -->
-
-  <!-- Lower Base Building & Entrance Hall -->
-  <polygon points="120,740 660,780 660,860 120,860" fill="#3a3d45"/>
-  <!-- Glass Entrance Doors & Lobby -->
-  <polygon points="280,790 500,800 500,860 280,860" fill="#182c36" stroke="#526874" stroke-width="2"/>
-  <g stroke="#8ce1ff" stroke-width="1" opacity="0.8">
-    <!-- Interior Lobby Light -->
-    <rect x="300" y="805" width="180" height="55" fill="#ffeaa7" opacity="0.2"/>
-    <line x1="330" y1="800" x2="330" y2="860"/>
-    <line x1="380" y1="802" x2="380" y2="860"/>
-    <line x1="430" y1="804" x2="430" y2="860"/>
-  </g>
-
-  <!-- Ground Steps & Plaza Podium -->
-  <polygon points="0,880 700,850 800,860 800,950 0,980" fill="url(#plazaGrad)"/>
-
-  <!-- Wide Entrance Concrete Stairs -->
-  <g fill="#9e958a" stroke="#6e665d" stroke-width="1">
-    <polygon points="60,860 300,850 300,865 55,876"/>
-    <polygon points="55,876 300,865 300,877 50,888"/>
-    <polygon points="50,888 300,877 300,889 45,900"/>
-    <polygon points="45,900 300,889 300,901 40,912"/>
-  </g>
-
-  <!-- FOREGROUND LANDSCAPING & ENVIRONMENT -->
-
-  <!-- Plaza Pavement Pattern Lines -->
-  <g stroke="#8a8075" stroke-width="1.5" opacity="0.6">
-    <line x1="0" y1="960" x2="800" y2="910"/>
-    <line x1="0" y1="930" x2="800" y2="880"/>
-    <line x1="200" y1="980" x2="350" y2="850"/>
-    <line x1="400" y1="980" x2="520" y2="850"/>
-    <line x1="600" y1="980" x2="700" y2="850"/>
-  </g>
-
-  <!-- Garden Soil / Planter Beds -->
-  <path d="M 0 970 Q 200 950 400 970 T 800 930 L 800 1200 L 0 1200 Z" fill="#2d261e"/>
-
-  <!-- Low Vegetation / Bushes Layer 1 (Dark Green) -->
-  <path d="M -10 1020 Q 50 970 120 1010 Q 180 960 260 1000 Q 350 950 450 990 Q 550 940 680 980 Q 750 950 820 990 L 820 1200 L -10 1200 Z" fill="#1b3309"/>
-
-  <!-- Bright Green Leafy Shrubbery Layer 2 -->
-  <g fill="url(#leafGrad)">
-    <!-- Individual Plant Clusters -->
-    <path d="M -20 1060 C 10 1000, 60 1000, 90 1050 C 120 990, 180 980, 220 1040 C 270 970, 340 980, 380 1050 Z"/>
-    <path d="M 350 1050 C 400 980, 460 970, 500 1030 C 550 960, 630 960, 680 1020 C 720 960, 780 970, 820 1030 L 820 1200 L 350 1200 Z"/>
-
-    <!-- Detailed Foreground Leaves (Left Bottom) -->
-    <path d="M 10 1200 Q 30 1110 80 1090 Q 50 1130 30 1200 Z"/>
-    <path d="M 60 1200 Q 100 1100 150 1080 Q 120 1130 90 1200 Z"/>
-    <path d="M 130 1200 Q 170 1070 240 1060 Q 200 1120 160 1200 Z"/>
-    <path d="M 200 1200 Q 270 1080 330 1090 Q 280 1140 230 1200 Z"/>
-
-    <!-- Detailed Foreground Leaves (Right Bottom) -->
-    <path d="M 500 1200 Q 550 1090 620 1070 Q 580 1130 540 1200 Z"/>
-    <path d="M 590 1200 Q 670 1060 750 1050 Q 700 1120 630 1200 Z"/>
-    <path d="M 680 1200 Q 750 1080 810 1090 Q 770 1140 710 1200 Z"/>
-  </g>
-
-  <!-- Yellow / Golden Grass Highlights -->
-  <g stroke="#a3b828" stroke-width="3" stroke-linecap="round">
-    <line x1="80" y1="1080" x2="70" y2="1030"/>
-    <line x1="95" y1="1075" x2="90" y2="1020"/>
-    <line x1="110" y1="1085" x2="115" y2="1035"/>
-
-    <line x1="280" y1="1060" x2="275" y2="1010"/>
-    <line x1="295" y1="1055" x2="300" y2="1000"/>
-
-    <line x1="450" y1="1050" x2="445" y2="995"/>
-    <line x1="465" y1="1045" x2="470" y2="990"/>
-    <line x1="480" y1="1055" x2="490" y2="1005"/>
-  </g>
-
-  <!-- Slender Young Trees (Trunks & Branches) -->
-  <!-- Tree 1 (Left) -->
-  <g>
-    <path d="M 110 1020 Q 105 880 95 780 Q 100 880 115 1020 Z" fill="#42342b"/>
-    <path d="M 100 840 Q 80 810 60 790" stroke="#42342b" stroke-width="2" fill="none"/>
-    <path d="M 98 820 Q 120 790 130 770" stroke="#42342b" stroke-width="2" fill="none"/>
-    <!-- Leaves on Tree 1 -->
-    <circle cx="60" cy="790" r="15" fill="#588218" opacity="0.8"/>
-    <circle cx="130" cy="770" r="18" fill="#699e23" opacity="0.8"/>
-    <circle cx="92" cy="760" r="22" fill="#476b13" opacity="0.85"/>
-  </g>
-
-  <!-- Tree 2 (Center-Left) -->
-  <g>
-    <path d="M 215 1010 Q 210 850 195 730 Q 202 850 220 1010 Z" fill="#362a23"/>
-    <path d="M 203 820 Q 180 780 160 760" stroke="#362a23" stroke-width="2.5" fill="none"/>
-    <path d="M 200 790 Q 220 750 235 730" stroke="#362a23" stroke-width="2" fill="none"/>
-    <path d="M 196 750 Q 185 710 170 690" stroke="#362a23" stroke-width="1.5" fill="none"/>
-    <!-- Leaves on Tree 2 -->
-    <circle cx="160" cy="760" r="20" fill="#699e23" opacity="0.8"/>
-    <circle cx="235" cy="730" r="16" fill="#588218" opacity="0.8"/>
-    <circle cx="170" cy="690" r="25" fill="#7ab827" opacity="0.85"/>
-    <circle cx="195" cy="720" r="20" fill="#3a590d" opacity="0.9"/>
-  </g>
-
-  <!-- Tree 3 (Center-Right Thin Sapling) -->
-  <g>
-    <path d="M 375 1000 L 360 810" stroke="#2b221c" stroke-width="3"/>
-    <path d="M 366 870 L 345 840" stroke="#2b221c" stroke-width="1.5"/>
-    <path d="M 363 830 L 380 800" stroke="#2b221c" stroke-width="1.5"/>
-    <!-- Sparse Leaves -->
-    <circle cx="345" cy="840" r="12" fill="#699e23" opacity="0.85"/>
-    <circle cx="380" cy="800" r="15" fill="#7ab827" opacity="0.85"/>
-    <circle cx="358" cy="790" r="18" fill="#476b13" opacity="0.9"/>
-  </g>
-
-  <!-- STREET LIGHT POLES -->
-  <!-- Left Tall Streetlamp -->
-  <g>
-    <path d="M 85 930 L 60 670" stroke="#3a3d40" stroke-width="4"/>
-    <!-- Lamp Head -->
-    <path d="M 50 670 C 50 660, 80 660, 80 670 Z" fill="#1a1c1e"/>
-    <ellipse cx="65" cy="672" rx="12" ry="3" fill="#fff5cc"/>
-    <!-- Glowing light effect -->
-    <ellipse cx="65" cy="675" rx="25" ry="8" fill="#fff5cc" opacity="0.3"/>
-  </g>
-
-  <!-- Right Streetlamp -->
-  <g>
-    <path d="M 825 840 L 840 730" stroke="#3a3d40" stroke-width="3"/>
-    <path d="M 830 730 C 830 720, 855 720, 855 730 Z" fill="#1a1c1e"/>
-    <ellipse cx="842" cy="732" rx="8" ry="2" fill="#fff5cc"/>
-  </g>
-
-  <!-- VIGNETTE / SUBTLE LIGHTING OVERLAYS -->
-  <rect width="800" height="1200" fill="#002b49" opacity="0.03" style="mix-blend-mode: multiply;" />
-</svg>
-
           <div class="text-center mt-4">
             <h2 class="nano-graffiti-text text-4xl md:text-5xl tracking-wider uppercase transform -rotate-2">CHELPA<br>HAZE</h2>
             <div class="mt-3 inline-block bg-black/80 border border-orange-500/40 px-3 py-1 rounded text-xs tracking-widest text-neutral-300">
@@ -2372,10 +1992,10 @@ initChzSmoke('chelpaHazeFooter', 'chzSmoke');
             <h3 class="nano-font-burned text-3xl md:text-4xl tracking-wide mt-2 text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-yellow-400 to-orange-500">DEVELOPER</h3>
             <p class="text-neutral-400 mt-2 font-mono text-sm max-w-md">Creative Code &amp; High-Performance Web Development.</p>
             <div class="flex flex-wrap gap-2 mt-4 justify-center md:justify-start font-mono text-xs">
-              <span class="bg-neutral-800 text-emerald-300 border border-emerald-500/30 px-3 py-1 rounded-full">SASS</span>
-              <span class="bg-neutral-800 text-cyan-300 border border-cyan-500/30 px-3 py-1 rounded-full">Ruby</span>
-              <span class="bg-neutral-800 text-amber-300 border border-amber-500/30 px-3 py-1 rounded-full">Python</span>
-              <span class="bg-neutral-800 text-purple-300 border border-purple-500/30 px-3 py-1 rounded-full">scrappy-coco</span>
+              <span class="bg-neutral-800 text-emerald-300 border border-emerald-500/30 px-3 py-1 rounded-full">Frontend</span>
+              <span class="bg-neutral-800 text-cyan-300 border border-cyan-500/30 px-3 py-1 rounded-full">Backend</span>
+              <span class="bg-neutral-800 text-amber-300 border border-amber-500/30 px-3 py-1 rounded-full">UI/UX</span>
+              <span class="bg-neutral-800 text-purple-300 border border-purple-500/30 px-3 py-1 rounded-full">.ai</span>
             </div>
           </div>
         </div>
@@ -12093,10 +11713,6 @@ let fElectTouched = false;
 // switchProgram(). simUnlocked guarda los niveles ya "postulados" (números).
 let simMode = false;
 let simUnlocked = new Set();
-// 'all' (por defecto, acumulativo) muestra los ramos de TODOS los niveles
-// desbloqueados hasta ahora; 'current' muestra sólo los del nivel más
-// reciente — toggle #sim-view-toggle, ver courseMatches() más abajo.
-let simShowMode = 'all';
 let qDebounce = null;
 function norm(str){
   return (str||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
@@ -12237,12 +11853,6 @@ function simNextNivel(){
   if(idx === -1 || idx === nivelSet.length - 1) return null;
   return nivelSet[idx+1];
 }
-// El nivel más reciente que se desbloqueó — usado por simShowMode==='current'
-// (toggle #sim-view-toggle) para mostrar sólo ese, en vez de todos los
-// niveles acumulados desde que empezó la simulación.
-function simCurrentNivel(){
-  return simUnlocked.size ? Math.max(...simUnlocked) : null;
-}
 function updateSimStatusBar(){
   if(!simMode){ simStatusBar.hidden = true; return; }
   simStatusBar.hidden = false;
@@ -12260,10 +11870,6 @@ function updateSimStatusBar(){
 function startSimulation(nivelInicial){
   simMode = true;
   simUnlocked = new Set([nivelInicial]);
-  // Cada simulación nueva arranca en modo acumulativo ("Todos los
-  // desbloqueados") — es el valor por defecto y el más fiel al proceso real.
-  simShowMode = 'all';
-  document.querySelectorAll('#sim-view-toggle button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.v === 'all' ? 'true' : 'false'));
   simToggleBtn.setAttribute('aria-pressed', 'true');
   // El filtro manual de "Nivel" queda oculto mientras la simulación manda
   // sobre qué niveles se pueden ver — tenerlo visible a la vez sería un
@@ -12282,17 +11888,13 @@ function exitSimulation(){
   updateSimStatusBar();
   render();
 }
-function openSimSetup(preferNivel){
+function openSimSetup(){
   simNivelInicialSel.innerHTML = '';
   nivelSet.forEach(n=>{
     const o = document.createElement('option');
     o.value = n; o.textContent = 'Nivel ' + n;
     simNivelInicialSel.appendChild(o);
   });
-  // preferNivel: usado por el puente Malla → Simulación (ver
-  // updateMallaSimBridge más abajo) para dejar preseleccionado el nivel que
-  // sugiere la malla, en vez del primero de la lista por defecto.
-  if(preferNivel != null && nivelSet.includes(preferNivel)) simNivelInicialSel.value = String(preferNivel);
   simSetupOverlay.hidden = false;
 }
 function closeSimSetup(){ simSetupOverlay.hidden = true; }
@@ -12316,12 +11918,6 @@ simAdvanceBtn.addEventListener('click', ()=>{
   render();
 });
 document.getElementById('sim-exit-btn').addEventListener('click', exitSimulation);
-document.getElementById('sim-view-toggle').addEventListener('click', e=>{
-  const btn = e.target.closest('button'); if(!btn) return;
-  simShowMode = btn.dataset.v;
-  document.querySelectorAll('#sim-view-toggle button').forEach(b=>b.setAttribute('aria-pressed', b===btn ? 'true' : 'false'));
-  render();
-});
 
 // ---------- Malla curricular interactiva ----------
 // Visor de la malla oficial (dos programas: ingeco = Ingeniería Comercial /
@@ -12553,70 +12149,6 @@ function mallaAllCells(programKeyForMalla){
   return MALLA_MATRICES[programKeyForMalla].flat().filter(c => c !== null);
 }
 
-// ---------- Ramos "disponibles" (habilitados para postular), derivados de
-// los aprobados ---------- Cruza mallaAprobados contra los prerrequisitos
-// (req) de cada ramo: un ramo que todavía NO está aprobado, pero que sí
-// tiene prerrequisitos declarados y los tiene TODOS aprobados, está
-// "disponible" — ya se podría tomar el próximo semestre. Los ramos sin
-// ningún prerrequisito (la mayoría de la grilla: talleres, electivos, el
-// primer nivel, etc.) quedan afuera de este cálculo a propósito — están
-// disponibles desde siempre y marcarlos todos como "disponible" sería puro
-// ruido visual, no información nueva.
-function mallaHabilitados(key){
-  const aprobados = mallaAprobados[key];
-  const result = new Set();
-  mallaAllCells(key).forEach(c=>{
-    if(aprobados.has(c.id)) return;
-    if(!c.req || !c.req.length) return;
-    if(c.req.every(r => aprobados.has(r))) result.add(c.id);
-  });
-  return result;
-}
-
-function updateMallaHabilitados(key){
-  const habilitados = mallaHabilitados(key);
-  mallaGridEl.querySelectorAll('.malla-card').forEach(card=>{
-    card.classList.toggle('is-habilitado', habilitados.has(card.dataset.id));
-  });
-}
-
-// ---------- Puente hacia la Simulación de postulación por nivel ----------
-// La Malla (ids propios, prerrequisitos por ramo) y el catálogo de
-// secciones que usa la Simulación (códigos de ramo reales, ramos agrupados
-// por nivel/semestre) son datasets separados — no hay forma confiable de
-// cruzar un ramo específico de uno con el otro (ver comentario grande más
-// abajo, arriba de MALLA_MATRICES). Lo que SÍ comparten ambos es el
-// concepto de "nivel" como número de semestre, así que el puente usa
-// únicamente eso: en qué nivel de la malla todavía queda algo pendiente de
-// aprobar, ajustado al nivel real más cercano que de verdad tiene ramos en
-// el programa activo (nivelSet, el mismo array que ya usa la Simulación
-// para no ofrecer un nivel vacío).
-function mallaNivelSugerido(key){
-  const matrix = MALLA_MATRICES[key];
-  const aprobados = mallaAprobados[key];
-  const numCols = Math.max(...matrix.map(row => row.length));
-  for(let col = 0; col < numCols; col++){
-    const cellsInCol = matrix.map(row => row[col]).filter(c => c && c !== null);
-    if(!cellsInCol.length) continue;
-    const pendiente = cellsInCol.some(c => !aprobados.has(c.id));
-    if(pendiente) return col + 1;
-  }
-  return null; // todos los ramos de la malla están marcados como aprobados
-}
-
-function updateMallaSimBridge(key){
-  const bridge = document.getElementById('malla-sim-bridge');
-  if(!bridge) return;
-  const sugerido = mallaNivelSugerido(key);
-  if(sugerido == null || !nivelSet.length){ bridge.hidden = true; return; }
-  const snapped = nivelSet.includes(sugerido) ? sugerido : (nivelSet.find(n => n >= sugerido) ?? nivelSet[nivelSet.length - 1]);
-  document.getElementById('malla-sim-bridge-text').textContent =
-    'Según tu malla, todavía te falta completar el Nivel ' + sugerido + '. ¿Simulamos la postulación desde ahí?';
-  document.getElementById('malla-sim-bridge-btn').textContent = 'Simular desde Nivel ' + snapped;
-  bridge.dataset.nivel = String(snapped);
-  bridge.hidden = false;
-}
-
 function renderMallaHeaders(){
   if(mallaGridHeaders.childElementCount) return; // sólo hace falta una vez, son fijos (Semestre I..X)
   const romanos = ['I','II','III','IV','V','VI','VII','VIII','IX','X'];
@@ -12680,9 +12212,7 @@ function renderMalla(){
     });
   });
 
-  updateMallaHabilitados(key);
   updateMallaProgress(key);
-  updateMallaSimBridge(key);
 }
 
 function toggleMallaAprobado(key, id){
@@ -12696,21 +12226,13 @@ function toggleMallaAprobado(key, id){
     const mark = card.querySelector('.malla-ok-mark');
     if(mark) mark.setAttribute('aria-pressed', now ? 'true' : 'false');
   }
-  // Aprobar/desaprobar este ramo puede cambiar qué otros ramos quedan
-  // "disponibles" (sus dependientes directos) y en qué nivel sigue habiendo
-  // pendientes — se recalculan los dos cada vez, es barato (la malla tiene
-  // ~100 ramos como mucho).
-  updateMallaHabilitados(key);
   updateMallaProgress(key);
-  updateMallaSimBridge(key);
 }
 
 function updateMallaProgress(key){
   const total = mallaAllCells(key).length;
   const aprobadas = mallaAprobados[key].size;
-  const disponibles = mallaHabilitados(key).size;
-  mallaProgressEl.innerHTML = '<b>' + aprobadas + ' / ' + total + '</b> ramos marcados como aprobados en esta malla'
-    + (disponibles ? ' · <b class="is-habilitado-count">' + disponibles + '</b> más ya disponibles según tus prerrequisitos.' : '.');
+  mallaProgressEl.innerHTML = '<b>' + aprobadas + ' / ' + total + '</b> ramos marcados como aprobados en esta malla.';
 }
 
 function mallaSelectCourse(key, id){
@@ -12769,11 +12291,6 @@ function closeMalla(){
 document.getElementById('malla-toggle').addEventListener('click', openMalla);
 document.getElementById('malla-close').addEventListener('click', closeMalla);
 document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && !mallaOverlay.hidden) closeMalla(); });
-document.getElementById('malla-sim-bridge-btn').addEventListener('click', ()=>{
-  const nivel = Number(document.getElementById('malla-sim-bridge').dataset.nivel);
-  closeMalla();
-  openSimSetup(nivel || undefined);
-});
 
 function courseMatches(course){
   // Modo simulación: mientras esté activo, un ramo de un nivel todavía no
@@ -12782,13 +12299,7 @@ function courseMatches(course){
   // todavía. Los ramos sin nivel conocido (nivel==null, un puñado de casos
   // como Prácticas o el electivo sin nivel confirmado) se dejan pasar
   // siempre, porque no hay forma de saber en qué momento "desbloquearían".
-  // simShowMode decide, ADEMÁS de eso, si entre los niveles ya desbloqueados
-  // se ven todos acumulados (por defecto) o sólo el más reciente — ver
-  // #sim-view-toggle.
-  if(simMode && course.nivel != null){
-    if(!simUnlocked.has(course.nivel)) return false;
-    if(simShowMode === 'current' && course.nivel !== simCurrentNivel()) return false;
-  }
+  if(simMode && course.nivel != null && !simUnlocked.has(course.nivel)) return false;
   if(fNivel && String(course.nivel) !== fNivel) return false;
   if(fArea && course.area !== fArea) return false;
   let seccs = course.secciones;
@@ -13291,7 +12802,7 @@ function showCellDetail(detailEl, cellData, conflictKeys, allowRemove){
         <div class="name">${v.course.asignatura}</div>
         <div class="meta">${v.course.codigo} · Sec. ${sectionLabel(v.course, v.section)}${v.section.profesor ? ' · '+v.section.profesor : ''}</div>
       </div>
-      ${allowRemove ? `<button class="remove-btn" data-key="${cd.key}" title="Quitar" aria-label="Quitar ${v.course.asignatura} de mi horario">×</button>` : ''}
+      ${allowRemove ? `<button class="remove-btn" data-key="${cd.key}" title="Quitar">×</button>` : ''}
     </div>`;
   }).join('');
   if(!html) return;
@@ -13389,7 +12900,7 @@ function renderSchedule(){
         <div class="name">${v.course.asignatura}</div>
         <div class="meta">${v.course.codigo} · Sec. ${sectionLabel(v.course, v.section)}</div>
       </div>
-      <button class="remove-btn" data-key="${key}" title="Quitar" aria-label="Quitar ${v.course.asignatura} de mi horario">×</button>
+      <button class="remove-btn" data-key="${key}" title="Quitar">×</button>
     </div>`;
   }).join('') : '';
 
