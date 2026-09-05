@@ -1,0 +1,360 @@
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <button class="app-mark" id="app-mark" type="button" title="Ir arriba" aria-label="Ir arriba de la página"></button>
+      <span class="brand-mark" role="img" aria-label="Escudo USACH"></span>
+      <h1>BuscaCursos USACH</h1>
+      <span class="unofficial">No oficial</span>
+    </div>
+    <div class="context">
+      <div><strong id="ctx-programa">__PROGRAMA__</strong> · <span id="ctx-semestre">__SEMESTRE__</span></div>
+      <button class="program-switch" id="program-switch" type="button">Ver Mención Economía</button>
+    </div>
+    <button class="theme-toggle" id="theme-toggle" type="button" title="Cambiar a modo oscuro" aria-label="Cambiar a modo oscuro">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button class="icon-btn amigable-btn" id="amigable-toggle" type="button" aria-pressed="false" title="Activar modo amigable" aria-label="Activar modo amigable">🎀</button>
+    <button class="icon-btn sim-btn" id="sim-toggle" type="button" aria-pressed="false" title="Simular proceso de postulación por nivel" aria-label="Simular proceso de postulación por nivel">🎓</button>
+    <button class="icon-btn" id="malla-toggle" type="button" title="Ver malla curricular" aria-label="Ver malla curricular" aria-haspopup="dialog" aria-controls="malla-overlay">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    </button>
+    <button class="icon-btn" id="bitacora-toggle" type="button" title="Ver mi bitácora de estudio" aria-label="Ver mi bitácora de estudio" aria-haspopup="dialog" aria-controls="bitacora-overlay">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/><path d="M6 3v18"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/></svg>
+    </button>
+    <button class="icon-btn" id="view-mode-toggle-top" type="button" title="Ver como iPad" aria-label="Ver como iPad" hidden>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="search-row">
+    <div class="search-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="q" type="text" placeholder="Buscar por código, ramo o profesor… (ej: 352410, Álgebra, Meza)" autocomplete="off">
+      <button class="search-clear-btn" id="search-clear-btn" type="button" title="Borrar búsqueda" aria-label="Borrar búsqueda" hidden>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <button class="btn-goto-results" id="btn-goto-results" type="button" title="Ir directo al listado de asignaturas">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <span>Buscar</span>
+    </button>
+    <button class="btn-clear-all" id="btn-clear-all" type="button" title="Quitar la búsqueda y todos los filtros" hidden>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      <span>Limpiar todo</span>
+    </button>
+    <select id="f-nivel" class="filter-select"><option value="">Todos los niveles</option></select>
+    <select id="f-area" class="filter-select"><option value="">Todas las áreas</option></select>
+    <div class="pill-toggle" id="f-elect">
+      <button data-v="" aria-pressed="false">Todos</button>
+      <button data-v="0" aria-pressed="false">Obligatorios</button>
+      <button data-v="1" aria-pressed="false">Electivos</button>
+    </div>
+  </div>
+  <div class="sim-status-bar" id="sim-status-bar" hidden>
+    <span class="sim-status-icon" aria-hidden="true">🎓</span>
+    <div class="sim-status-text">
+      <strong>Simulación de postulación activa — es referencial, no garantiza cupo.</strong>
+      <span id="sim-status-detail">Niveles desbloqueados: —</span>
+      <div class="pill-toggle sim-view-toggle" id="sim-view-toggle" role="group" aria-label="Qué niveles mostrar en la simulación">
+        <button type="button" data-v="all" aria-pressed="true">Todos los desbloqueados</button>
+        <button type="button" data-v="current" aria-pressed="false">Sólo el nivel actual</button>
+      </div>
+    </div>
+    <button class="sim-advance-btn" id="sim-advance-btn" type="button" hidden>Ya postulé → desbloquear siguiente nivel</button>
+    <button class="link-btn sim-exit-btn" id="sim-exit-btn" type="button">Salir de la simulación</button>
+  </div>
+</div>
+
+<div class="layout">
+
+  <aside class="rail-left">
+    <div class="mobile-split">
+      <div class="panel" id="picker-panel" data-open="false">
+        <div class="rail-title-row">
+          <p class="rail-title">Filtrar por horario libre</p>
+          <button class="picker-toggle-btn" id="picker-toggle" type="button" aria-expanded="false" aria-controls="picker-body" title="Mostrar/ocultar filtro de horario libre" aria-label="Mostrar/ocultar filtro de horario libre">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+        <div class="picker-body" id="picker-body">
+          <div class="grid-picker" id="picker"></div>
+          <p class="grid-hint">Clic en un bloque para mostrar sólo secciones que se dictan en ese horario. <button class="link-btn" id="clear-picker">Limpiar</button></p>
+          <button class="btn-view-mode" id="view-mode-toggle-bottom" type="button" hidden>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+            <span>Ver como iPhone</span>
+          </button>
+        </div>
+      </div>
+      <div id="mihorario-slot-mobile"></div>
+    </div>
+    <div class="panel" id="dataset-panel" hidden>
+      <p class="rail-title">Dataset</p>
+      <div class="stat-line"><span>Asignaturas</span><b id="stat-asigs">–</b></div>
+      <div class="stat-line"><span>Secciones</span><b id="stat-seccs">–</b></div>
+      <div class="stat-line"><span>Áreas</span><b id="stat-areas">–</b></div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="results-head">
+      <div class="results-count"><b id="count-n">0</b> asignaturas encontradas</div>
+    </div>
+    <div id="results"></div>
+  </main>
+
+  <aside class="rail-right">
+    <div class="panel" id="rail-right-panel">
+      <p class="rail-title">Mi horario</p>
+      <div class="pill-toggle sched-tabs">
+        <button id="tab-horario" aria-pressed="true" type="button" title="Horario semanal">
+          <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>
+          <span class="tab-label">Horario semanal</span>
+        </button>
+        <button id="tab-examenes" aria-pressed="false" type="button" title="Calendario de pruebas">
+          <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"/><line x1="16" y1="2.5" x2="16" y2="6.5"/><line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="tab-label">Calendario de pruebas</span>
+        </button>
+      </div>
+      <div class="sched-summary">
+        <div class="sched-stat"><div class="n" id="sum-secc">0</div><div class="l">Secciones</div></div>
+        <div class="sched-stat"><div class="n" id="sum-sct">0</div><div class="l">Créditos SCT</div></div>
+        <div class="sched-stat"><div class="n" id="sum-conf">0</div><div class="l">Choques</div></div>
+      </div>
+      <div class="sched-view" id="view-horario">
+        <div class="week-grid" id="week-grid"></div>
+        <div class="cell-detail" id="cell-detail" hidden></div>
+        <div id="conflict-note-wrap"></div>
+        <div class="selected-list" id="selected-list"></div>
+        <div id="rail-empty-wrap"></div>
+      </div>
+      <div class="sched-view" id="view-examenes" hidden>
+        <div id="exam-cal"></div>
+      </div>
+      <div class="actions-row">
+        <button class="btn-secondary" id="btn-print">Imprimir horario</button>
+        <button class="btn-secondary" id="btn-clear">Vaciar</button>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<div class="bottom-guide-wrap" id="bottom-guide-wrap">
+  <section class="guide-panel" id="guide-panel" data-open="true">
+    <div class="guide-head" id="guide-toggle" role="button" tabindex="0" aria-expanded="true" aria-controls="guide-body">
+      <div class="t">
+        <h2>Cómo usar este buscador</h2>
+        <p>Guía rápida en 5 pasos — haz clic para ocultar o mostrar</p>
+      </div>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <!-- Ilustración y pasos rellenados por JS (guideMockHTML/guideStepsHTML)
+         — misma fuente que usa el estado "sin resultados aún" (ver
+         welcomeGuideHTML), para no mantener el mismo contenido dos veces. -->
+    <div class="guide-mock" id="guide-mock"></div>
+    <div class="guide-body" id="guide-body"></div>
+  </section>
+</div>
+
+<div class="big-schedule-wrap" id="big-schedule-wrap">
+  <div class="panel">
+    <div class="rail-title-row">
+      <p class="rail-title">Mi horario</p>
+    </div>
+    <div class="pill-toggle sched-tabs">
+      <button id="tab-horario-big" aria-pressed="true" type="button" title="Horario semanal">
+        <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>
+        <span class="tab-label">Horario semanal</span>
+      </button>
+      <button id="tab-examenes-big" aria-pressed="false" type="button" title="Calendario de pruebas">
+        <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2"/><line x1="16" y1="2.5" x2="16" y2="6.5"/><line x1="8" y1="2.5" x2="8" y2="6.5"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="tab-label">Calendario de pruebas</span>
+      </button>
+    </div>
+    <div class="sched-summary">
+      <div class="sched-stat"><div class="n" id="sum-secc-big">0</div><div class="l">Secciones</div></div>
+      <div class="sched-stat"><div class="n" id="sum-sct-big">0</div><div class="l">Créditos SCT</div></div>
+      <div class="sched-stat"><div class="n" id="sum-conf-big">0</div><div class="l">Choques</div></div>
+    </div>
+    <div class="sched-view" id="view-horario-big">
+      <div class="week-grid" id="week-grid-big"></div>
+      <div class="cell-detail" id="cell-detail-big" hidden></div>
+      <div class="week-grid named-grid" id="day-agenda-big" hidden></div>
+      <div id="conflict-note-wrap-big"></div>
+      <div class="selected-list" id="selected-list-big"></div>
+      <div id="rail-empty-wrap-big"></div>
+    </div>
+    <div class="sched-view" id="view-examenes-big" hidden>
+      <div id="exam-cal-big"></div>
+    </div>
+    <div class="actions-row">
+      <button class="btn-secondary" id="btn-print-big">Imprimir horario</button>
+      <button class="btn-secondary" id="btn-clear-big">Vaciar</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="disclaimer">
+    <p><strong>Proyecto estudiantil no oficial.</strong> Esta página no es un sitio de la Universidad de Santiago de Chile ni de su Dirección de Registro Académico — es una herramienta construida a partir de un archivo de programación de horarios (<span id="ctx-programa-footer">__PROGRAMA__</span>, <span id="ctx-semestre-footer">__SEMESTRE__</span>, marcado como versión "prueba"). Los horarios, cupos y profesores pueden cambiar antes del inicio de clases: confirma siempre la información oficial en tu facultad o en Registro Académico antes de tomar decisiones de inscripción.</p>
+    <p><strong>Es una ayuda referencial para explorar horarios posibles, no un resultado garantizado.</strong> La asignación final de ramos depende del Proceso de Postulación de Ramos, que no siempre coincide con lo que armes acá: el sistema oficial va habilitando la postulación por nivel — primero muestra las asignaturas de nivel inferior, y una vez realizada esa postulación recién habilita las del nivel siguiente, y así sucesivamente. Usa este sitio para explorar combinaciones de horario, no como garantía de en qué ramos vas a quedar.</p>
+  </div>
+</footer>
+
+<!--__FIRMA_FOOTER__-->
+
+<div class="confirm-overlay" id="confirm-overlay" hidden>
+  <div class="confirm-box" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title">
+    <p id="confirm-title">¿Estás seguro que quieres vaciar tu horario?</p>
+    <div class="confirm-actions">
+      <button class="btn-secondary" id="confirm-cancel" type="button">Cancelar</button>
+      <button class="btn-danger" id="confirm-accept" type="button">Vaciar horario</button>
+    </div>
+  </div>
+</div>
+
+<div class="confirm-overlay" id="sim-setup-overlay" hidden>
+  <div class="confirm-box sim-setup-box" role="alertdialog" aria-modal="true" aria-labelledby="sim-setup-title">
+    <p id="sim-setup-title">Simular proceso de postulación</p>
+    <p class="sim-setup-desc">Este modo imita cómo funciona la postulación real: en vez de ver y agregar ramos de cualquier nivel a la vez, primero sólo vas a ver los ramos del nivel en que estás pendiente de postular. Los niveles siguientes se desbloquean uno por uno, a medida que avanzás.</p>
+    <p class="sim-setup-desc sim-setup-note">Ojo: esto simula el <strong>orden</strong> en que se habilitan los niveles, no el resultado — no sabemos cuántos cupos vas a conseguir de verdad, eso depende del proceso oficial de la universidad.</p>
+    <label class="sim-setup-label" for="sim-nivel-inicial">¿Desde qué nivel estás pendiente de postular?</label>
+    <select id="sim-nivel-inicial" class="filter-select"></select>
+    <div class="confirm-actions" style="margin-top:14px;">
+      <button class="btn-secondary" id="sim-setup-cancel" type="button">Cancelar</button>
+      <button class="btn-accent" id="sim-setup-start" type="button">Comenzar simulación</button>
+    </div>
+  </div>
+</div>
+
+<div class="malla-overlay" id="malla-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="malla-title">
+  <div class="malla-head">
+    <div class="malla-head-titles">
+      <h2 id="malla-title">Malla curricular</h2>
+      <p id="malla-subtitle">—</p>
+      <button class="program-switch" id="malla-program-switch" type="button">Ver Mención Economía</button>
+    </div>
+    <div class="malla-legend">
+      <span><span class="dot dot--sel"></span> Seleccionado</span>
+      <span><span class="dot dot--prereq"></span> Prerrequisito</span>
+      <span><span class="dot dot--unlocks"></span> Desbloquea</span>
+      <span><span class="dot dot--habilitado"></span> Disponible</span>
+      <span><span class="dot dot--ok"></span> Aprobado</span>
+    </div>
+    <button class="malla-close" id="malla-close" type="button" title="Cerrar malla" aria-label="Cerrar malla">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="malla-body">
+    <p class="malla-hint">Clic en un ramo para ver sus <strong>prerrequisitos</strong> y qué <strong>desbloquea</strong>. Clic en el círculo de la esquina para marcarlo como <strong>aprobado</strong> — queda guardado en este navegador. Los ramos con borde punteado dorado (<strong>disponible</strong>) ya tienen todos sus prerrequisitos aprobados. Esto es sólo una referencia armada a partir de la malla oficial; no reemplaza tu situación académica real.</p>
+    <div class="malla-grid-wrap">
+      <div class="malla-grid-headers" id="malla-grid-headers"></div>
+      <div class="malla-grid" id="malla-grid"></div>
+    </div>
+    <div class="malla-info" id="malla-info" hidden>
+      <h3 id="malla-info-title"></h3>
+      <div class="malla-info-cols">
+        <div class="reqs">
+          <h4>Requiere haber aprobado</h4>
+          <ul id="malla-info-reqs"></ul>
+        </div>
+        <div class="unlocks">
+          <h4>Desbloquea</h4>
+          <ul id="malla-info-unlocks"></ul>
+        </div>
+      </div>
+    </div>
+    <p class="malla-progress" id="malla-progress"></p>
+    <div class="malla-sim-bridge" id="malla-sim-bridge" hidden>
+      <span class="malla-sim-bridge-icon" aria-hidden="true">🎓</span>
+      <span class="malla-sim-bridge-text" id="malla-sim-bridge-text"></span>
+      <button class="malla-sim-bridge-btn" id="malla-sim-bridge-btn" type="button"></button>
+    </div>
+
+    <div class="malla-footer-preview" id="malla-footer-preview">
+<!--__FIRMA_NANO__-->
+    </div>
+
+    <!-- ---------- Copia completa de la firma original del sitio
+         (#chelpaHazeFooter), reintroducida acá a pedido del usuario, esta
+         vez para quedarse: va al fondo de todo dentro de la Malla, de
+         borde a borde (igual que en el inicio), con su propia barra
+         colapsable "Sitio en Construcción // WIP v0.9". Es una copia
+         aparte con sus propios ids (sufijo MallaOriginal) y su propia
+         clave de localStorage, para no pisar ni la firma real del inicio
+         ni la firma nueva del cogollo (arriba, en .malla-footer-preview).
+         La firma del inicio (#chelpaHazeFooter) sigue completamente
+         intacta — esto NO la reemplaza, es una copia. ---------- -->
+<!--__FIRMA_ORIGINAL__-->
+
+  </div>
+</div>
+
+<!-- ---------- Mi Bitácora: cuaderno de apuntes por ramo, uno por cada
+     asignatura en "Mi horario" (mismo patrón de overlay a pantalla completa
+     que la Malla curricular, arriba). Se crea vacía sola cuando un ramo se
+     agrega al horario (ver ensureBitacora/toggleSection en app.js) — nunca
+     hay que "guardarla" a mano, y agregar el mismo ramo de nuevo no la
+     duplica ni le borra lo ya escrito. Todo vive en este navegador
+     (localStorage), igual que el horario y la malla de aprobados. ---------- -->
+<div class="bitacora-overlay" id="bitacora-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="bitacora-title">
+  <div class="malla-head">
+    <div class="malla-head-titles">
+      <h2 id="bitacora-title">Mi Bitácora</h2>
+      <p id="bitacora-subtitle">—</p>
+    </div>
+    <button class="malla-close" id="bitacora-close" type="button" title="Cerrar bitácora" aria-label="Cerrar bitácora">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="malla-body bitacora-body">
+    <p class="malla-hint">Un cuaderno de apuntes por ramo. Escribe <strong>apuntes</strong> de clase, guarda <strong>enlaces</strong> a recursos, anota <strong>dudas</strong> pendientes o <strong>ejercicios</strong> ya resueltos — para llegar más preparado el semestre que de verdad curses ese ramo. Todo queda guardado solo en este navegador, igual que tu horario.</p>
+    <div class="bitacora-layout">
+      <nav class="bitacora-course-list" id="bitacora-course-list" aria-label="Ramos con bitácora"></nav>
+      <div class="bitacora-detail">
+        <div class="bitacora-empty" id="bitacora-empty">Agrega un ramo a tu horario para que su bitácora aparezca acá sola.</div>
+        <div class="bitacora-detail-inner" id="bitacora-detail-inner" hidden>
+          <h3 id="bitacora-detail-title"></h3>
+          <p class="bitacora-detail-meta" id="bitacora-detail-meta"></p>
+
+          <ul class="bitacora-entries" id="bitacora-entries"></ul>
+
+          <form class="bitacora-form" id="bitacora-form">
+            <div class="bitacora-field-row">
+              <div class="bitacora-field">
+                <label for="bit-f-tipo">Tipo de entrada</label>
+                <select class="filter-select" id="bit-f-tipo">
+                  <option value="apunte">📝 Apunte de clase</option>
+                  <option value="recurso">🔗 Recurso</option>
+                  <option value="duda">❓ Duda pendiente</option>
+                  <option value="ejercicio">✅ Ejercicio resuelto</option>
+                </select>
+              </div>
+              <div class="bitacora-field">
+                <label for="bit-f-fecha">Fecha</label>
+                <input type="date" id="bit-f-fecha">
+              </div>
+            </div>
+            <div class="bitacora-field">
+              <label for="bit-f-contenido" id="bit-f-contenido-label">Descripción</label>
+              <textarea id="bit-f-contenido" rows="3" placeholder="Qué quieres registrar…"></textarea>
+            </div>
+            <div class="bitacora-field" id="bit-f-link-wrap" hidden>
+              <label for="bit-f-link">Enlace (opcional)</label>
+              <input type="url" id="bit-f-link" placeholder="https://…">
+            </div>
+            <button class="btn-secondary bitacora-submit" id="bit-f-submit" type="submit">Agregar entrada</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--__BITACORA_SEED__-->
+
+<!--__APP_JS__-->
+</body>
+</html>
