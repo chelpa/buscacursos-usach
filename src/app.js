@@ -282,15 +282,20 @@ initChzMatrixRain('chelpaHazeFooter');
 // "usachin" (una mascota león genérica, dibujada a mano en canvas) montado
 // arriba — el jugador la hace "aletear" con click/touch (Flappy Bird).
 // Fondo: lluvia de código verde estilo Matrix, con opacidad, dibujada
-// directo en el canvas. Se esquivan montañas (dan un "stun" temporal, no
-// restan puntaje) y se juntan nubes-boost (☁️, aumentan la velocidad hacia
-// adelante por un rato), plátanos 🍌 (+1) y carne 🍖 (+3, vale más que el
-// plátano a pedido del usuario). Cada cierta distancia aparece Kong (🦍)
-// como cameo de fondo. 3 stuns seguidos (sin juntar nada positivo entre
+// directo en el canvas. Temática educativa a pedido del usuario: se
+// esquivan vallas de carrera (dan un "stun" temporal, no restan puntaje —
+// hay que "saltarlas" con el aleteo, como en los 100 metros con vallas) y
+// se juntan libros/cuadernos 📚 (+1 "ramo aprobado", el puntaje real del
+// juego) y nubes-boost (☁️, aumentan la velocidad hacia adelante por un
+// rato); la carne 🍖 en cambio RETRASA a usachin (aplica una frenada
+// temporal, sin dar puntos). Cada cierta distancia aparece Kong (🦍) como
+// cameo de fondo. El juego arranca con una pantalla de inicio ("toca para
+// empezar") antes de que corra ninguna física/spawn — sólo el fondo de
+// Matrix se ve animando. 3 stuns seguidos (sin juntar nada positivo entre
 // medio) = game over: el loop se pausa del todo (mejor para el
-// rendimiento, a pedido del usuario) y espera un click/touch para
-// reiniciar. Mismo patrón de IntersectionObserver que
-// initChzSmoke/initChzBugGame/initChzMatrixRain: el loop de rAF sólo
+// rendimiento, a pedido del usuario) y muestra los ramos aprobados de esa
+// vuelta; un click/touch reinicia. Mismo patrón de IntersectionObserver
+// que initChzSmoke/initChzBugGame/initChzMatrixRain: el loop de rAF sólo
 // corre mientras el cuadro está realmente visible.
 function initChzNimbusGame(footerId){
   var footer = document.getElementById(footerId);
@@ -335,28 +340,32 @@ function initChzNimbusGame(footerId){
   var FLAP = -5.6;
   var BASE_SPEED = 2.6;
   var BOOST_SPEED = 4.6;
+  var SLOW_SPEED = 1.3;
   var BOOST_FRAMES = 220; // ~3.6s a 60fps
+  var SLOW_FRAMES = 160; // ~2.6s a 60fps — la carne "retrasa" a usachin
   var STUN_FRAMES = 72; // ~1.2s a 60fps
 
   var cloud = { x: W * 0.24 || 70, y: H / 2, vy: 0, r: 14 };
-  var score = 0;
+  var score = 0; // = ramos aprobados (sólo suma al juntar un libro/cuaderno)
   var distance = 0;
-  var obstacles = []; // {x, kind:'mountain'|'boost', ...}
-  var pickups = []; // {x, y, taken, kind:'banana'|'meat'}
+  var obstacles = []; // {x, kind:'hurdle'|'boost', ...}
+  var pickups = []; // {x, y, taken, kind:'book'|'meat'}
   var kong = null; // {x, until}
   var nextObstacleAt = 0;
   var nextPickupAt = 0;
   var nextKongAt = 900;
-  var boostFramesLeft = 0;
+  var speedEffect = null; // 'boost' | 'slow' | null
+  var speedFramesLeft = 0;
   var stunFramesLeft = 0;
   var stunStreak = 0;
+  var started = false;
   var gameOver = false;
   var visible = false;
   var running = false;
   var raf = null;
 
   function updateScore(){
-    scoreEl.textContent = '🍌 ' + score;
+    scoreEl.textContent = '📚 ' + score;
     scoreEl.classList.toggle('chz-nimbus-score--bad', score < 0);
   }
   updateScore();
@@ -372,7 +381,8 @@ function initChzNimbusGame(footerId){
     nextObstacleAt = 0;
     nextPickupAt = 0;
     nextKongAt = 900;
-    boostFramesLeft = 0;
+    speedEffect = null;
+    speedFramesLeft = 0;
     stunFramesLeft = 0;
     stunStreak = 0;
     gameOver = false;
@@ -381,6 +391,7 @@ function initChzNimbusGame(footerId){
 
   function onTap(e){
     e.preventDefault();
+    if (!started){ started = true; cloud.vy = FLAP; return; }
     if (gameOver){ resetRun(); syncRunning(); return; }
     if (stunFramesLeft > 0) return;
     cloud.vy = FLAP;
@@ -398,12 +409,14 @@ function initChzNimbusGame(footerId){
   }
 
   function spawnObstacle(){
-    var kind = Math.random() < 0.55 ? 'mountain' : 'boost';
-    if (kind === 'mountain'){
+    var kind = Math.random() < 0.55 ? 'hurdle' : 'boost';
+    if (kind === 'hurdle'){
       obstacles.push({
-        kind: 'mountain', x: W + 20,
-        h: 34 + Math.random() * 46,
-        w: 46 + Math.random() * 30
+        // Valla de carrera (100m vallas) en vez de montaña — bajita, se
+        // salta con el aleteo. h/w bastante menores que la vieja montaña.
+        kind: 'hurdle', x: W + 20,
+        h: 18 + Math.random() * 22,
+        w: 30 + Math.random() * 14
       });
     } else {
       obstacles.push({
@@ -416,7 +429,7 @@ function initChzNimbusGame(footerId){
   }
 
   function spawnPickup(){
-    var kind = Math.random() < 0.7 ? 'banana' : 'meat';
+    var kind = Math.random() < 0.7 ? 'book' : 'meat';
     pickups.push({ x: W + 20, y: 20 + Math.random() * (H - 40), taken: false, kind: kind });
   }
 
@@ -508,21 +521,20 @@ function initChzNimbusGame(footerId){
     ctx.restore();
   }
 
-  function drawMountain(o){
-    ctx.fillStyle = '#1f2933';
-    ctx.beginPath();
-    ctx.moveTo(o.x - o.w / 2, H);
-    ctx.lineTo(o.x, H - o.h);
-    ctx.lineTo(o.x + o.w / 2, H);
-    ctx.closePath();
-    ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,.22)';
-    ctx.beginPath();
-    ctx.moveTo(o.x, H - o.h);
-    ctx.lineTo(o.x + 6, H - o.h + 14);
-    ctx.lineTo(o.x - 6, H - o.h + 14);
-    ctx.closePath();
-    ctx.fill();
+  // Valla de carrera (100m vallas) en vez de la montaña de antes, a
+  // pedido del usuario — dos parantes + un travesaño con franjas
+  // rojo/blanco, estilo atletismo. Se sigue esquivando "saltándola" con
+  // el mismo aleteo de siempre.
+  function drawHurdle(o){
+    var top = H - o.h;
+    var legW = 3;
+    ctx.fillStyle = '#d1d5db';
+    ctx.fillRect(o.x - o.w / 2, top, legW, o.h);
+    ctx.fillRect(o.x + o.w / 2 - legW, top, legW, o.h);
+    ctx.fillStyle = '#ff5f57';
+    ctx.fillRect(o.x - o.w / 2 - 3, top - 4, o.w + 6, 5);
+    ctx.fillStyle = '#f5f7fa';
+    ctx.fillRect(o.x - o.w / 2 - 3, top - 4, (o.w + 6) / 2, 5);
   }
 
   function drawBoostCloud(o){
@@ -536,7 +548,7 @@ function initChzNimbusGame(footerId){
     ctx.font = '16px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(p.kind === 'meat' ? '🍖' : '🍌', p.x, p.y);
+    ctx.fillText(p.kind === 'meat' ? '🍖' : '📚', p.x, p.y);
   }
 
   function drawKong(k){
@@ -544,6 +556,21 @@ function initChzNimbusGame(footerId){
     ctx.textAlign = 'center';
     ctx.textBaseline = 'alphabetic';
     ctx.fillText('🦍', k.x, H - 6);
+  }
+
+  function drawStartOverlay(){
+    ctx.save();
+    ctx.fillStyle = 'rgba(5,5,5,.35)';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#4ade80';
+    ctx.font = 'bold 16px monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('▶ EMPEZAR', W / 2, H / 2 - 6);
+    ctx.fillStyle = '#cbd5c0';
+    ctx.font = '11px monospace';
+    ctx.fillText('toca para jugar', W / 2, H / 2 + 14);
+    ctx.restore();
   }
 
   function drawGameOverOverlay(){
@@ -554,10 +581,13 @@ function initChzNimbusGame(footerId){
     ctx.font = 'bold 20px monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('GAME OVER', W / 2, H / 2 - 10);
+    ctx.fillText('GAME OVER', W / 2, H / 2 - 18);
     ctx.fillStyle = '#f5f7fa';
     ctx.font = '12px monospace';
-    ctx.fillText('toca para reintentar', W / 2, H / 2 + 14);
+    ctx.fillText('toca para reintentar', W / 2, H / 2 + 6);
+    ctx.fillStyle = '#4ade80';
+    ctx.font = 'bold 12px monospace';
+    ctx.fillText('📚 ' + score + ' ramos aprobados', W / 2, H / 2 + 24);
     ctx.restore();
   }
 
@@ -565,8 +595,21 @@ function initChzNimbusGame(footerId){
     ctx.clearRect(0, 0, W, H);
     drawMatrixBackdrop();
 
-    var speed = boostFramesLeft > 0 ? BOOST_SPEED : BASE_SPEED;
-    if (boostFramesLeft > 0) boostFramesLeft--;
+    // Pantalla de inicio: sólo se ve el fondo de Matrix animando + el
+    // cartel "EMPEZAR", sin física ni spawns todavía (a pedido del
+    // usuario). El primer click/touch (ver onTap) pone started=true.
+    if (!started){
+      drawStartOverlay();
+      if (running) raf = requestAnimationFrame(tick);
+      return;
+    }
+
+    var speed = BASE_SPEED;
+    if (speedFramesLeft > 0){
+      speed = speedEffect === 'boost' ? BOOST_SPEED : SLOW_SPEED;
+      speedFramesLeft--;
+      if (speedFramesLeft === 0) speedEffect = null;
+    }
 
     distance += speed;
     if (stunFramesLeft <= 0){
@@ -605,8 +648,8 @@ function initChzNimbusGame(footerId){
     pickups = pickups.filter(function(p){ return p.x > -20 && !p.taken; });
 
     obstacles.forEach(function(o){
-      if (o.kind === 'mountain'){
-        drawMountain(o);
+      if (o.kind === 'hurdle'){
+        drawHurdle(o);
         var top = H - o.h;
         var withinX = Math.abs(o.x - cloud.x) < (o.w / 2 + cloud.r * 0.6);
         if (withinX && cloud.y + cloud.r * 0.7 > top && !o.hit){
@@ -617,7 +660,8 @@ function initChzNimbusGame(footerId){
         drawBoostCloud(o);
         if (!o.hit && collide(cloud.x, cloud.y, cloud.r * 0.7, o.x, o.y, o.r)){
           o.hit = true;
-          boostFramesLeft = BOOST_FRAMES;
+          speedEffect = 'boost';
+          speedFramesLeft = BOOST_FRAMES;
           stunStreak = 0;
         }
       }
@@ -627,8 +671,15 @@ function initChzNimbusGame(footerId){
       drawPickup(p);
       if (!p.taken && collide(cloud.x, cloud.y, cloud.r * 0.8, p.x, p.y, 9)){
         p.taken = true;
-        score += p.kind === 'meat' ? 3 : 1;
-        stunStreak = 0;
+        if (p.kind === 'meat'){
+          // La carne retrasa a usachin (a pedido del usuario) — no da
+          // puntos, sólo frena por un rato.
+          speedEffect = 'slow';
+          speedFramesLeft = SLOW_FRAMES;
+        } else {
+          score += 1; // +1 ramo aprobado
+          stunStreak = 0;
+        }
         updateScore();
       }
     });

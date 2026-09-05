@@ -4,18 +4,17 @@
 // estilo Dragon Ball Z, una nube con rayo y "usachin" (una mascota león
 // genérica) montado arriba, que hay que hacer "aletear" con click/touch
 // (mecánica tipo Flappy Bird), con un fondo de lluvia de código verde
-// estilo Matrix. Se esquivan montañas (dan un "stun" temporal en vez de
-// restar puntaje) y se juntan nubes-boost (aumentan la velocidad),
-// plátanos 🍌 (+1) y carne 🍖 (+3), con un cameo de Kong cada cierta
-// distancia. Este test abre la Malla, despliega esa firma, confirma que
-// el canvas existe, que el badge de puntaje arranca en "🍌 0", y que el
-// loop de rAF realmente está dibujando (el contenido del canvas cambia
-// entre dos instantes muy cercanos — ventana corta a propósito, para no
-// arriesgarse a que el juego ya haya llegado a "game over" y el loop esté
-// pausado) — la forma más confiable de detectar sin randomness una
-// regresión del tipo "el juego nunca arranca" o "el canvas quedó
-// estirado a 1px" (el bug real que encontró el usuario al refrescar la
-// página con la firma ya abierta).
+// estilo Matrix. Arranca con una pantalla "toca para empezar" (sin
+// física ni spawns todavía). Temática educativa: se esquivan vallas de
+// carrera (dan un "stun" temporal, no restan puntaje), se juntan
+// libros/cuadernos 📚 (+1 "ramo aprobado") y nubes-boost (velocidad), y
+// la carne 🍖 retrasa a usachin (sin dar puntos). Cada cierta distancia
+// aparece un cameo de Kong. Este test abre la Malla, despliega esa
+// firma, confirma que el canvas existe con un ancho real (protege contra
+// el bug de "canvas estirado a 1px" que reportó el usuario al refrescar
+// con la firma ya abierta), que el badge arranca en "📚 0", que el fondo
+// de Matrix anima solo incluso ANTES de tocar (pantalla de inicio), y que
+// tocar una vez (arranca el juego) no rompe nada.
 import { openPage, assert } from './lib/harness.mjs';
 
 const { page, errors, close } = await openPage();
@@ -32,36 +31,37 @@ const canvasCount = await page.locator('#chzNimbusCanvas').count();
 assert(canvasCount === 1, 'debería existir el canvas #chzNimbusCanvas dentro de la firma ámbar de la Malla');
 
 const scoreBefore = (await page.locator('#chzNimbusScore').innerText()).trim();
-assert(scoreBefore === '🍌 0', `el puntaje debería arrancar en "🍌 0", salió "${scoreBefore}"`);
+assert(scoreBefore === '📚 0', `el puntaje debería arrancar en "📚 0", salió "${scoreBefore}"`);
 
 // El canvas debería tener un ancho real (no el bug de "1px estirado por
 // CSS" que reportó el usuario al refrescar con la firma ya desplegada).
 const canvasWidth = await page.locator('#chzNimbusCanvas').evaluate(el => el.width);
 assert(canvasWidth > 50, `el canvas debería tener un ancho real de pixeles, salió ${canvasWidth}px`);
 
-// El spawn/loop usa IntersectionObserver (mismo patrón que
-// initChzSmoke/initChzBugGame): sólo corre mientras el cuadro está
-// realmente a la vista, cosa que ya garantizamos con el
-// scrollIntoViewIfNeeded de arriba. Ventana corta (300ms) para no correr
-// el riesgo de que el juego ya haya llegado a "game over" (loop pausado).
+// Antes de tocar nada, el juego debería estar en la pantalla de inicio
+// ("toca para empezar") — pero el fondo de Matrix igual debería estar
+// animando solo (el loop de rAF corre, sólo la física/spawns esperan el
+// primer toque). Ventana corta (300ms) para no correr ningún riesgo de
+// randomness ni de que algo se rompa mientras tanto.
 const frame1 = await page.locator('#chzNimbusCanvas').evaluate(el => el.toDataURL());
 await page.waitForTimeout(300);
 const frame2 = await page.locator('#chzNimbusCanvas').evaluate(el => el.toDataURL());
 assert(
   frame1 !== frame2,
-  'el canvas de la nube debería estar dibujando algo distinto entre dos instantes (confirma que el loop de rAF está corriendo, con el fondo de matriz animando)'
+  'el canvas debería estar dibujando algo distinto entre dos instantes incluso antes de tocar (confirma que el fondo de Matrix anima solo en la pantalla de inicio)'
 );
 
-// "Aletear" (click) no debería tirar errores ni romper el canvas.
+// Primer toque: arranca el juego (sale de la pantalla de inicio) y de
+// paso hace de primer aleteo. No debería tirar errores ni romper nada.
 await page.locator('#chzNimbusCanvas').click();
 await page.waitForTimeout(150);
 const canvasStillThere = await page.locator('#chzNimbusCanvas').count();
-assert(canvasStillThere === 1, 'el canvas debería seguir existiendo después de hacer click (aletear, o reiniciar si ya estaba en game over)');
+assert(canvasStillThere === 1, 'el canvas debería seguir existiendo después de tocar para empezar');
 
 const scoreAfter = (await page.locator('#chzNimbusScore').innerText()).trim();
-assert(/^🍌 \d+$/.test(scoreAfter), `el badge de puntaje debería seguir mostrando un número no negativo (las montañas ahora sólo aturden, no restan), salió "${scoreAfter}"`);
+assert(/^📚 \d+$/.test(scoreAfter), `el badge de puntaje debería seguir mostrando un número no negativo (las vallas ahora sólo aturden, no restan), salió "${scoreAfter}"`);
 
 assert(errors.length === 0, `errores de consola/página: ${errors.join(' | ')}`);
 
 await close();
-console.log('  Juego de la nube nimbus OK — el canvas existe con ancho real dentro de la firma ámbar, el loop dibuja solo y el puntaje sigue vivo tras interactuar');
+console.log('  Juego de la nube nimbus OK — el canvas existe con ancho real, arranca en pantalla de inicio con el fondo de Matrix animando, y tocar para empezar no rompe nada');

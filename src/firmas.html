@@ -40,7 +40,7 @@
       <div class="chz-matrix"></div>
       <div class="chz-terminal-bar">
         <span class="chz-dot chz-dot--r"></span><span class="chz-dot chz-dot--y"></span><span class="chz-dot chz-dot--g"></span>
-        <span class="chz-terminal-label">chelpa.sh</span>
+        <span class="chz-terminal-label">chelpabugs.sh</span>
       </div>
       <div class="chz-ember-line"></div>
       <!-- Mini-juego "matar chinitas": capa aparte, encima del efecto de
@@ -565,21 +565,23 @@
   <div class="chz-card">
     <div class="chz-card-logo">
       <div class="chz-matrix"></div>
-      <!-- Mini-juego "nube voladora" (estilo nube de Goku/rayo, sin
+      <!-- Mini-juego "nube voladora" (estilo nube de Goku/rayo con
+           "usachin" —una mascota león genérica— montado arriba, sin
            reproducir ningún personaje con derechos de autor): un canvas
-           opaco que cubre el mismo cuadro de la matriz de arriba —
-           reemplaza ese efecto visualmente sólo en ESTA copia de la firma
-           (la de la firma principal, #chelpaHazeFooter, sigue con su
-           matriz verde intacta). Click/touch = "aletea" hacia arriba;
-           esquivar montañas/obstáculos, juntar plátanos, y cada cierta
-           distancia aparece un cameo de Kong (🦍) al fondo del camino,
-           después el recorrido sigue solo en loop. Ver initChzNimbusGame
-           en app.js. -->
+           que dibuja su propio fondo de código verde estilo Matrix.
+           Arranca con una pantalla "toca para empezar"; click/touch =
+           "aletea" hacia arriba. Temática educativa: se esquivan vallas
+           de carrera (saltándolas, si no dan un "stun"), se juntan
+           libros/cuadernos (suman "ramos aprobados") y nubes-boost (dan
+           velocidad), y la carne retrasa a usachin. Cada cierta distancia
+           aparece un cameo de Kong (🦍) al fondo del camino. 3 stuns
+           seguidos = game over (muestra los ramos aprobados y espera un
+           toque para reiniciar). Ver initChzNimbusGame en app.js. -->
       <canvas class="chz-nimbus-canvas" id="chzNimbusCanvas" aria-hidden="true"></canvas>
-      <span class="chz-nimbus-score" id="chzNimbusScore">🍌 0</span>
+      <span class="chz-nimbus-score" id="chzNimbusScore">📚 0</span>
       <div class="chz-terminal-bar">
         <span class="chz-dot chz-dot--r"></span><span class="chz-dot chz-dot--y"></span><span class="chz-dot chz-dot--g"></span>
-        <span class="chz-terminal-label">chelpa.sh</span>
+        <span class="chz-terminal-label">usachin.sh</span>
       </div>
       <div class="chz-ember-line"></div>
     </div>
