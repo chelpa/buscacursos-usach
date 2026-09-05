@@ -1,0 +1,58 @@
+{
+  "352409": {
+    "codigo": "352409",
+    "asignatura": "Álgebra Lineal",
+    "creadaEn": "2026-08-10T14:00:00.000Z",
+    "entries": [
+      {
+        "id": "seed1",
+        "tipo": "apunte",
+        "fecha": "2026-08-12",
+        "contenido": "Repasé matrices y determinantes por mi cuenta usando el apunte del profesor Meza del semestre pasado. La regla de Sarrus solo sirve para 3x3 — para matrices más grandes toca expansión por cofactores.",
+        "link": "",
+        "creadoEn": "2026-08-12T20:30:00.000Z"
+      },
+      {
+        "id": "seed2",
+        "tipo": "recurso",
+        "fecha": "2026-08-15",
+        "contenido": "Serie de videos de 3Blue1Brown, 'Essence of Linear Algebra' — muy buena intuición visual de transformaciones lineales antes de meterse en la parte más algebraica del ramo.",
+        "link": "https://www.3blue1brown.com/topics/linear-algebra",
+        "creadoEn": "2026-08-15T09:10:00.000Z"
+      },
+      {
+        "id": "seed3",
+        "tipo": "duda",
+        "fecha": "2026-08-18",
+        "contenido": "¿Cuál es la diferencia práctica entre autovalores y valores singulares? En los apuntes que encontré los usan casi como sinónimos y no me queda claro cuándo se ocupa cada uno.",
+        "link": "",
+        "estado": "pendiente",
+        "creadoEn": "2026-08-18T22:05:00.000Z"
+      }
+    ]
+  },
+  "352406": {
+    "codigo": "352406",
+    "asignatura": "Contabilidad General",
+    "creadaEn": "2026-08-11T13:00:00.000Z",
+    "entries": [
+      {
+        "id": "seed4",
+        "tipo": "ejercicio",
+        "fecha": "2026-08-14",
+        "contenido": "Practiqué asientos contables básicos (activo/pasivo/patrimonio) con un set de ejercicios de un curso abierto. Me costó al principio distinguir cuándo una cuenta se carga al debe o al haber, pero después de ~15 ejercicios ya sale casi automático.",
+        "link": "",
+        "creadoEn": "2026-08-14T18:40:00.000Z"
+      },
+      {
+        "id": "seed5",
+        "tipo": "duda",
+        "fecha": "2026-08-09",
+        "contenido": "¿El libro diario y el libro mayor se llevan en paralelo o uno se arma a partir del otro?",
+        "link": "",
+        "estado": "resuelta",
+        "creadoEn": "2026-08-09T11:00:00.000Z"
+      }
+    ]
+  }
+}
