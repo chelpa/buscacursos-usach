@@ -10,7 +10,7 @@ versionados acá y se corren todos juntos con un solo comando.
 
 ```
 node build.js          # genera/actualiza index.html
-node tests/run-all.mjs # corre los 9 tests en orden, reporta un resumen
+node tests/run-all.mjs # corre los 10 tests en orden, reporta un resumen
 ```
 
 Sale con código 1 (y falla en CI, si algún día hay CI) si algún test
@@ -67,6 +67,11 @@ PLAYWRIGHT_CHROMIUM_PATH=/opt/pw-browsers/chromium node tests/run-all.mjs
   vacía sola; el formulario del overlay guarda una entrada nueva; quitar
   el ramo y volver a agregarlo no duplica la bitácora ni pierde lo ya
   escrito (incluido el estado "resuelta" de una duda).
+- `10-fuentes-grafiti.mjs` — el `@import` de Google Fonts para "Rubik Wet
+  Paint"/"Rubik Burned" (las fuentes del grafiti "CHELPA HAZE") está
+  registrado como regla válida en el CSSOM — protege contra que alguien
+  vuelva a mover ese `@import` a mitad de `styles.css` (ahí es inválido
+  por spec de CSS y el navegador lo descarta sin ningún error visible).
 
 Cada test es autocontenido: abre su propia página, hace sus propias
 aserciones (con `assert`/`assertEqual` de `tests/lib/harness.mjs`), y

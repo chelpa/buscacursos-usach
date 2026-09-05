@@ -127,6 +127,28 @@ cambios de verdad (diseño, lógica, catálogo) siempre van en
 `buscacursos-usach-alpha` — editar `beta_en_prod` a mano se pierde en el
 próximo export.
 
+## Bug real encontrado y corregido: el grafiti "CHELPA HAZE" no se veía en el sitio publicado
+
+El usuario lo encontró comparando el sitio ya subido a GitHub Pages
+contra una captura de referencia: el texto "CHELPA HAZE" salía en una
+tipografía cursiva genérica en vez del grafiti grueso esperado. Causa
+raíz: las fuentes 'Rubik Wet Paint'/'Rubik Burned' se cargan con
+`@import url(...)` — y por spec de CSS, un `@import` que no es la
+**primera regla** de su hoja de estilos es inválido, y el navegador lo
+descarta al parsear, **sin ningún error en consola**. Antes de esta
+reestructuración, esas fuentes vivían en 2 bloques `<style>` propios
+embebidos en el HTML (uno por cada copia de la firma) — cada `<style>`
+es su propia hoja de estilos, así que ahí el `@import` sí era válido (el
+primero de esa hoja). Al consolidar esos bloques dentro de un único
+`styles.css` (ver más abajo, "Por qué esta carpeta"), ese mismo `@import`
+quedó a mitad de archivo → inválido → nunca cargaba.
+
+**Fix**: todos los `@import` de fuentes ahora viven juntos en la línea 1
+de `styles.css`, antes de cualquier otra regla. Se agregó
+`tests/10-fuentes-grafiti.mjs` para que esto no vuelva a pasar
+desapercibido — revisa el CSSOM ya parseado (no necesita red real, así
+que corre igual en un sandbox sin acceso a Google Fonts).
+
 ## Por qué esta carpeta (y por qué no Vite)
 
 El proyecto original vivía en un solo `template.html` de ~450KB con

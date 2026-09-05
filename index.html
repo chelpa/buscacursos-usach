@@ -37,7 +37,24 @@
   }catch(e){}
 </script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+  /* TODOS los @import de fuentes tienen que vivir juntos, acá arriba,
+     antes de cualquier otra regla — es requisito del spec de CSS ("un
+     @import que no sea la primera regla de la hoja de estilos es
+     inválido y el navegador lo ignora en silencio, sin ningún error en
+     consola"). Antes de la reestructuración a esta carpeta, las fuentes
+     'Rubik Burned'/'Rubik Wet Paint' vivían en 2 bloques <style> propios,
+     embebidos dentro de #chelpaHazeFooter y #chelpaHazeFooterMallaOriginal
+     en el HTML — cada uno era su PROPIA hoja de estilos, así que ese
+     @import sí era válido ahí (el primero de esa hoja). Al consolidar
+     esos 2 bloques <style> dentro de este único styles.css (ver
+     README.md), ese mismo @import quedó a mitad de archivo → inválido →
+     el navegador nunca cargaba 'Rubik Wet Paint'/'Rubik Burned', y el
+     texto "Haze" de las 3 firmas caía al font-family de respaldo
+     ("cursive" genérico) en vez del grafiti real. Bug real, encontrado
+     por el usuario comparando el sitio ya publicado contra una captura
+     de referencia — no es un problema de Tailwind, es este @import mal
+     ubicado. Fix: todos los @import consolidados en uno solo, acá. */
+  @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600&family=Rubik+Burned&family=Rubik+Wet+Paint&family=Fira+Code:wght@400;700&display=swap');
 
   :root{
     color-scheme: light;
@@ -1396,7 +1413,10 @@
   }
 
 /* ---- CSS que antes vivía embebido dentro de #chelpaHazeFooter ---- */
-  @import url('https://fonts.googleapis.com/css2?family=Rubik+Burned&family=Rubik+Wet+Paint&family=Fira+Code:wght@400;700&display=swap');
+  /* El @import de 'Rubik Burned'/'Rubik Wet Paint'/'Fira Code' que vivía
+     acá se movió a la línea 1 de este archivo — un @import a mitad de
+     hoja de estilos es inválido y el navegador lo ignora (ver el
+     comentario grande junto al @import de arriba para el detalle). */
 
   #chelpaHazeFooter{
     --chz-ink:#f2f2f0;
@@ -1637,7 +1657,9 @@
   }
 
 /* ---- CSS que antes vivía embebido dentro de #chelpaHazeFooterMallaOriginal ---- */
-  @import url('https://fonts.googleapis.com/css2?family=Rubik+Burned&family=Rubik+Wet+Paint&family=Fira+Code:wght@400;700&display=swap');
+  /* Mismo caso que en #chelpaHazeFooter arriba: el @import de estas
+     fuentes se movió a la línea 1 de este archivo (a mitad de hoja de
+     estilos era inválido y el navegador lo ignoraba en silencio). */
 
   #chelpaHazeFooterMallaOriginal{
     --chz-ink:#f2f2f0;
