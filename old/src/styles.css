@@ -253,15 +253,6 @@
   :root[data-theme="amigable"] .picker-toggle-btn{ display:flex; }
   :root[data-theme="amigable"] #picker-panel[data-open="false"] #picker-body{ display:none; }
 
-  /* Mismo trato para "Mi horario" (#rail-right-panel): en modo amigable
-     arranca colapsado — sólo se ven el título y las pestañas Horario/
-     Calendario; apretar cualquiera de las 2 pestañas lo despliega (ver
-     initRailScheduleCollapse en app.js), y el chevron sirve para volver a
-     colapsarlo. Fuera de modo amigable, #rail-sched-toggle queda oculto
-     (misma regla .picker-toggle-btn de arriba) y el panel se ve igual que
-     siempre. */
-  :root[data-theme="amigable"] #rail-right-panel[data-open="false"] #rail-sched-body{ display:none; }
-
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
@@ -479,32 +470,6 @@
   }
   .guide-panel.inline{ box-shadow:none; }
 
-  /* ---------- Guía reubicada arriba, en modo amigable ----------
-     #guide-slot-topbar vive vacío (sin ningún efecto visual) en el resto
-     de los temas — initGuidePlacement (app.js) sólo mueve #bottom-guide-wrap
-     acá cuando el tema es "amigable". El mismo <section class="guide-panel">
-     se ve distinto según dónde está parado: acá arriba se comprime a un
-     botón de una sola línea (sin el subtítulo "Guía rápida en 5 pasos…",
-     con el h2 mucho más chico) en vez de la tarjeta grande de siempre —
-     al desplegarse, el contenido (ilustración + pasos) sigue siendo
-     exactamente el mismo, sólo cambia el encabezado colapsado. */
-  #guide-slot-topbar:not(:empty){ max-width:1440px; margin:0 auto; padding:10px 20px 0; }
-  /* render() (más abajo, sección "Render: resultados") pone
-     bottom-guide-wrap.style.display='none' mientras no haya ningún filtro
-     activo (usa en su lugar la copia embebida de welcomeGuideHTML() dentro
-     de #results) — pero acá arriba, junto a la barra de búsqueda, el botón
-     debe verse SIEMPRE en modo amigable, sea cual sea el estado de los
-     resultados, así que se fuerza por encima de ese estilo inline. */
-  #guide-slot-topbar .bottom-guide-wrap{ display:block !important; }
-  #guide-slot-topbar .guide-panel{ box-shadow:none; }
-  #guide-slot-topbar .guide-head{ padding:9px 14px; gap:8px; }
-  #guide-slot-topbar .guide-head .t p{ display:none; }
-  #guide-slot-topbar .guide-head h2{
-    font-family:'Nunito Sans', sans-serif; font-size:13px; font-weight:700;
-    text-transform:none; letter-spacing:normal; color:var(--ink);
-  }
-  #guide-slot-topbar .guide-head svg{ width:14px; height:14px; }
-
   /* ---------- Guide illustration (mock) ---------- */
   .guide-mock{
     margin:0 18px 18px; padding-top:16px; border-top:1px solid var(--border);
@@ -643,8 +608,7 @@
   }
   .picker-toggle-btn:hover{ color:var(--ink); }
   .picker-toggle-btn svg{ transition:transform .18s ease; }
-  #picker-panel[data-open="true"] .picker-toggle-btn svg,
-  #rail-right-panel[data-open="true"] .picker-toggle-btn svg{ transform:rotate(180deg); }
+  #picker-panel[data-open="true"] .picker-toggle-btn svg{ transform:rotate(180deg); }
 
   .link-btn{
     background:none;border:0;color:var(--accent-strong);font-weight:700;font-size:12px;cursor:pointer;padding:0;
@@ -1004,56 +968,6 @@
     color:var(--ink-faint); margin:0 0 14px; text-align:center;
   }
 
-  /* ---------- Barra "pipeline" decorativa (build → lint → test → deploy),
-     a pedido del usuario: va debajo de la firma nano de arriba (la que
-     muestra "malla_grid.html · grafo" colapsada), antes de la copia de la
-     firma original al fondo de la Malla. No es un CI real — initChzPipeline
-     en app.js sólo cicla los 4 estados con setTimeout en loop, para
-     sentirse coherente con el resto de las firmas "dev" oscuras del sitio
-     (por eso tampoco usa las variables de tema, igual que .malla-footer-preview
-     de arriba). ---------- */
-  .chz-pipeline{
-    max-width:1500px; margin:22px auto 0; padding:16px 18px;
-    border-radius:14px; background:#0a0a0a; border:1px solid #262626;
-    box-shadow:0 12px 30px rgba(0,0,0,.35);
-    font-family:'IBM Plex Mono',monospace;
-  }
-  .chz-pipeline-head{
-    display:flex; align-items:center; justify-content:space-between; gap:10px;
-    margin:0 0 14px; font-size:11px; color:#8a8a86;
-  }
-  .chz-pipeline-run{ color:#e0ac54; }
-  .chz-pipeline-stages{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-  .chz-pipeline-stage{
-    display:flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px;
-    background:#141414; border:1px solid #262626; font-size:11px; color:#c9c9c6;
-    transition:border-color .25s, color .25s;
-  }
-  .chz-pipeline-dot{
-    width:8px; height:8px; border-radius:50%; background:#3a3a3a; display:inline-block;
-    transition:background-color .25s, box-shadow .25s;
-  }
-  .chz-pipeline-stage--running{ border-color:#5a4514; color:#f2c14e; }
-  .chz-pipeline-stage--running .chz-pipeline-dot{
-    background:#febc2e; box-shadow:0 0 8px rgba(254,188,46,.7);
-    animation:chzPipelinePulse 1s ease-in-out infinite;
-  }
-  @keyframes chzPipelinePulse{ 0%,100%{ opacity:1; } 50%{ opacity:.45; } }
-  .chz-pipeline-stage--done{ border-color:#1e4a24; color:#7fd894; }
-  .chz-pipeline-stage--done .chz-pipeline-dot{
-    background:#28c840; box-shadow:0 0 6px rgba(40,200,64,.55);
-  }
-  .chz-pipeline-arrow{ color:#3a3a3a; font-size:12px; }
-  .chz-pipeline-status{ margin:12px 0 0; font-size:11px; color:#8a8a86; min-height:14px; }
-  .chz-pipeline-status--ok{ color:#7fd894; }
-  @media (max-width:480px){
-    .chz-pipeline-stage{ font-size:10px; padding:5px 8px; }
-    .chz-pipeline-head{ font-size:10px; }
-  }
-  @media (prefers-reduced-motion: reduce){
-    .chz-pipeline-stage--running .chz-pipeline-dot{ animation:none; }
-  }
-
   /* ---------- Firma nano ahora colapsable, igual patrón que #chelpaHazeFooter
      en el inicio: barra "Sitio en Construcción // WIP v0.9" cerrada por
      defecto, al apretarla despliega el mensaje de "sección en construcción"
@@ -1185,17 +1099,6 @@
     .big-schedule-wrap .week-grid .slot{ min-height:44px; }
     .big-schedule-wrap .week-grid .hdr{ font-size:11px; }
     .big-schedule-wrap .week-grid .rowlabel{ font-size:10px; }
-    /* Este panel "grande" queda siempre visible sobre el footer, en
-       cualquier ancho (ver comentario más arriba) — en celular real eso
-       significa que aparece una SEGUNDA vez, más abajo, duplicando el
-       panel compacto de arriba (el que se movió a #mihorario-slot-mobile).
-       Achicar acá los números de secciones/créditos/choques (mismo tamaño
-       que ya usa esa versión compacta, ver .mobile-split #rail-right-panel
-       .sched-stat más arriba) para que esta segunda aparición no se sienta
-       tan pesada visualmente en una pantalla angosta. */
-    .big-schedule-wrap .sched-summary{ gap:14px; margin-bottom:10px; flex-wrap:wrap; row-gap:4px; }
-    .big-schedule-wrap .sched-stat .n{ font-size:16px; }
-    .big-schedule-wrap .sched-stat .l{ font-size:9px; }
   }
 
   footer{
@@ -1624,20 +1527,10 @@
     position:relative; width:min(320px, 90vw); border-radius:14px; overflow:hidden;
     background:#0d0d0d; border:1px solid #262626; box-shadow:0 12px 30px rgba(0,0,0,.45);
     align-self:flex-start;
-    /* Brillo verde matrix pulsando de fondo, a pedido del usuario ("más
-       verde estilo matrix") — se suma a la sombra de siempre, no la
-       reemplaza. */
-    animation:chzCardGlow 3.2s ease-in-out infinite;
-  }
-  @keyframes chzCardGlow{
-    0%,100%{ box-shadow:0 12px 30px rgba(0,0,0,.45), 0 0 0 rgba(74,222,128,0); }
-    50%{ box-shadow:0 12px 30px rgba(0,0,0,.45), 0 0 22px rgba(74,222,128,.35); }
   }
   #chelpaHazeFooter .chz-matrix{
     height:150px; position:relative; overflow:hidden;
-    /* Líneas más brillantes que antes (.16 → .34 de opacidad) — mismo
-       patrón, más intensidad de verde. */
-    background-image:repeating-linear-gradient(90deg, rgba(74,222,128,.34) 0 2px, transparent 2px 18px);
+    background-image:repeating-linear-gradient(90deg, rgba(74,222,128,.16) 0 2px, transparent 2px 18px);
     background-size:18px 100%;
     animation:chzMatrixDrift 6s linear infinite;
   }
@@ -1646,18 +1539,6 @@
     background:linear-gradient(180deg, rgba(10,10,10,0) 0%, rgba(10,10,10,.92) 100%);
   }
   @keyframes chzMatrixDrift{ from{ background-position:0 0; } to{ background-position:0 220px; } }
-
-  /* "Lluvia" de glifos verdes cayendo dentro de .chz-matrix (que ya tiene
-     overflow:hidden y position:relative) — efecto tipo "digital rain" de
-     Matrix, además de las líneas de fondo. Ver initChzMatrixRain en
-     app.js. */
-  #chelpaHazeFooter .chz-matrix-glyph{
-    position:absolute; top:-18px; font-family:'IBM Plex Mono',monospace; font-size:12px;
-    color:#4ade80; text-shadow:0 0 6px rgba(74,222,128,.85);
-    animation-name:chzMatrixFall; animation-timing-function:linear; animation-fill-mode:forwards;
-    opacity:.85; pointer-events:none; z-index:1;
-  }
-  @keyframes chzMatrixFall{ from{ transform:translateY(0); opacity:.9; } to{ transform:translateY(170px); opacity:0; } }
 
   #chelpaHazeFooter .chz-terminal-bar{
     display:flex; align-items:center; gap:6px; padding:8px 12px; background:#141414;
@@ -1678,75 +1559,6 @@
   @keyframes chzFlicker{
     0%,100%{ background-position:0% 50%; opacity:.85; }
     50%{ background-position:100% 50%; opacity:1; }
-  }
-
-  /* Mini-juego "matar chinitas": capa aparte encima del cuadro chelpa.sh
-     (matrix + terminal-bar + ember-line), sin reemplazar nada de eso —
-     pointer-events:none en la capa para no bloquear nada del cuadro, y
-     pointer-events:auto sólo en cada bicho individual. Ver initChzBugGame
-     en app.js. */
-  #chelpaHazeFooter .chz-bug-layer{
-    position:absolute; inset:0; z-index:6; overflow:hidden; pointer-events:none;
-  }
-  #chelpaHazeFooter .chz-bug{
-    position:absolute; z-index:6; font-size:20px; line-height:1;
-    cursor:pointer; pointer-events:auto; user-select:none;
-    -webkit-tap-highlight-color:transparent; touch-action:manipulation;
-    filter:drop-shadow(0 1px 2px rgba(0,0,0,.55));
-    animation:chzBugIn .18s ease-out;
-  }
-  @keyframes chzBugIn{ from{ transform:scale(.4); opacity:0; } to{ transform:scale(1); opacity:1; } }
-  #chelpaHazeFooter .chz-bug--squash{ animation:chzBugSquash .22s ease-out forwards; pointer-events:none; }
-  @keyframes chzBugSquash{ to{ transform:scale(1.6) rotate(20deg); opacity:0; } }
-  #chelpaHazeFooter .chz-bug-score{
-    position:absolute; top:6px; right:8px; z-index:7;
-    font-family:'IBM Plex Mono',monospace; font-size:11px; color:#e5e7eb;
-    background:rgba(0,0,0,.55); border:1px solid #262626; border-radius:999px;
-    padding:2px 8px; letter-spacing:.02em; pointer-events:none;
-  }
-  #chelpaHazeFooter .chz-bug-score--bad{ color:#ff8a80; }
-  #chelpaHazeFooter .chz-bug-points{
-    position:absolute; z-index:8; font-family:'IBM Plex Mono',monospace;
-    font-weight:700; font-size:12px; pointer-events:none;
-    animation:chzBugFloat .65s ease-out forwards;
-  }
-  @keyframes chzBugFloat{ from{ opacity:1; transform:translateY(0); } to{ opacity:0; transform:translateY(-22px); } }
-
-  /* "Disparo"/explosión al aplastar un bicho, a pedido del usuario ("como
-     si fuera un disparo") — un flash circular + chispas que salen
-     disparadas desde el punto de impacto. Se suma a la animación de
-     squash de arriba, no la reemplaza. El color depende de si el bicho
-     sumó o restó puntaje (pedido del usuario): --good = verde (bicho
-     bueno), --bad = rojo (chinita roja). Ver spawnExplosion() dentro de
-     initChzBugGame en app.js. */
-  #chelpaHazeFooter .chz-bug-flash{
-    position:absolute; z-index:9; width:26px; height:26px; margin:-13px 0 0 -13px;
-    border-radius:50%; pointer-events:none;
-    animation:chzBugFlash .28s ease-out forwards;
-  }
-  #chelpaHazeFooter .chz-bug-flash--good{
-    background:radial-gradient(circle, rgba(255,255,255,.95) 0%, rgba(74,222,128,.9) 35%, rgba(22,163,74,.55) 60%, transparent 75%);
-  }
-  #chelpaHazeFooter .chz-bug-flash--bad{
-    background:radial-gradient(circle, rgba(255,255,255,.95) 0%, rgba(255,95,95,.9) 35%, rgba(185,28,28,.55) 60%, transparent 75%);
-  }
-  @keyframes chzBugFlash{ from{ transform:scale(.3); opacity:1; } to{ transform:scale(1.9); opacity:0; } }
-  #chelpaHazeFooter .chz-bug-spark{
-    position:absolute; z-index:9; width:5px; height:5px; margin:-2.5px 0 0 -2.5px;
-    border-radius:50%; pointer-events:none;
-    animation:chzBugSpark .42s ease-out forwards;
-  }
-  #chelpaHazeFooter .chz-bug-spark--good{
-    background:radial-gradient(circle, #eafff0 0%, #4ade80 55%, #16a34a 100%);
-    box-shadow:0 0 5px rgba(74,222,128,.8);
-  }
-  #chelpaHazeFooter .chz-bug-spark--bad{
-    background:radial-gradient(circle, #fff0f0 0%, #ff5f5f 55%, #b91c1c 100%);
-    box-shadow:0 0 5px rgba(255,95,95,.8);
-  }
-  @keyframes chzBugSpark{
-    from{ transform:translate(0,0) scale(1); opacity:1; }
-    to{ transform:translate(var(--dx), var(--dy)) scale(.2); opacity:0; }
   }
 
   #chelpaHazeFooter .chz-card-info{ max-width:360px; padding-top:6px; }
@@ -1800,15 +1612,9 @@
   }
   @media (prefers-reduced-motion: reduce){
     #chelpaHazeFooter .chz-matrix,
-    #chelpaHazeFooter .chz-card-logo,
-    #chelpaHazeFooter .chz-matrix-glyph,
     #chelpaHazeFooter .chz-ember-line,
     #chelpaHazeFooter .chz-gear--left,
-    #chelpaHazeFooter .chz-gear--right,
-    #chelpaHazeFooter .chz-bug,
-    #chelpaHazeFooter .chz-bug--squash,
-    #chelpaHazeFooter .chz-bug-flash,
-    #chelpaHazeFooter .chz-bug-spark { animation:none; }
+    #chelpaHazeFooter .chz-gear--right { animation:none; }
   }
 
 /* ---- CSS que antes vivía embebido dentro de #chelpaHazeFooterMallaOriginal ---- */
@@ -1976,23 +1782,6 @@
     background:linear-gradient(180deg, rgba(10,10,10,0) 0%, rgba(10,10,10,.92) 100%);
   }
   @keyframes chzMatrixDrift{ from{ background-position:0 0; } to{ background-position:0 220px; } }
-
-  /* Mini-juego "nube voladora": canvas opaco del mismo alto que
-     .chz-matrix (150px), pegado justo encima — la tapa por completo (el
-     efecto de matriz sigue en el DOM, sólo queda oculto acá). Ver
-     initChzNimbusGame en app.js. */
-  #chelpaHazeFooterMallaOriginal .chz-nimbus-canvas{
-    position:absolute; top:0; left:0; right:0; height:150px; width:100%;
-    display:block; cursor:pointer; touch-action:manipulation;
-    -webkit-tap-highlight-color:transparent;
-  }
-  #chelpaHazeFooterMallaOriginal .chz-nimbus-score{
-    position:absolute; top:6px; right:8px; z-index:2;
-    font-family:'IBM Plex Mono',monospace; font-size:11px; color:#3a2a06;
-    background:rgba(255,244,214,.85); border:1px solid #e0ac54; border-radius:999px;
-    padding:2px 8px; letter-spacing:.02em; pointer-events:none;
-  }
-  #chelpaHazeFooterMallaOriginal .chz-nimbus-score--bad{ color:#7a1f0a; }
 
   #chelpaHazeFooterMallaOriginal .chz-terminal-bar{
     display:flex; align-items:center; gap:6px; padding:8px 12px; background:#141414;

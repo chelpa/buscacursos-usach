@@ -10,7 +10,7 @@ versionados acá y se corren todos juntos con un solo comando.
 
 ```
 node build.js          # genera/actualiza index.html
-node tests/run-all.mjs # corre los 15 tests en orden, reporta un resumen
+node tests/run-all.mjs # corre los 10 tests en orden, reporta un resumen
 ```
 
 Sale con código 1 (y falla en CI, si algún día hay CI) si algún test
@@ -72,40 +72,6 @@ PLAYWRIGHT_CHROMIUM_PATH=/opt/pw-browsers/chromium node tests/run-all.mjs
   registrado como regla válida en el CSSOM — protege contra que alguien
   vuelva a mover ese `@import` a mitad de `styles.css` (ahí es inválido
   por spec de CSS y el navegador lo descarta sin ningún error visible).
-- `11-stats-chicos-celular.mjs` — en un viewport de celular real (390px),
-  los números de secciones/créditos/choques del panel "grande" de Mi
-  Horario (el que queda siempre visible sobre el footer) se ven chicos,
-  no con el tamaño de escritorio.
-- `12-juego-chinitas.mjs` — dentro del cuadro "chelpa.sh" (el de la matriz
-  verde) de la firma principal, aparecen bichos solos con el tiempo;
-  aplastar uno cambia el puntaje (+1 si es oruga/hormiga, -3 si es la
-  chinita roja); el badge usa el ícono ☠️ ("contador de insecticida"). El
-  test sólo confirma que el puntaje cambia al aplastar un bicho, sin
-  importar cuál le tocó (es aleatorio).
-- `13-pipeline-malla.mjs` — al fondo de la Malla curricular, debajo de la
-  firma nano ("malla_grid.html · grafo"), hay una barra tipo pipeline
-  (build → lint → test → deploy) que avanza sola en loop sin que el
-  usuario haga nada; el test espera a que llegue solo hasta "deploy" en
-  verde.
-- `14-amigable-acordeones.mjs` — en modo amigable (🎀), "Filtrar por
-  horario libre" y "Mi horario" arrancan colapsados (no expandidos);
-  apretar la pestaña "Horario semanal" despliega "Mi horario" y la
-  flecha lo vuelve a colapsar; la guía "Cómo usar este buscador" se ve
-  como un botón chico debajo de la barra de búsqueda desde el primer
-  momento (incluso sin haber buscado nada todavía), no como la tarjeta
-  grande de siempre.
-- `15-juego-nube-nimbus.mjs` — dentro de la firma ámbar de la Malla
-  (`#chelpaHazeFooterMallaOriginal`), existe un segundo mini-juego
-  distinto del de las chinitas: un canvas (`#chzNimbusCanvas`) con una
-  nube+rayo y "usachin" (mascota león) montado arriba, sobre un fondo de
-  lluvia de código verde estilo Matrix, estilo Dragon Ball Z. El test
-  confirma que el canvas existe con un ancho real de pixeles (protege
-  contra el bug real de "canvas estirado a 1px" que reportó el usuario al
-  refrescar la página con la firma ya abierta), que el puntaje arranca en
-  "🍌 0", que el loop de `requestAnimationFrame` realmente está dibujando
-  (compara dos capturas del canvas en una ventana corta), y que
-  interactuar (aletear con click) no rompe nada ni hace desaparecer el
-  canvas.
 
 Cada test es autocontenido: abre su propia página, hace sus propias
 aserciones (con `assert`/`assertEqual` de `tests/lib/harness.mjs`), y

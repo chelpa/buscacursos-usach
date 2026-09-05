@@ -11,7 +11,7 @@
   
   <span class="chz-preview-title">v</span>
   <span class="chz-preview-sep">·</span>
-  <span class="chz-preview-sub">1.2</span>
+  <span class="chz-preview-sub">1.1</span>
 </div>
 
 <div class="chz-body" id="chz-body" hidden>
@@ -32,7 +32,7 @@
       </div>
       <h3 class="chz-dev-title">Haze</h3>
     </div>
-
+    
   </div>
 
   <div class="chz-card">
@@ -43,13 +43,6 @@
         <span class="chz-terminal-label">chelpa.sh</span>
       </div>
       <div class="chz-ember-line"></div>
-      <!-- Mini-juego "matar chinitas": capa aparte, encima del efecto de
-           matriz verde de arriba — no reemplaza nada, sólo agrega bichos
-           que aparecen solos (🐛/🐜 suman puntos, 🐞 roja resta) y se
-           pueden aplastar con click o touch. Ver initChzBugGame en app.js. -->
-      <div class="chz-bug-layer" id="chzBugLayer" aria-hidden="true">
-        <span class="chz-bug-score" id="chzBugScore">🐛 0</span>
-      </div>
     </div>
     <div class="chz-card-info">
       <span class="chz-open-badge">Open Source</span>
@@ -565,18 +558,6 @@
   <div class="chz-card">
     <div class="chz-card-logo">
       <div class="chz-matrix"></div>
-      <!-- Mini-juego "nube voladora" (estilo nube de Goku/rayo, sin
-           reproducir ningún personaje con derechos de autor): un canvas
-           opaco que cubre el mismo cuadro de la matriz de arriba —
-           reemplaza ese efecto visualmente sólo en ESTA copia de la firma
-           (la de la firma principal, #chelpaHazeFooter, sigue con su
-           matriz verde intacta). Click/touch = "aletea" hacia arriba;
-           esquivar montañas/obstáculos, juntar plátanos, y cada cierta
-           distancia aparece un cameo de Kong (🦍) al fondo del camino,
-           después el recorrido sigue solo en loop. Ver initChzNimbusGame
-           en app.js. -->
-      <canvas class="chz-nimbus-canvas" id="chzNimbusCanvas" aria-hidden="true"></canvas>
-      <span class="chz-nimbus-score" id="chzNimbusScore">🍌 0</span>
       <div class="chz-terminal-bar">
         <span class="chz-dot chz-dot--r"></span><span class="chz-dot chz-dot--y"></span><span class="chz-dot chz-dot--g"></span>
         <span class="chz-terminal-label">chelpa.sh</span>

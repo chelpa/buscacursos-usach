@@ -67,14 +67,6 @@
   </div>
 </div>
 
-<!-- Sólo se usa en modo amigable: initGuidePlacement (app.js) mueve acá
-     #bottom-guide-wrap (la guía "Cómo usar este buscador", que en el resto
-     de los temas vive más abajo, después del resultado/horario — ver esa
-     sección al fondo del archivo) para que quede como un botón chico justo
-     debajo de la barra de búsqueda, en vez de la tarjeta grande de siempre.
-     Vacío y sin ningún efecto en los demás temas. -->
-<div id="guide-slot-topbar"></div>
-
 <div class="layout">
 
   <aside class="rail-left">
@@ -113,21 +105,8 @@
   </main>
 
   <aside class="rail-right">
-    <div class="panel" id="rail-right-panel" data-open="false">
-      <div class="rail-title-row">
-        <p class="rail-title">Mi horario</p>
-        <!-- Chevron para colapsar/desplegar este panel — mismo patrón y
-             misma clase base que #picker-toggle (sólo visible en modo
-             amigable, ver reglas :root[data-theme="amigable"] en la
-             sección del tema). Se abre solo al apretar "Horario semanal"
-             o "Calendario de pruebas" (ver initRailScheduleCollapse en
-             app.js); esta flecha sirve sobre todo para volver a
-             colapsarlo, aunque también lo abre si se aprieta estando
-             cerrado. -->
-        <button class="picker-toggle-btn" id="rail-sched-toggle" type="button" aria-expanded="false" aria-controls="rail-sched-body" title="Mostrar/ocultar Mi horario" aria-label="Mostrar/ocultar Mi horario">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-      </div>
+    <div class="panel" id="rail-right-panel">
+      <p class="rail-title">Mi horario</p>
       <div class="pill-toggle sched-tabs">
         <button id="tab-horario" aria-pressed="true" type="button" title="Horario semanal">
           <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>
@@ -138,26 +117,24 @@
           <span class="tab-label">Calendario de pruebas</span>
         </button>
       </div>
-      <div class="rail-sched-body" id="rail-sched-body">
-        <div class="sched-summary">
-          <div class="sched-stat"><div class="n" id="sum-secc">0</div><div class="l">Secciones</div></div>
-          <div class="sched-stat"><div class="n" id="sum-sct">0</div><div class="l">Créditos SCT</div></div>
-          <div class="sched-stat"><div class="n" id="sum-conf">0</div><div class="l">Choques</div></div>
-        </div>
-        <div class="sched-view" id="view-horario">
-          <div class="week-grid" id="week-grid"></div>
-          <div class="cell-detail" id="cell-detail" hidden></div>
-          <div id="conflict-note-wrap"></div>
-          <div class="selected-list" id="selected-list"></div>
-          <div id="rail-empty-wrap"></div>
-        </div>
-        <div class="sched-view" id="view-examenes" hidden>
-          <div id="exam-cal"></div>
-        </div>
-        <div class="actions-row">
-          <button class="btn-secondary" id="btn-print">Imprimir horario</button>
-          <button class="btn-secondary" id="btn-clear">Vaciar</button>
-        </div>
+      <div class="sched-summary">
+        <div class="sched-stat"><div class="n" id="sum-secc">0</div><div class="l">Secciones</div></div>
+        <div class="sched-stat"><div class="n" id="sum-sct">0</div><div class="l">Créditos SCT</div></div>
+        <div class="sched-stat"><div class="n" id="sum-conf">0</div><div class="l">Choques</div></div>
+      </div>
+      <div class="sched-view" id="view-horario">
+        <div class="week-grid" id="week-grid"></div>
+        <div class="cell-detail" id="cell-detail" hidden></div>
+        <div id="conflict-note-wrap"></div>
+        <div class="selected-list" id="selected-list"></div>
+        <div id="rail-empty-wrap"></div>
+      </div>
+      <div class="sched-view" id="view-examenes" hidden>
+        <div id="exam-cal"></div>
+      </div>
+      <div class="actions-row">
+        <button class="btn-secondary" id="btn-print">Imprimir horario</button>
+        <button class="btn-secondary" id="btn-clear">Vaciar</button>
       </div>
     </div>
   </aside>
@@ -298,42 +275,6 @@
 
     <div class="malla-footer-preview" id="malla-footer-preview">
 <!--__FIRMA_NANO__-->
-    </div>
-
-    <!-- ---------- Barra "pipeline" decorativa (build → lint → test →
-         deploy), a pedido del usuario: va debajo de la firma nano de
-         arriba (la que muestra "malla_grid.html · grafo" cuando está
-         colapsada), dentro de la Malla curricular — no es un CI real, sólo
-         cicla estados solo con setTimeout (ver initChzPipeline en
-         app.js), para sentirse coherente con el resto de las firmas
-         "dev" del sitio. ---------- -->
-    <div class="chz-pipeline" id="chzPipeline">
-      <div class="chz-pipeline-head">
-        <span class="chz-pipeline-label">.github/workflows/deploy.yml</span>
-        <span class="chz-pipeline-run">#212</span>
-      </div>
-      <div class="chz-pipeline-stages">
-        <div class="chz-pipeline-stage chz-pipeline-stage--idle" data-stage="build">
-          <span class="chz-pipeline-dot"></span>
-          <span class="chz-pipeline-name">build</span>
-        </div>
-        <span class="chz-pipeline-arrow" aria-hidden="true">→</span>
-        <div class="chz-pipeline-stage chz-pipeline-stage--idle" data-stage="lint">
-          <span class="chz-pipeline-dot"></span>
-          <span class="chz-pipeline-name">lint</span>
-        </div>
-        <span class="chz-pipeline-arrow" aria-hidden="true">→</span>
-        <div class="chz-pipeline-stage chz-pipeline-stage--idle" data-stage="test">
-          <span class="chz-pipeline-dot"></span>
-          <span class="chz-pipeline-name">test</span>
-        </div>
-        <span class="chz-pipeline-arrow" aria-hidden="true">→</span>
-        <div class="chz-pipeline-stage chz-pipeline-stage--idle" data-stage="deploy">
-          <span class="chz-pipeline-dot"></span>
-          <span class="chz-pipeline-name">deploy</span>
-        </div>
-      </div>
-      <p class="chz-pipeline-status" id="chzPipelineStatus">esperando…</p>
     </div>
 
     <!-- ---------- Copia completa de la firma original del sitio

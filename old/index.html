@@ -292,15 +292,6 @@
   :root[data-theme="amigable"] .picker-toggle-btn{ display:flex; }
   :root[data-theme="amigable"] #picker-panel[data-open="false"] #picker-body{ display:none; }
 
-  /* Mismo trato para "Mi horario" (#rail-right-panel): en modo amigable
-     arranca colapsado — sólo se ven el título y las pestañas Horario/
-     Calendario; apretar cualquiera de las 2 pestañas lo despliega (ver
-     initRailScheduleCollapse en app.js), y el chevron sirve para volver a
-     colapsarlo. Fuera de modo amigable, #rail-sched-toggle queda oculto
-     (misma regla .picker-toggle-btn de arriba) y el panel se ve igual que
-     siempre. */
-  :root[data-theme="amigable"] #rail-right-panel[data-open="false"] #rail-sched-body{ display:none; }
-
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
@@ -518,32 +509,6 @@
   }
   .guide-panel.inline{ box-shadow:none; }
 
-  /* ---------- Guía reubicada arriba, en modo amigable ----------
-     #guide-slot-topbar vive vacío (sin ningún efecto visual) en el resto
-     de los temas — initGuidePlacement (app.js) sólo mueve #bottom-guide-wrap
-     acá cuando el tema es "amigable". El mismo <section class="guide-panel">
-     se ve distinto según dónde está parado: acá arriba se comprime a un
-     botón de una sola línea (sin el subtítulo "Guía rápida en 5 pasos…",
-     con el h2 mucho más chico) en vez de la tarjeta grande de siempre —
-     al desplegarse, el contenido (ilustración + pasos) sigue siendo
-     exactamente el mismo, sólo cambia el encabezado colapsado. */
-  #guide-slot-topbar:not(:empty){ max-width:1440px; margin:0 auto; padding:10px 20px 0; }
-  /* render() (más abajo, sección "Render: resultados") pone
-     bottom-guide-wrap.style.display='none' mientras no haya ningún filtro
-     activo (usa en su lugar la copia embebida de welcomeGuideHTML() dentro
-     de #results) — pero acá arriba, junto a la barra de búsqueda, el botón
-     debe verse SIEMPRE en modo amigable, sea cual sea el estado de los
-     resultados, así que se fuerza por encima de ese estilo inline. */
-  #guide-slot-topbar .bottom-guide-wrap{ display:block !important; }
-  #guide-slot-topbar .guide-panel{ box-shadow:none; }
-  #guide-slot-topbar .guide-head{ padding:9px 14px; gap:8px; }
-  #guide-slot-topbar .guide-head .t p{ display:none; }
-  #guide-slot-topbar .guide-head h2{
-    font-family:'Nunito Sans', sans-serif; font-size:13px; font-weight:700;
-    text-transform:none; letter-spacing:normal; color:var(--ink);
-  }
-  #guide-slot-topbar .guide-head svg{ width:14px; height:14px; }
-
   /* ---------- Guide illustration (mock) ---------- */
   .guide-mock{
     margin:0 18px 18px; padding-top:16px; border-top:1px solid var(--border);
@@ -682,8 +647,7 @@
   }
   .picker-toggle-btn:hover{ color:var(--ink); }
   .picker-toggle-btn svg{ transition:transform .18s ease; }
-  #picker-panel[data-open="true"] .picker-toggle-btn svg,
-  #rail-right-panel[data-open="true"] .picker-toggle-btn svg{ transform:rotate(180deg); }
+  #picker-panel[data-open="true"] .picker-toggle-btn svg{ transform:rotate(180deg); }
 
   .link-btn{
     background:none;border:0;color:var(--accent-strong);font-weight:700;font-size:12px;cursor:pointer;padding:0;
@@ -1043,56 +1007,6 @@
     color:var(--ink-faint); margin:0 0 14px; text-align:center;
   }
 
-  /* ---------- Barra "pipeline" decorativa (build → lint → test → deploy),
-     a pedido del usuario: va debajo de la firma nano de arriba (la que
-     muestra "malla_grid.html · grafo" colapsada), antes de la copia de la
-     firma original al fondo de la Malla. No es un CI real — initChzPipeline
-     en app.js sólo cicla los 4 estados con setTimeout en loop, para
-     sentirse coherente con el resto de las firmas "dev" oscuras del sitio
-     (por eso tampoco usa las variables de tema, igual que .malla-footer-preview
-     de arriba). ---------- */
-  .chz-pipeline{
-    max-width:1500px; margin:22px auto 0; padding:16px 18px;
-    border-radius:14px; background:#0a0a0a; border:1px solid #262626;
-    box-shadow:0 12px 30px rgba(0,0,0,.35);
-    font-family:'IBM Plex Mono',monospace;
-  }
-  .chz-pipeline-head{
-    display:flex; align-items:center; justify-content:space-between; gap:10px;
-    margin:0 0 14px; font-size:11px; color:#8a8a86;
-  }
-  .chz-pipeline-run{ color:#e0ac54; }
-  .chz-pipeline-stages{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-  .chz-pipeline-stage{
-    display:flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px;
-    background:#141414; border:1px solid #262626; font-size:11px; color:#c9c9c6;
-    transition:border-color .25s, color .25s;
-  }
-  .chz-pipeline-dot{
-    width:8px; height:8px; border-radius:50%; background:#3a3a3a; display:inline-block;
-    transition:background-color .25s, box-shadow .25s;
-  }
-  .chz-pipeline-stage--running{ border-color:#5a4514; color:#f2c14e; }
-  .chz-pipeline-stage--running .chz-pipeline-dot{
-    background:#febc2e; box-shadow:0 0 8px rgba(254,188,46,.7);
-    animation:chzPipelinePulse 1s ease-in-out infinite;
-  }
-  @keyframes chzPipelinePulse{ 0%,100%{ opacity:1; } 50%{ opacity:.45; } }
-  .chz-pipeline-stage--done{ border-color:#1e4a24; color:#7fd894; }
-  .chz-pipeline-stage--done .chz-pipeline-dot{
-    background:#28c840; box-shadow:0 0 6px rgba(40,200,64,.55);
-  }
-  .chz-pipeline-arrow{ color:#3a3a3a; font-size:12px; }
-  .chz-pipeline-status{ margin:12px 0 0; font-size:11px; color:#8a8a86; min-height:14px; }
-  .chz-pipeline-status--ok{ color:#7fd894; }
-  @media (max-width:480px){
-    .chz-pipeline-stage{ font-size:10px; padding:5px 8px; }
-    .chz-pipeline-head{ font-size:10px; }
-  }
-  @media (prefers-reduced-motion: reduce){
-    .chz-pipeline-stage--running .chz-pipeline-dot{ animation:none; }
-  }
-
   /* ---------- Firma nano ahora colapsable, igual patrón que #chelpaHazeFooter
      en el inicio: barra "Sitio en Construcción // WIP v0.9" cerrada por
      defecto, al apretarla despliega el mensaje de "sección en construcción"
@@ -1224,17 +1138,6 @@
     .big-schedule-wrap .week-grid .slot{ min-height:44px; }
     .big-schedule-wrap .week-grid .hdr{ font-size:11px; }
     .big-schedule-wrap .week-grid .rowlabel{ font-size:10px; }
-    /* Este panel "grande" queda siempre visible sobre el footer, en
-       cualquier ancho (ver comentario más arriba) — en celular real eso
-       significa que aparece una SEGUNDA vez, más abajo, duplicando el
-       panel compacto de arriba (el que se movió a #mihorario-slot-mobile).
-       Achicar acá los números de secciones/créditos/choques (mismo tamaño
-       que ya usa esa versión compacta, ver .mobile-split #rail-right-panel
-       .sched-stat más arriba) para que esta segunda aparición no se sienta
-       tan pesada visualmente en una pantalla angosta. */
-    .big-schedule-wrap .sched-summary{ gap:14px; margin-bottom:10px; flex-wrap:wrap; row-gap:4px; }
-    .big-schedule-wrap .sched-stat .n{ font-size:16px; }
-    .big-schedule-wrap .sched-stat .l{ font-size:9px; }
   }
 
   footer{
@@ -1663,20 +1566,10 @@
     position:relative; width:min(320px, 90vw); border-radius:14px; overflow:hidden;
     background:#0d0d0d; border:1px solid #262626; box-shadow:0 12px 30px rgba(0,0,0,.45);
     align-self:flex-start;
-    /* Brillo verde matrix pulsando de fondo, a pedido del usuario ("más
-       verde estilo matrix") — se suma a la sombra de siempre, no la
-       reemplaza. */
-    animation:chzCardGlow 3.2s ease-in-out infinite;
-  }
-  @keyframes chzCardGlow{
-    0%,100%{ box-shadow:0 12px 30px rgba(0,0,0,.45), 0 0 0 rgba(74,222,128,0); }
-    50%{ box-shadow:0 12px 30px rgba(0,0,0,.45), 0 0 22px rgba(74,222,128,.35); }
   }
   #chelpaHazeFooter .chz-matrix{
     height:150px; position:relative; overflow:hidden;
-    /* Líneas más brillantes que antes (.16 → .34 de opacidad) — mismo
-       patrón, más intensidad de verde. */
-    background-image:repeating-linear-gradient(90deg, rgba(74,222,128,.34) 0 2px, transparent 2px 18px);
+    background-image:repeating-linear-gradient(90deg, rgba(74,222,128,.16) 0 2px, transparent 2px 18px);
     background-size:18px 100%;
     animation:chzMatrixDrift 6s linear infinite;
   }
@@ -1685,18 +1578,6 @@
     background:linear-gradient(180deg, rgba(10,10,10,0) 0%, rgba(10,10,10,.92) 100%);
   }
   @keyframes chzMatrixDrift{ from{ background-position:0 0; } to{ background-position:0 220px; } }
-
-  /* "Lluvia" de glifos verdes cayendo dentro de .chz-matrix (que ya tiene
-     overflow:hidden y position:relative) — efecto tipo "digital rain" de
-     Matrix, además de las líneas de fondo. Ver initChzMatrixRain en
-     app.js. */
-  #chelpaHazeFooter .chz-matrix-glyph{
-    position:absolute; top:-18px; font-family:'IBM Plex Mono',monospace; font-size:12px;
-    color:#4ade80; text-shadow:0 0 6px rgba(74,222,128,.85);
-    animation-name:chzMatrixFall; animation-timing-function:linear; animation-fill-mode:forwards;
-    opacity:.85; pointer-events:none; z-index:1;
-  }
-  @keyframes chzMatrixFall{ from{ transform:translateY(0); opacity:.9; } to{ transform:translateY(170px); opacity:0; } }
 
   #chelpaHazeFooter .chz-terminal-bar{
     display:flex; align-items:center; gap:6px; padding:8px 12px; background:#141414;
@@ -1717,75 +1598,6 @@
   @keyframes chzFlicker{
     0%,100%{ background-position:0% 50%; opacity:.85; }
     50%{ background-position:100% 50%; opacity:1; }
-  }
-
-  /* Mini-juego "matar chinitas": capa aparte encima del cuadro chelpa.sh
-     (matrix + terminal-bar + ember-line), sin reemplazar nada de eso —
-     pointer-events:none en la capa para no bloquear nada del cuadro, y
-     pointer-events:auto sólo en cada bicho individual. Ver initChzBugGame
-     en app.js. */
-  #chelpaHazeFooter .chz-bug-layer{
-    position:absolute; inset:0; z-index:6; overflow:hidden; pointer-events:none;
-  }
-  #chelpaHazeFooter .chz-bug{
-    position:absolute; z-index:6; font-size:20px; line-height:1;
-    cursor:pointer; pointer-events:auto; user-select:none;
-    -webkit-tap-highlight-color:transparent; touch-action:manipulation;
-    filter:drop-shadow(0 1px 2px rgba(0,0,0,.55));
-    animation:chzBugIn .18s ease-out;
-  }
-  @keyframes chzBugIn{ from{ transform:scale(.4); opacity:0; } to{ transform:scale(1); opacity:1; } }
-  #chelpaHazeFooter .chz-bug--squash{ animation:chzBugSquash .22s ease-out forwards; pointer-events:none; }
-  @keyframes chzBugSquash{ to{ transform:scale(1.6) rotate(20deg); opacity:0; } }
-  #chelpaHazeFooter .chz-bug-score{
-    position:absolute; top:6px; right:8px; z-index:7;
-    font-family:'IBM Plex Mono',monospace; font-size:11px; color:#e5e7eb;
-    background:rgba(0,0,0,.55); border:1px solid #262626; border-radius:999px;
-    padding:2px 8px; letter-spacing:.02em; pointer-events:none;
-  }
-  #chelpaHazeFooter .chz-bug-score--bad{ color:#ff8a80; }
-  #chelpaHazeFooter .chz-bug-points{
-    position:absolute; z-index:8; font-family:'IBM Plex Mono',monospace;
-    font-weight:700; font-size:12px; pointer-events:none;
-    animation:chzBugFloat .65s ease-out forwards;
-  }
-  @keyframes chzBugFloat{ from{ opacity:1; transform:translateY(0); } to{ opacity:0; transform:translateY(-22px); } }
-
-  /* "Disparo"/explosión al aplastar un bicho, a pedido del usuario ("como
-     si fuera un disparo") — un flash circular + chispas que salen
-     disparadas desde el punto de impacto. Se suma a la animación de
-     squash de arriba, no la reemplaza. El color depende de si el bicho
-     sumó o restó puntaje (pedido del usuario): --good = verde (bicho
-     bueno), --bad = rojo (chinita roja). Ver spawnExplosion() dentro de
-     initChzBugGame en app.js. */
-  #chelpaHazeFooter .chz-bug-flash{
-    position:absolute; z-index:9; width:26px; height:26px; margin:-13px 0 0 -13px;
-    border-radius:50%; pointer-events:none;
-    animation:chzBugFlash .28s ease-out forwards;
-  }
-  #chelpaHazeFooter .chz-bug-flash--good{
-    background:radial-gradient(circle, rgba(255,255,255,.95) 0%, rgba(74,222,128,.9) 35%, rgba(22,163,74,.55) 60%, transparent 75%);
-  }
-  #chelpaHazeFooter .chz-bug-flash--bad{
-    background:radial-gradient(circle, rgba(255,255,255,.95) 0%, rgba(255,95,95,.9) 35%, rgba(185,28,28,.55) 60%, transparent 75%);
-  }
-  @keyframes chzBugFlash{ from{ transform:scale(.3); opacity:1; } to{ transform:scale(1.9); opacity:0; } }
-  #chelpaHazeFooter .chz-bug-spark{
-    position:absolute; z-index:9; width:5px; height:5px; margin:-2.5px 0 0 -2.5px;
-    border-radius:50%; pointer-events:none;
-    animation:chzBugSpark .42s ease-out forwards;
-  }
-  #chelpaHazeFooter .chz-bug-spark--good{
-    background:radial-gradient(circle, #eafff0 0%, #4ade80 55%, #16a34a 100%);
-    box-shadow:0 0 5px rgba(74,222,128,.8);
-  }
-  #chelpaHazeFooter .chz-bug-spark--bad{
-    background:radial-gradient(circle, #fff0f0 0%, #ff5f5f 55%, #b91c1c 100%);
-    box-shadow:0 0 5px rgba(255,95,95,.8);
-  }
-  @keyframes chzBugSpark{
-    from{ transform:translate(0,0) scale(1); opacity:1; }
-    to{ transform:translate(var(--dx), var(--dy)) scale(.2); opacity:0; }
   }
 
   #chelpaHazeFooter .chz-card-info{ max-width:360px; padding-top:6px; }
@@ -1839,15 +1651,9 @@
   }
   @media (prefers-reduced-motion: reduce){
     #chelpaHazeFooter .chz-matrix,
-    #chelpaHazeFooter .chz-card-logo,
-    #chelpaHazeFooter .chz-matrix-glyph,
     #chelpaHazeFooter .chz-ember-line,
     #chelpaHazeFooter .chz-gear--left,
-    #chelpaHazeFooter .chz-gear--right,
-    #chelpaHazeFooter .chz-bug,
-    #chelpaHazeFooter .chz-bug--squash,
-    #chelpaHazeFooter .chz-bug-flash,
-    #chelpaHazeFooter .chz-bug-spark { animation:none; }
+    #chelpaHazeFooter .chz-gear--right { animation:none; }
   }
 
 /* ---- CSS que antes vivía embebido dentro de #chelpaHazeFooterMallaOriginal ---- */
@@ -2015,23 +1821,6 @@
     background:linear-gradient(180deg, rgba(10,10,10,0) 0%, rgba(10,10,10,.92) 100%);
   }
   @keyframes chzMatrixDrift{ from{ background-position:0 0; } to{ background-position:0 220px; } }
-
-  /* Mini-juego "nube voladora": canvas opaco del mismo alto que
-     .chz-matrix (150px), pegado justo encima — la tapa por completo (el
-     efecto de matriz sigue en el DOM, sólo queda oculto acá). Ver
-     initChzNimbusGame en app.js. */
-  #chelpaHazeFooterMallaOriginal .chz-nimbus-canvas{
-    position:absolute; top:0; left:0; right:0; height:150px; width:100%;
-    display:block; cursor:pointer; touch-action:manipulation;
-    -webkit-tap-highlight-color:transparent;
-  }
-  #chelpaHazeFooterMallaOriginal .chz-nimbus-score{
-    position:absolute; top:6px; right:8px; z-index:2;
-    font-family:'IBM Plex Mono',monospace; font-size:11px; color:#3a2a06;
-    background:rgba(255,244,214,.85); border:1px solid #e0ac54; border-radius:999px;
-    padding:2px 8px; letter-spacing:.02em; pointer-events:none;
-  }
-  #chelpaHazeFooterMallaOriginal .chz-nimbus-score--bad{ color:#7a1f0a; }
 
   #chelpaHazeFooterMallaOriginal .chz-terminal-bar{
     display:flex; align-items:center; gap:6px; padding:8px 12px; background:#141414;
@@ -2322,14 +2111,6 @@
   </div>
 </div>
 
-<!-- Sólo se usa en modo amigable: initGuidePlacement (app.js) mueve acá
-     #bottom-guide-wrap (la guía "Cómo usar este buscador", que en el resto
-     de los temas vive más abajo, después del resultado/horario — ver esa
-     sección al fondo del archivo) para que quede como un botón chico justo
-     debajo de la barra de búsqueda, en vez de la tarjeta grande de siempre.
-     Vacío y sin ningún efecto en los demás temas. -->
-<div id="guide-slot-topbar"></div>
-
 <div class="layout">
 
   <aside class="rail-left">
@@ -2368,21 +2149,8 @@
   </main>
 
   <aside class="rail-right">
-    <div class="panel" id="rail-right-panel" data-open="false">
-      <div class="rail-title-row">
-        <p class="rail-title">Mi horario</p>
-        <!-- Chevron para colapsar/desplegar este panel — mismo patrón y
-             misma clase base que #picker-toggle (sólo visible en modo
-             amigable, ver reglas :root[data-theme="amigable"] en la
-             sección del tema). Se abre solo al apretar "Horario semanal"
-             o "Calendario de pruebas" (ver initRailScheduleCollapse en
-             app.js); esta flecha sirve sobre todo para volver a
-             colapsarlo, aunque también lo abre si se aprieta estando
-             cerrado. -->
-        <button class="picker-toggle-btn" id="rail-sched-toggle" type="button" aria-expanded="false" aria-controls="rail-sched-body" title="Mostrar/ocultar Mi horario" aria-label="Mostrar/ocultar Mi horario">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
-      </div>
+    <div class="panel" id="rail-right-panel">
+      <p class="rail-title">Mi horario</p>
       <div class="pill-toggle sched-tabs">
         <button id="tab-horario" aria-pressed="true" type="button" title="Horario semanal">
           <svg class="tab-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>
@@ -2393,26 +2161,24 @@
           <span class="tab-label">Calendario de pruebas</span>
         </button>
       </div>
-      <div class="rail-sched-body" id="rail-sched-body">
-        <div class="sched-summary">
-          <div class="sched-stat"><div class="n" id="sum-secc">0</div><div class="l">Secciones</div></div>
-          <div class="sched-stat"><div class="n" id="sum-sct">0</div><div class="l">Créditos SCT</div></div>
-          <div class="sched-stat"><div class="n" id="sum-conf">0</div><div class="l">Choques</div></div>
-        </div>
-        <div class="sched-view" id="view-horario">
-          <div class="week-grid" id="week-grid"></div>
-          <div class="cell-detail" id="cell-detail" hidden></div>
-          <div id="conflict-note-wrap"></div>
-          <div class="selected-list" id="selected-list"></div>
-          <div id="rail-empty-wrap"></div>
-        </div>
-        <div class="sched-view" id="view-examenes" hidden>
-          <div id="exam-cal"></div>
-        </div>
-        <div class="actions-row">
-          <button class="btn-secondary" id="btn-print">Imprimir horario</button>
-          <button class="btn-secondary" id="btn-clear">Vaciar</button>
-        </div>
+      <div class="sched-summary">
+        <div class="sched-stat"><div class="n" id="sum-secc">0</div><div class="l">Secciones</div></div>
+        <div class="sched-stat"><div class="n" id="sum-sct">0</div><div class="l">Créditos SCT</div></div>
+        <div class="sched-stat"><div class="n" id="sum-conf">0</div><div class="l">Choques</div></div>
+      </div>
+      <div class="sched-view" id="view-horario">
+        <div class="week-grid" id="week-grid"></div>
+        <div class="cell-detail" id="cell-detail" hidden></div>
+        <div id="conflict-note-wrap"></div>
+        <div class="selected-list" id="selected-list"></div>
+        <div id="rail-empty-wrap"></div>
+      </div>
+      <div class="sched-view" id="view-examenes" hidden>
+        <div id="exam-cal"></div>
+      </div>
+      <div class="actions-row">
+        <button class="btn-secondary" id="btn-print">Imprimir horario</button>
+        <button class="btn-secondary" id="btn-clear">Vaciar</button>
       </div>
     </div>
   </aside>
@@ -2493,7 +2259,7 @@
   
   <span class="chz-preview-title">v</span>
   <span class="chz-preview-sep">·</span>
-  <span class="chz-preview-sub">1.2</span>
+  <span class="chz-preview-sub">1.1</span>
 </div>
 
 <div class="chz-body" id="chz-body" hidden>
@@ -2514,7 +2280,7 @@
       </div>
       <h3 class="chz-dev-title">Haze</h3>
     </div>
-
+    
   </div>
 
   <div class="chz-card">
@@ -2525,13 +2291,6 @@
         <span class="chz-terminal-label">chelpa.sh</span>
       </div>
       <div class="chz-ember-line"></div>
-      <!-- Mini-juego "matar chinitas": capa aparte, encima del efecto de
-           matriz verde de arriba — no reemplaza nada, sólo agrega bichos
-           que aparecen solos (🐛/🐜 suman puntos, 🐞 roja resta) y se
-           pueden aplastar con click o touch. Ver initChzBugGame en app.js. -->
-      <div class="chz-bug-layer" id="chzBugLayer" aria-hidden="true">
-        <span class="chz-bug-score" id="chzBugScore">🐛 0</span>
-      </div>
     </div>
     <div class="chz-card-info">
       <span class="chz-open-badge">Open Source</span>
@@ -3078,42 +2837,6 @@
       </footer>
     </div>
 
-    <!-- ---------- Barra "pipeline" decorativa (build → lint → test →
-         deploy), a pedido del usuario: va debajo de la firma nano de
-         arriba (la que muestra "malla_grid.html · grafo" cuando está
-         colapsada), dentro de la Malla curricular — no es un CI real, sólo
-         cicla estados solo con setTimeout (ver initChzPipeline en
-         app.js), para sentirse coherente con el resto de las firmas
-         "dev" del sitio. ---------- -->
-    <div class="chz-pipeline" id="chzPipeline">
-      <div class="chz-pipeline-head">
-        <span class="chz-pipeline-label">.github/workflows/deploy.yml</span>
-        <span class="chz-pipeline-run">#212</span>
-      </div>
-      <div class="chz-pipeline-stages">
-        <div class="chz-pipeline-stage chz-pipeline-stage--idle" data-stage="build">
-          <span class="chz-pipeline-dot"></span>
-          <span class="chz-pipeline-name">build</span>
-        </div>
-        <span class="chz-pipeline-arrow" aria-hidden="true">→</span>
-        <div class="chz-pipeline-stage chz-pipeline-stage--idle" data-stage="lint">
-          <span class="chz-pipeline-dot"></span>
-          <span class="chz-pipeline-name">lint</span>
-        </div>
-        <span class="chz-pipeline-arrow" aria-hidden="true">→</span>
-        <div class="chz-pipeline-stage chz-pipeline-stage--idle" data-stage="test">
-          <span class="chz-pipeline-dot"></span>
-          <span class="chz-pipeline-name">test</span>
-        </div>
-        <span class="chz-pipeline-arrow" aria-hidden="true">→</span>
-        <div class="chz-pipeline-stage chz-pipeline-stage--idle" data-stage="deploy">
-          <span class="chz-pipeline-dot"></span>
-          <span class="chz-pipeline-name">deploy</span>
-        </div>
-      </div>
-      <p class="chz-pipeline-status" id="chzPipelineStatus">esperando…</p>
-    </div>
-
     <!-- ---------- Copia completa de la firma original del sitio
          (#chelpaHazeFooter), reintroducida acá a pedido del usuario, esta
          vez para quedarse: va al fondo de todo dentro de la Malla, de
@@ -3161,18 +2884,6 @@
   <div class="chz-card">
     <div class="chz-card-logo">
       <div class="chz-matrix"></div>
-      <!-- Mini-juego "nube voladora" (estilo nube de Goku/rayo, sin
-           reproducir ningún personaje con derechos de autor): un canvas
-           opaco que cubre el mismo cuadro de la matriz de arriba —
-           reemplaza ese efecto visualmente sólo en ESTA copia de la firma
-           (la de la firma principal, #chelpaHazeFooter, sigue con su
-           matriz verde intacta). Click/touch = "aletea" hacia arriba;
-           esquivar montañas/obstáculos, juntar plátanos, y cada cierta
-           distancia aparece un cameo de Kong (🦍) al fondo del camino,
-           después el recorrido sigue solo en loop. Ver initChzNimbusGame
-           en app.js. -->
-      <canvas class="chz-nimbus-canvas" id="chzNimbusCanvas" aria-hidden="true"></canvas>
-      <span class="chz-nimbus-score" id="chzNimbusScore">🍌 0</span>
       <div class="chz-terminal-bar">
         <span class="chz-dot chz-dot--r"></span><span class="chz-dot chz-dot--y"></span><span class="chz-dot chz-dot--g"></span>
         <span class="chz-terminal-label">chelpa.sh</span>
@@ -3270,6 +2981,9 @@
   </div>
 </div>
 
+<script id="bc-bitacora-seed" type="application/json">
+{"352406":{"codigo":"352406","asignatura":"Contabilidad General","creadaEn":"2026-08-11T13:00:00.000Z","entries":[{"id":"seed4","tipo":"ejercicio","fecha":"2026-08-14","contenido":"Practiqué asientos contables básicos (activo/pasivo/patrimonio) con un set de ejercicios de un curso abierto. Me costó al principio distinguir cuándo una cuenta se carga al debe o al haber, pero después de ~15 ejercicios ya sale casi automático.","link":"","creadoEn":"2026-08-14T18:40:00.000Z"},{"id":"seed5","tipo":"duda","fecha":"2026-08-09","contenido":"¿El libro diario y el libro mayor se llevan en paralelo o uno se arma a partir del otro?","link":"","estado":"resuelta","creadoEn":"2026-08-09T11:00:00.000Z"}]},"352409":{"codigo":"352409","asignatura":"Álgebra Lineal","creadaEn":"2026-08-10T14:00:00.000Z","entries":[{"id":"seed1","tipo":"apunte","fecha":"2026-08-12","contenido":"Repasé matrices y determinantes por mi cuenta usando el apunte del profesor Meza del semestre pasado. La regla de Sarrus solo sirve para 3x3 — para matrices más grandes toca expansión por cofactores.","link":"","creadoEn":"2026-08-12T20:30:00.000Z"},{"id":"seed2","tipo":"recurso","fecha":"2026-08-15","contenido":"Serie de videos de 3Blue1Brown, 'Essence of Linear Algebra' — muy buena intuición visual de transformaciones lineales antes de meterse en la parte más algebraica del ramo.","link":"https://www.3blue1brown.com/topics/linear-algebra","creadoEn":"2026-08-15T09:10:00.000Z"},{"id":"seed3","tipo":"duda","fecha":"2026-08-18","contenido":"¿Cuál es la diferencia práctica entre autovalores y valores singulares? En los apuntes que encontré los usan casi como sinónimos y no me queda claro cuándo se ocupa cada uno.","link":"","estado":"pendiente","creadoEn":"2026-08-18T22:05:00.000Z"}]}}
+</script>
 
 <script>
 // Función reutilizable (antes era una IIFE fija a los ids del footer
@@ -3330,17 +3044,6 @@ function initChzSmoke(footerId, canvasId){
 
   function start(){
     if (running) return;
-    // Bug real encontrado por el usuario: esta función se llama al cargar
-    // el script, con la firma todavía colapsada (#chz-body oculto) — en ese
-    // momento .chz-banner mide 0×0, así que el resize() de arriba (el que
-    // corre una sola vez al inicio) deja el canvas con un buffer de 1×1px
-    // que después nunca se vuelve a medir (sólo escucha el evento 'resize'
-    // de la VENTANA, no que la firma se despliegue). Al desplegar la firma
-    // más tarde, ese buffer de 1px queda estirado por CSS a todo el ancho
-    // real → una mancha sólida en vez del humo. Fix: volver a medir justo
-    // acá, en el momento real en que el cuadro pasa a estar visible de
-    // verdad (llamado por el IntersectionObserver de abajo).
-    resize();
     running = true;
     tick();
   }
@@ -3362,603 +3065,6 @@ function initChzSmoke(footerId, canvasId){
   }
 }
 initChzSmoke('chelpaHazeFooter', 'chzSmoke');
-
-// Mini-juego "matar chinitas" dentro del cuadro "chelpa.sh" (el que tiene
-// el efecto de matriz verde) de la firma principal. Es una capa aparte
-// que no reemplaza el efecto de matriz ni el resto del cuadro — sólo le
-// agrega bichos (🐛 oruga, 🐜 hormiga: suman puntos; 🐞 chinita roja:
-// resta) que aparecen solos y se pueden aplastar con click o con touch.
-// Reutiliza el mismo patrón de IntersectionObserver que initChzSmoke de
-// arriba: sólo gasta ciclos mientras el cuadro está visible de verdad (la
-// firma "STABLE" desplegada y a la vista) — si la firma está cerrada
-// (`hidden`), el cuadro mide 0×0 y no intersecta, así que el spawn se
-// detiene solo sin lógica extra.
-function initChzBugGame(footerId){
-  var footer = document.getElementById(footerId);
-  if (!footer) return;
-  var box = footer.querySelector('.chz-card-logo');
-  var layer = footer.querySelector('.chz-bug-layer');
-  var scoreEl = footer.querySelector('.chz-bug-score');
-  if (!box || !layer || !scoreEl) return;
-
-  var GOOD = ['🐛', '🐜'];
-  var BAD = '🐞';
-  var MAX_ALIVE = 5;
-  var SPAWN_MS = 900;
-  var LIFETIME_MS = 3200;
-
-  var score = 0;
-  var alive = [];
-  var spawnTimer = null;
-
-  // Badge estilo "contador de insecticida" (a pedido del usuario) — ☠️ en
-  // vez del bicho 🐛 de antes, como un kill-count de videojuego.
-  function updateScore(){
-    scoreEl.textContent = '☠️ ' + score;
-    scoreEl.classList.toggle('chz-bug-score--bad', score < 0);
-  }
-  updateScore();
-
-  function removeBug(el){
-    alive = alive.filter(function(a){ return a !== el; });
-    if (el.parentNode) el.parentNode.removeChild(el);
-  }
-
-  function floatPoints(x, y, delta){
-    var pts = document.createElement('span');
-    pts.className = 'chz-bug-points';
-    pts.style.left = x + 'px';
-    pts.style.top = y + 'px';
-    pts.style.color = delta >= 0 ? '#4ade80' : '#ff5f57';
-    pts.textContent = (delta >= 0 ? '+' : '') + delta;
-    layer.appendChild(pts);
-    setTimeout(function(){ if (pts.parentNode) pts.parentNode.removeChild(pts); }, 650);
-  }
-
-  // "Disparo"/explosión al aplastar un bicho — un flash circular
-  // (chz-bug-flash) más un puñado de chispas (chz-bug-spark) que salen
-  // disparadas en distintos ángulos desde el punto de impacto, como si el
-  // bicho hubiera recibido un balazo. Puramente visual, no cambia el
-  // puntaje (eso ya lo hace floatPoints). A pedido del usuario, el color
-  // ahora depende de si sumó o restó puntaje: verde si sumó (bicho bueno),
-  // rojo si restó (chinita roja) — ver los modificadores --good/--bad en
-  // styles.css.
-  function spawnExplosion(x, y, isGood){
-    var variant = isGood ? '--good' : '--bad';
-    var flash = document.createElement('span');
-    flash.className = 'chz-bug-flash chz-bug-flash' + variant;
-    flash.style.left = x + 'px';
-    flash.style.top = y + 'px';
-    layer.appendChild(flash);
-    setTimeout(function(){ if (flash.parentNode) flash.parentNode.removeChild(flash); }, 280);
-
-    var n = 7;
-    for (var i = 0; i < n; i++){
-      var angle = (Math.PI * 2 * i / n) + (Math.random() - 0.5) * 0.6;
-      var dist = 16 + Math.random() * 16;
-      var spark = document.createElement('span');
-      spark.className = 'chz-bug-spark chz-bug-spark' + variant;
-      spark.style.left = x + 'px';
-      spark.style.top = y + 'px';
-      spark.style.setProperty('--dx', (Math.cos(angle) * dist).toFixed(1) + 'px');
-      spark.style.setProperty('--dy', (Math.sin(angle) * dist).toFixed(1) + 'px');
-      layer.appendChild(spark);
-      (function(s){ setTimeout(function(){ if (s.parentNode) s.parentNode.removeChild(s); }, 420); })(spark);
-    }
-  }
-
-  function squash(el, isBad){
-    if (el.dataset.squashed) return;
-    el.dataset.squashed = '1';
-    var delta = isBad ? -3 : 1;
-    score += delta;
-    updateScore();
-    var x = parseFloat(el.style.left) || 0, y = parseFloat(el.style.top) || 0;
-    floatPoints(x, y, delta);
-    spawnExplosion(x, y, !isBad);
-    el.classList.add('chz-bug--squash');
-    setTimeout(function(){ removeBug(el); }, 220);
-  }
-
-  function spawnBug(){
-    if (alive.length >= MAX_ALIVE) return;
-    var rect = box.getBoundingClientRect();
-    var w = rect.width || 320, h = rect.height || 190;
-    var isBad = Math.random() < 0.22;
-    var emoji = isBad ? BAD : GOOD[Math.floor(Math.random() * GOOD.length)];
-    var el = document.createElement('span');
-    el.className = 'chz-bug';
-    el.textContent = emoji;
-    el.style.left = (10 + Math.random() * Math.max(10, w - 40)) + 'px';
-    el.style.top = (10 + Math.random() * Math.max(10, h - 40)) + 'px';
-    function onHit(e){ e.preventDefault(); e.stopPropagation(); squash(el, isBad); }
-    el.addEventListener('click', onHit);
-    el.addEventListener('touchstart', onHit, { passive: false });
-    layer.appendChild(el);
-    alive.push(el);
-    setTimeout(function(){
-      if (!el.dataset.squashed) removeBug(el);
-    }, LIFETIME_MS + Math.random() * 1200);
-  }
-
-  function start(){
-    if (spawnTimer) return;
-    spawnTimer = setInterval(spawnBug, SPAWN_MS);
-  }
-  function stop(){
-    if (spawnTimer){ clearInterval(spawnTimer); spawnTimer = null; }
-  }
-
-  if ('IntersectionObserver' in window){
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if (entry.isIntersecting) start(); else stop();
-      });
-    }, { threshold: 0.1 });
-    io.observe(box);
-  } else {
-    start();
-  }
-}
-initChzBugGame('chelpaHazeFooter');
-
-// "Lluvia" de glifos verdes cayendo dentro de .chz-matrix, a pedido del
-// usuario ("más verde estilo matrix") — se suma al brillo/líneas ya
-// reforzadas por CSS (ver #chelpaHazeFooter .chz-matrix en styles.css).
-// Mismo patrón de visibilidad que initChzSmoke/initChzBugGame: sólo
-// gasta ciclos mientras el cuadro de la matriz está realmente a la vista.
-function initChzMatrixRain(footerId){
-  var footer = document.getElementById(footerId);
-  if (!footer) return;
-  var matrix = footer.querySelector('.chz-matrix');
-  if (!matrix) return;
-
-  var GLYPHS = '01アイウエオカキクケコサシスセソ0123456789'.split('');
-  var SPAWN_MS = 220;
-  var FALL_MS = 3200;
-  var spawnTimer = null;
-
-  function spawnGlyph(){
-    var el = document.createElement('span');
-    el.className = 'chz-matrix-glyph';
-    el.textContent = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
-    el.style.left = (Math.random() * 96) + '%';
-    el.style.animationDuration = (1.6 + Math.random() * 1.4) + 's';
-    matrix.appendChild(el);
-    setTimeout(function(){ if (el.parentNode) el.parentNode.removeChild(el); }, FALL_MS);
-  }
-
-  function start(){
-    if (spawnTimer) return;
-    spawnTimer = setInterval(spawnGlyph, SPAWN_MS);
-  }
-  function stop(){
-    if (spawnTimer){ clearInterval(spawnTimer); spawnTimer = null; }
-  }
-
-  if ('IntersectionObserver' in window){
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        if (entry.isIntersecting) start(); else stop();
-      });
-    }, { threshold: 0.1 });
-    io.observe(matrix);
-  } else {
-    start();
-  }
-}
-initChzMatrixRain('chelpaHazeFooter');
-
-// Mini-juego "nube voladora" dentro de la copia de la firma que vive al
-// fondo de la Malla curricular (#chelpaHazeFooterMallaOriginal — la que
-// tiene la línea inferior ámbar). Estilo Dragon Ball Z sin dibujar ningún
-// personaje con derechos de autor: una nube con un rayo debajo, con
-// "usachin" (una mascota león genérica, dibujada a mano en canvas) montado
-// arriba — el jugador la hace "aletear" con click/touch (Flappy Bird).
-// Fondo: lluvia de código verde estilo Matrix, con opacidad, dibujada
-// directo en el canvas. Se esquivan montañas (dan un "stun" temporal, no
-// restan puntaje) y se juntan nubes-boost (☁️, aumentan la velocidad hacia
-// adelante por un rato), plátanos 🍌 (+1) y carne 🍖 (+3, vale más que el
-// plátano a pedido del usuario). Cada cierta distancia aparece Kong (🦍)
-// como cameo de fondo. 3 stuns seguidos (sin juntar nada positivo entre
-// medio) = game over: el loop se pausa del todo (mejor para el
-// rendimiento, a pedido del usuario) y espera un click/touch para
-// reiniciar. Mismo patrón de IntersectionObserver que
-// initChzSmoke/initChzBugGame/initChzMatrixRain: el loop de rAF sólo
-// corre mientras el cuadro está realmente visible.
-function initChzNimbusGame(footerId){
-  var footer = document.getElementById(footerId);
-  if (!footer) return;
-  var box = footer.querySelector('.chz-card-logo');
-  var canvas = document.getElementById('chzNimbusCanvas');
-  var scoreEl = document.getElementById('chzNimbusScore');
-  if (!box || !canvas || !scoreEl) return;
-  var ctx = canvas.getContext('2d');
-  if (!ctx) return;
-
-  var W = 0, H = 150;
-  var DPR = Math.max(1, window.devicePixelRatio || 1);
-  var GLYPHS = '01アイウエオカキクケコサシスセソ0123456789'.split('');
-  var columns = [];
-
-  function initColumns(){
-    var count = Math.max(6, Math.floor(W / 16));
-    columns = [];
-    for (var i = 0; i < count; i++){
-      columns.push({
-        x: (i + 0.5) * (W / count),
-        y: Math.random() * H,
-        speed: 1.2 + Math.random() * 1.6,
-        char: GLYPHS[Math.floor(Math.random() * GLYPHS.length)]
-      });
-    }
-  }
-
-  function resize(){
-    var rect = box.getBoundingClientRect();
-    W = Math.max(1, Math.round(rect.width));
-    canvas.width = Math.round(W * DPR);
-    canvas.height = Math.round(H * DPR);
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    initColumns();
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  var GRAVITY = 0.32;
-  var FLAP = -5.6;
-  var BASE_SPEED = 2.6;
-  var BOOST_SPEED = 4.6;
-  var BOOST_FRAMES = 220; // ~3.6s a 60fps
-  var STUN_FRAMES = 72; // ~1.2s a 60fps
-
-  var cloud = { x: W * 0.24 || 70, y: H / 2, vy: 0, r: 14 };
-  var score = 0;
-  var distance = 0;
-  var obstacles = []; // {x, kind:'mountain'|'boost', ...}
-  var pickups = []; // {x, y, taken, kind:'banana'|'meat'}
-  var kong = null; // {x, until}
-  var nextObstacleAt = 0;
-  var nextPickupAt = 0;
-  var nextKongAt = 900;
-  var boostFramesLeft = 0;
-  var stunFramesLeft = 0;
-  var stunStreak = 0;
-  var gameOver = false;
-  var visible = false;
-  var running = false;
-  var raf = null;
-
-  function updateScore(){
-    scoreEl.textContent = '🍌 ' + score;
-    scoreEl.classList.toggle('chz-nimbus-score--bad', score < 0);
-  }
-  updateScore();
-
-  function resetRun(){
-    score = 0;
-    distance = 0;
-    cloud.y = H / 2;
-    cloud.vy = 0;
-    obstacles = [];
-    pickups = [];
-    kong = null;
-    nextObstacleAt = 0;
-    nextPickupAt = 0;
-    nextKongAt = 900;
-    boostFramesLeft = 0;
-    stunFramesLeft = 0;
-    stunStreak = 0;
-    gameOver = false;
-    updateScore();
-  }
-
-  function onTap(e){
-    e.preventDefault();
-    if (gameOver){ resetRun(); syncRunning(); return; }
-    if (stunFramesLeft > 0) return;
-    cloud.vy = FLAP;
-  }
-  canvas.addEventListener('click', onTap);
-  canvas.addEventListener('touchstart', onTap, { passive: false });
-
-  function triggerStun(){
-    if (stunFramesLeft > 0 || gameOver) return;
-    stunFramesLeft = STUN_FRAMES;
-    stunStreak += 1;
-    if (stunStreak >= 3){
-      gameOver = true;
-    }
-  }
-
-  function spawnObstacle(){
-    var kind = Math.random() < 0.55 ? 'mountain' : 'boost';
-    if (kind === 'mountain'){
-      obstacles.push({
-        kind: 'mountain', x: W + 20,
-        h: 34 + Math.random() * 46,
-        w: 46 + Math.random() * 30
-      });
-    } else {
-      obstacles.push({
-        kind: 'boost', x: W + 20,
-        y: 18 + Math.random() * (H - 60),
-        r: 9 + Math.random() * 5,
-        vy: (Math.random() - 0.5) * 0.6
-      });
-    }
-  }
-
-  function spawnPickup(){
-    var kind = Math.random() < 0.7 ? 'banana' : 'meat';
-    pickups.push({ x: W + 20, y: 20 + Math.random() * (H - 40), taken: false, kind: kind });
-  }
-
-  function maybeSpawnKong(){
-    kong = { x: W + 40, until: distance + 260 };
-  }
-
-  function collide(ax, ay, ar, bx, by, br){
-    var dx = ax - bx, dy = ay - by;
-    return Math.sqrt(dx * dx + dy * dy) < (ar + br);
-  }
-
-  function drawMatrixBackdrop(){
-    ctx.fillStyle = '#050b06';
-    ctx.fillRect(0, 0, W, H);
-    ctx.font = '13px monospace';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    columns.forEach(function(c){
-      ctx.fillStyle = 'rgba(74,222,128,.35)';
-      ctx.fillText(c.char, c.x, c.y);
-      c.y += c.speed;
-      if (c.y > H + 10){
-        c.y = -10;
-        c.char = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
-        c.speed = 1.2 + Math.random() * 1.6;
-      } else if (Math.random() < 0.02){
-        c.char = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
-      }
-    });
-  }
-
-  // Nube + rayo (sin personaje con derechos de autor) con "usachin" — una
-  // mascota león genérica, dibujada a mano con formas simples — montada
-  // arriba, a pedido del usuario ("la nube con rayo debería ser usachin
-  // encima"). Se dibuja después de la nube para quedar siempre por
-  // delante (más arriba en el orden de dibujo = más adelante visualmente).
-  function drawCloud(x, y){
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.fillStyle = stunFramesLeft > 0 && Math.floor(stunFramesLeft / 6) % 2 === 0 ? '#ffb3b3' : '#f5f7fa';
-    ctx.beginPath();
-    ctx.ellipse(0, 4, 15, 8, 0, 0, Math.PI * 2);
-    ctx.ellipse(-9, 2, 9, 6, 0, 0, Math.PI * 2);
-    ctx.ellipse(9, 2, 9, 6, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#f2c14e';
-    ctx.beginPath();
-    ctx.moveTo(-2, 10);
-    ctx.lineTo(4, 10);
-    ctx.lineTo(0, 20);
-    ctx.lineTo(5, 20);
-    ctx.lineTo(-4, 32);
-    ctx.lineTo(1, 21);
-    ctx.lineTo(-4, 21);
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
-  }
-
-  function drawUsachin(x, y){
-    ctx.save();
-    ctx.translate(x, y - 13);
-    // melena (mane) — puntas alrededor de la cara
-    ctx.fillStyle = '#7a4a1e';
-    var spikes = 10;
-    for (var i = 0; i < spikes; i++){
-      var a = (Math.PI * 2 * i) / spikes;
-      ctx.beginPath();
-      ctx.arc(Math.cos(a) * 9, Math.sin(a) * 9, 4, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    // cara
-    ctx.fillStyle = '#e8a33d';
-    ctx.beginPath();
-    ctx.arc(0, 0, 7, 0, Math.PI * 2);
-    ctx.fill();
-    // orejas
-    ctx.fillStyle = '#7a4a1e';
-    ctx.beginPath(); ctx.arc(-6, -6, 2.4, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.arc(6, -6, 2.4, 0, Math.PI * 2); ctx.fill();
-    // hocico
-    ctx.fillStyle = '#f2c98a';
-    ctx.beginPath(); ctx.ellipse(0, 3, 3, 2, 0, 0, Math.PI * 2); ctx.fill();
-    // ojos
-    ctx.fillStyle = stunFramesLeft > 0 ? '#ff5f57' : '#2a1a08';
-    ctx.beginPath(); ctx.arc(-2.6, -0.5, 1, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.arc(2.6, -0.5, 1, 0, Math.PI * 2); ctx.fill();
-    ctx.restore();
-  }
-
-  function drawMountain(o){
-    ctx.fillStyle = '#1f2933';
-    ctx.beginPath();
-    ctx.moveTo(o.x - o.w / 2, H);
-    ctx.lineTo(o.x, H - o.h);
-    ctx.lineTo(o.x + o.w / 2, H);
-    ctx.closePath();
-    ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,.22)';
-    ctx.beginPath();
-    ctx.moveTo(o.x, H - o.h);
-    ctx.lineTo(o.x + 6, H - o.h + 14);
-    ctx.lineTo(o.x - 6, H - o.h + 14);
-    ctx.closePath();
-    ctx.fill();
-  }
-
-  function drawBoostCloud(o){
-    ctx.font = (o.r * 2) + 'px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('☁️', o.x, o.y);
-  }
-
-  function drawPickup(p){
-    ctx.font = '16px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(p.kind === 'meat' ? '🍖' : '🍌', p.x, p.y);
-  }
-
-  function drawKong(k){
-    ctx.font = '34px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'alphabetic';
-    ctx.fillText('🦍', k.x, H - 6);
-  }
-
-  function drawGameOverOverlay(){
-    ctx.save();
-    ctx.fillStyle = 'rgba(5,5,5,.55)';
-    ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = '#ff5f57';
-    ctx.font = 'bold 20px monospace';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('GAME OVER', W / 2, H / 2 - 10);
-    ctx.fillStyle = '#f5f7fa';
-    ctx.font = '12px monospace';
-    ctx.fillText('toca para reintentar', W / 2, H / 2 + 14);
-    ctx.restore();
-  }
-
-  function tick(){
-    ctx.clearRect(0, 0, W, H);
-    drawMatrixBackdrop();
-
-    var speed = boostFramesLeft > 0 ? BOOST_SPEED : BASE_SPEED;
-    if (boostFramesLeft > 0) boostFramesLeft--;
-
-    distance += speed;
-    if (stunFramesLeft <= 0){
-      cloud.vy += GRAVITY;
-      cloud.y += cloud.vy;
-    } else {
-      cloud.vy += GRAVITY * 0.6;
-      cloud.y += cloud.vy;
-    }
-    if (cloud.y < cloud.r){ cloud.y = cloud.r; cloud.vy = 0; }
-    if (cloud.y > H - cloud.r){ cloud.y = H - cloud.r; cloud.vy = 0; }
-
-    if (distance >= nextObstacleAt){
-      spawnObstacle();
-      nextObstacleAt = distance + 90 + Math.random() * 70;
-    }
-    if (distance >= nextPickupAt){
-      spawnPickup();
-      nextPickupAt = distance + 130 + Math.random() * 90;
-    }
-    if (!kong && distance >= nextKongAt){
-      maybeSpawnKong();
-      nextKongAt = distance + 900 + Math.random() * 400;
-    }
-
-    obstacles.forEach(function(o){
-      o.x -= speed;
-      if (o.kind === 'boost'){
-        o.y += o.vy;
-        if (o.y < 14 || o.y > H - 14) o.vy *= -1;
-      }
-    });
-    obstacles = obstacles.filter(function(o){ return o.x > -60; });
-
-    pickups.forEach(function(p){ p.x -= speed; });
-    pickups = pickups.filter(function(p){ return p.x > -20 && !p.taken; });
-
-    obstacles.forEach(function(o){
-      if (o.kind === 'mountain'){
-        drawMountain(o);
-        var top = H - o.h;
-        var withinX = Math.abs(o.x - cloud.x) < (o.w / 2 + cloud.r * 0.6);
-        if (withinX && cloud.y + cloud.r * 0.7 > top && !o.hit){
-          o.hit = true;
-          triggerStun();
-        }
-      } else {
-        drawBoostCloud(o);
-        if (!o.hit && collide(cloud.x, cloud.y, cloud.r * 0.7, o.x, o.y, o.r)){
-          o.hit = true;
-          boostFramesLeft = BOOST_FRAMES;
-          stunStreak = 0;
-        }
-      }
-    });
-
-    pickups.forEach(function(p){
-      drawPickup(p);
-      if (!p.taken && collide(cloud.x, cloud.y, cloud.r * 0.8, p.x, p.y, 9)){
-        p.taken = true;
-        score += p.kind === 'meat' ? 3 : 1;
-        stunStreak = 0;
-        updateScore();
-      }
-    });
-
-    if (kong){
-      kong.x -= speed * 0.6;
-      drawKong(kong);
-      if (distance >= kong.until || kong.x < -60) kong = null;
-    }
-
-    drawCloud(cloud.x, cloud.y);
-    drawUsachin(cloud.x, cloud.y);
-
-    if (stunFramesLeft > 0) stunFramesLeft--;
-
-    if (gameOver) drawGameOverOverlay();
-
-    if (running) raf = requestAnimationFrame(tick);
-  }
-
-  // running sólo debería estar prendido mientras el cuadro está visible Y
-  // no estamos en pantalla de "game over" (ahí se pausa el loop entero —
-  // mejor para el rendimiento, a pedido del usuario — hasta que se
-  // reinicia con un click/touch).
-  function syncRunning(){
-    var shouldRun = visible && !gameOver;
-    if (shouldRun && !running){
-      running = true;
-      // Bug real encontrado por el usuario: si esto arranca con el cuadro
-      // todavía colapsado/oculto, resize() mide 0 de ancho y el canvas
-      // queda con un buffer de 1px que después se ve estirado por CSS
-      // (una mancha sólida). Igual que en initChzSmoke: medir de nuevo
-      // justo acá, en el momento real en que pasa a estar visible.
-      resize();
-      tick();
-    } else if (!shouldRun && running){
-      running = false;
-      if (raf) cancelAnimationFrame(raf);
-      raf = null;
-    }
-  }
-
-  if ('IntersectionObserver' in window){
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(entry){
-        visible = entry.isIntersecting;
-        syncRunning();
-      });
-    }, { threshold: 0.1 });
-    io.observe(box);
-  } else {
-    visible = true;
-    syncRunning();
-  }
-}
-initChzNimbusGame('chelpaHazeFooterMallaOriginal');
 
 const PROGRAMS = {"ingeco":{"label":"Ingeniería Comercial","semestre":"2026-2","sections":[{"codigo":"352401","electividad":"0","coord":"A","seccion":1,"asignatura":"Matemáticas para la Administración y Economía I","profesor":"MEZA STANDEN NICOLAS","cupo":40,"horarioRaw":"L4W4V4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":1,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352401","electividad":"0","coord":"A","seccion":2,"asignatura":"Matemáticas para la Administración y Economía I","profesor":"ANDRADES RUZ LUIS","cupo":40,"horarioRaw":"L4W4V4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":1,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352401","electividad":"0","coord":"A","seccion":3,"asignatura":"Matemáticas para la Administración y Economía I","profesor":"DIAZ VALENZUELA EDUARDO","cupo":40,"horarioRaw":"L4W4V4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":1,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352401","electividad":"0","coord":"A","seccion":4,"asignatura":"Matemáticas para la Administración y Economía I","profesor":"VELIZ TAPIA GICELLA","cupo":40,"horarioRaw":"L4W4V4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":1,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352403","electividad":"0","coord":"A","seccion":1,"asignatura":"Introducción a la Economía","profesor":"GONZÁLEZ MORENO ALVARO","cupo":40,"horarioRaw":"M5M6J4","bloques":[{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6},{"dia":"J","diaNombre":"Jueves","bloque":4}],"nivel":1,"tel":6,"sct":5,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352403","electividad":"0","coord":"A","seccion":2,"asignatura":"Introducción a la Economía","profesor":"ARIAS IRRIBARRA JAVIER","cupo":40,"horarioRaw":"M5M6J4","bloques":[{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6},{"dia":"J","diaNombre":"Jueves","bloque":4}],"nivel":1,"tel":6,"sct":5,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352404","electividad":"0","coord":"A","seccion":1,"asignatura":"Introducción a la Administración","profesor":"CORDERO CRISTINA","cupo":40,"horarioRaw":"L5W5V5","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":5},{"dia":"W","diaNombre":"Miércoles","bloque":5},{"dia":"V","diaNombre":"Viernes","bloque":5}],"nivel":1,"tel":6,"sct":5,"area":"ADM","jefeArea":"Mauricio Guerra","fechaPEP1":"2026-11-09","fechaPEP2":"2027-01-11"},{"codigo":"352404","electividad":"0","coord":"A","seccion":2,"asignatura":"Introducción a la Administración","profesor":"MOYA OCTAVIO","cupo":40,"horarioRaw":"L5W5V5","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":5},{"dia":"W","diaNombre":"Miércoles","bloque":5},{"dia":"V","diaNombre":"Viernes","bloque":5}],"nivel":1,"tel":6,"sct":5,"area":"ADM","jefeArea":"Mauricio Guerra","fechaPEP1":"2026-11-09","fechaPEP2":"2027-01-11"},{"codigo":"352404","electividad":"0","coord":"A","seccion":3,"asignatura":"Introducción a la Administración","profesor":"VALENZUELA ALVARO","cupo":40,"horarioRaw":"L5W5V5","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":5},{"dia":"W","diaNombre":"Miércoles","bloque":5},{"dia":"V","diaNombre":"Viernes","bloque":5}],"nivel":1,"tel":6,"sct":5,"area":"ADM","jefeArea":"Mauricio Guerra","fechaPEP1":"2026-11-09","fechaPEP2":"2027-01-11"},{"codigo":"352406","electividad":"0","coord":"A","seccion":1,"asignatura":"Contabilidad General","profesor":"N.N.","cupo":40,"horarioRaw":"J5J6M4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":5},{"dia":"J","diaNombre":"Jueves","bloque":6},{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":1,"tel":6,"sct":6,"area":"CONTABILIDAD","jefeArea":"Felipe González","fechaPEP1":"2026-11-12","fechaPEP2":"2027-01-14"},{"codigo":"352406","electividad":"0","coord":"A","seccion":2,"asignatura":"Contabilidad General","profesor":"MULLER SILVIA","cupo":40,"horarioRaw":"J5J6M4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":5},{"dia":"J","diaNombre":"Jueves","bloque":6},{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":1,"tel":6,"sct":6,"area":"CONTABILIDAD","jefeArea":"Felipe González","fechaPEP1":"2026-11-12","fechaPEP2":"2027-01-14"},{"codigo":"352408","electividad":"0","coord":"A","seccion":1,"asignatura":"Matemáticas para la Administración y Economía II","profesor":"CACERES SILVA CRISTIAN","cupo":40,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352408","electividad":"0","coord":"A","seccion":2,"asignatura":"Matemáticas para la Administración y Economía II","profesor":"ORTIZ HENRIQUEZ LUIS","cupo":40,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352408","electividad":"0","coord":"A","seccion":3,"asignatura":"Matemáticas para la Administración y Economía II","profesor":"HERRERA CRUZ CECILIA","cupo":40,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352408","electividad":"0","coord":"A","seccion":4,"asignatura":"Matemáticas para la Administración y Economía II","profesor":"CACERES SILVA CRISTIAN","cupo":40,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352408","electividad":"0","coord":"A","seccion":5,"asignatura":"Matemáticas para la Administración y Economía II","profesor":"HERRERA CRUZ CECILIA","cupo":40,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352408","electividad":"0","coord":"A","seccion":6,"asignatura":"Matemáticas para la Administración y Economía II","profesor":"CIFUENTES ALVARADO ESTEBAN","cupo":40,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352408","electividad":"0","coord":"A","seccion":7,"asignatura":"Matemáticas para la Administración y Economía II","profesor":"ORTIZ HENRIQUEZ LUIS","cupo":40,"horarioRaw":"L3J4V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352408","electividad":"0","coord":"A","seccion":8,"asignatura":"Matemáticas para la Administración y Economía II","profesor":"VELIZ TAPIA GICELLA","cupo":40,"horarioRaw":"L3J4V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352408","electividad":"0","coord":"A","seccion":9,"asignatura":"Matemáticas para la Administración y Economía II","profesor":"GONZALEZ DUBO CLAUDIO","cupo":40,"horarioRaw":"L3J4V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352409","electividad":"0","coord":"A","seccion":1,"asignatura":"Álgebra Lineal","profesor":"CACERES SILVA CRISTIAN","cupo":40,"horarioRaw":"J2J3M1","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3},{"dia":"M","diaNombre":"Martes","bloque":1}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352409","electividad":"0","coord":"A","seccion":2,"asignatura":"Álgebra Lineal","profesor":"MEZA STANDEN NICOLAS","cupo":40,"horarioRaw":"J2J3M1","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3},{"dia":"M","diaNombre":"Martes","bloque":1}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352409","electividad":"0","coord":"A","seccion":3,"asignatura":"Álgebra Lineal","profesor":"GONZALEZ DUBO CLAUDIO","cupo":40,"horarioRaw":"J2J3M1","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3},{"dia":"M","diaNombre":"Martes","bloque":1}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352409","electividad":"0","coord":"A","seccion":4,"asignatura":"Álgebra Lineal","profesor":"HERRERA CRUZ CECILIA","cupo":40,"horarioRaw":"J2J3M1","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3},{"dia":"M","diaNombre":"Martes","bloque":1}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352409","electividad":"0","coord":"A","seccion":5,"asignatura":"Álgebra Lineal","profesor":"ORTIZ HENRIQUEZ LUIS","cupo":40,"horarioRaw":"J2J3M1","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3},{"dia":"M","diaNombre":"Martes","bloque":1}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352409","electividad":"0","coord":"A","seccion":6,"asignatura":"Álgebra Lineal","profesor":"GERALDO PUELLES GABRIEL","cupo":40,"horarioRaw":"M2M3J1","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":1}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352409","electividad":"0","coord":"A","seccion":7,"asignatura":"Álgebra Lineal","profesor":"VELIZ TAPIA GICELLA","cupo":40,"horarioRaw":"M2M3J1","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":1}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352409","electividad":"0","coord":"A","seccion":8,"asignatura":"Álgebra Lineal","profesor":"CIFUENTES ALVARADO ESTEBAN","cupo":40,"horarioRaw":"M2M3J1","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":1}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352409","electividad":"0","coord":"A","seccion":9,"asignatura":"Álgebra Lineal","profesor":"LUCERO SILVA ALEJANDRA","cupo":40,"horarioRaw":"M2M3J1","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":1}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352410","electividad":"0","coord":"A","seccion":1,"asignatura":"Principios de Microeconomía","profesor":"INOSTROZA CASTILLA PIA","cupo":40,"horarioRaw":"L3J4V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352410","electividad":"0","coord":"A","seccion":2,"asignatura":"Principios de Microeconomía","profesor":"DIAZ REYES ANGELO","cupo":40,"horarioRaw":"L3J4V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352410","electividad":"0","coord":"A","seccion":3,"asignatura":"Principios de Microeconomía","profesor":"ARIAS IRRIBARRA JAVIER","cupo":40,"horarioRaw":"L3J4V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352410","electividad":"0","coord":"A","seccion":4,"asignatura":"Principios de Microeconomía","profesor":"ARAVENA FLORES CLAUDIO","cupo":40,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352410","electividad":"0","coord":"A","seccion":5,"asignatura":"Principios de Microeconomía","profesor":"VASQUEZ BAZAN JOSE","cupo":40,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352410","electividad":"0","coord":"A","seccion":6,"asignatura":"Principios de Microeconomía","profesor":"DETTONI ROBINSON","cupo":40,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352410","electividad":"0","coord":"A","seccion":7,"asignatura":"Principios de Microeconomía","profesor":"DIAZ REYES ANGELO","cupo":40,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352410","electividad":"0","coord":"A","seccion":8,"asignatura":"Principios de Microeconomía","profesor":"BAHAMONDES CLIFF","cupo":40,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352410","electividad":"0","coord":"A","seccion":9,"asignatura":"Principios de Microeconomía","profesor":"VASQUEZ BAZAN JOSE","cupo":40,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":2,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352411","electividad":"0","coord":"A","seccion":1,"asignatura":"Teoría Administrativa","profesor":"GUERRA MAURICIO","cupo":45,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":2,"tel":6,"sct":5,"area":"ADM","jefeArea":"Mauricio Guerra","fechaPEP1":"2026-11-09","fechaPEP2":"2027-01-11"},{"codigo":"352411","electividad":"0","coord":"A","seccion":2,"asignatura":"Teoría Administrativa","profesor":"MARTINEZ CECILIA","cupo":45,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":2,"tel":6,"sct":5,"area":"ADM","jefeArea":"Mauricio Guerra","fechaPEP1":"2026-11-09","fechaPEP2":"2027-01-11"},{"codigo":"352411","electividad":"0","coord":"A","seccion":3,"asignatura":"Teoría Administrativa","profesor":"MUÑOZ CRISTIAN","cupo":40,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":2,"tel":6,"sct":5,"area":"ADM","jefeArea":"Mauricio Guerra","fechaPEP1":"2026-11-09","fechaPEP2":"2027-01-11"},{"codigo":"352411","electividad":"0","coord":"A","seccion":4,"asignatura":"Teoría Administrativa","profesor":"LEYTON ERIC","cupo":47,"horarioRaw":"L3J4V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":2,"tel":6,"sct":5,"area":"ADM","jefeArea":"Mauricio Guerra","fechaPEP1":"2026-11-09","fechaPEP2":"2027-01-11"},{"codigo":"352411","electividad":"0","coord":"A","seccion":5,"asignatura":"Teoría Administrativa","profesor":"SALAZAR DIEGO","cupo":40,"horarioRaw":"L3J4V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":2,"tel":6,"sct":5,"area":"ADM","jefeArea":"Mauricio Guerra","fechaPEP1":"2026-11-09","fechaPEP2":"2027-01-11"},{"codigo":"352411","electividad":"0","coord":"A","seccion":6,"asignatura":"Teoría Administrativa","profesor":"GUERRA MAURICIO","cupo":40,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":2,"tel":6,"sct":5,"area":"ADM","jefeArea":"Mauricio Guerra","fechaPEP1":"2026-11-09","fechaPEP2":"2027-01-11"},{"codigo":"352411","electividad":"0","coord":"A","seccion":7,"asignatura":"Teoría Administrativa","profesor":"CISTERNAS CARLOS","cupo":40,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":2,"tel":6,"sct":5,"area":"ADM","jefeArea":"Mauricio Guerra","fechaPEP1":"2026-11-09","fechaPEP2":"2027-01-11"},{"codigo":"352411","electividad":"0","coord":"A","seccion":8,"asignatura":"Teoría Administrativa","profesor":"CASTRO PABLO","cupo":40,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":2,"tel":6,"sct":5,"area":"ADM","jefeArea":"Mauricio Guerra","fechaPEP1":"2026-11-09","fechaPEP2":"2027-01-11"},{"codigo":"352412","electividad":"0","coord":"A","seccion":1,"asignatura":"Taller de Comunicaciones II","profesor":"ACOSTA RAMÍREZ JOSÉ ENRIQUE","cupo":40,"horarioRaw":"M4","bloques":[{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":2,"tel":2,"sct":2,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352412","electividad":"0","coord":"A","seccion":2,"asignatura":"Taller de Comunicaciones II","profesor":"ACOSTA RAMÍREZ JOSÉ ENRIQUE","cupo":40,"horarioRaw":"J1","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":1}],"nivel":2,"tel":2,"sct":2,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352412","electividad":"0","coord":"A","seccion":3,"asignatura":"Taller de Comunicaciones II","profesor":"FAVI CORTÉS GLORIA BERTA","cupo":40,"horarioRaw":"M4","bloques":[{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":2,"tel":2,"sct":2,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352412","electividad":"0","coord":"A","seccion":4,"asignatura":"Taller de Comunicaciones II","profesor":"FARÍAS ORTEGA JORGE GABRIEL","cupo":40,"horarioRaw":"M1","bloques":[{"dia":"M","diaNombre":"Martes","bloque":1}],"nivel":2,"tel":2,"sct":2,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352412","electividad":"0","coord":"A","seccion":5,"asignatura":"Taller de Comunicaciones II","profesor":"ÁLVAREZ UNDURRAGA GABRIEL BERNARDO CARLOS","cupo":40,"horarioRaw":"V4","bloques":[{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":2,"tel":2,"sct":2,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352412","electividad":"0","coord":"A","seccion":6,"asignatura":"Taller de Comunicaciones II","profesor":"ACOSTA RAMÍREZ JOSÉ ENRIQUE","cupo":40,"horarioRaw":"M1","bloques":[{"dia":"M","diaNombre":"Martes","bloque":1}],"nivel":2,"tel":2,"sct":2,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352412","electividad":"0","coord":"A","seccion":7,"asignatura":"Taller de Comunicaciones II","profesor":"FARÍAS ORTEGA JORGE GABRIEL","cupo":40,"horarioRaw":"M4","bloques":[{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":2,"tel":2,"sct":2,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352412","electividad":"0","coord":"A","seccion":8,"asignatura":"Taller de Comunicaciones II","profesor":"ÁLVAREZ UNDURRAGA GABRIEL BERNARDO CARLOS","cupo":40,"horarioRaw":"M4","bloques":[{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":2,"tel":2,"sct":2,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352412","electividad":"0","coord":"A","seccion":9,"asignatura":"Taller de Comunicaciones II","profesor":"FAVI CORTÉS GLORIA BERTA","cupo":40,"horarioRaw":"L4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4}],"nivel":2,"tel":2,"sct":2,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352412","electividad":"0","coord":"A","seccion":10,"asignatura":"Taller de Comunicaciones II","profesor":"FAVI CORTÉS GLORIA BERTA","cupo":40,"horarioRaw":"V3","bloques":[{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":2,"tel":2,"sct":2,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352413","electividad":"0","coord":"A","seccion":1,"asignatura":"Inglés para la Administración y Economía I","profesor":"TIZNADO LIESACK CLAUDIO","cupo":35,"horarioRaw":"M2M3","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3}],"nivel":2,"tel":4,"sct":3,"area":"INGLES","jefeArea":"Ricardo Ubeda, Julia Barraza","fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352413","electividad":"0","coord":"A","seccion":2,"asignatura":"Inglés para la Administración y Economía I","profesor":"LARA LARA HECTOR","cupo":40,"horarioRaw":"M2M3","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3}],"nivel":2,"tel":4,"sct":3,"area":"INGLES","jefeArea":"Ricardo Ubeda, Julia Barraza","fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352413","electividad":"0","coord":"A","seccion":3,"asignatura":"Inglés para la Administración y Economía I","profesor":"CASTILLO DIAZ KARIN","cupo":35,"horarioRaw":"M2M3","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3}],"nivel":2,"tel":4,"sct":3,"area":"INGLES","jefeArea":"Ricardo Ubeda, Julia Barraza","fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352413","electividad":"0","coord":"A","seccion":4,"asignatura":"Inglés para la Administración y Economía I","profesor":"HENRIQUEZ JARA MARIA JOSE","cupo":35,"horarioRaw":"M2M3","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3}],"nivel":2,"tel":4,"sct":3,"area":"INGLES","jefeArea":"Ricardo Ubeda, Julia Barraza","fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352413","electividad":"0","coord":"A","seccion":5,"asignatura":"Inglés para la Administración y Economía I","profesor":"CEPPI MARINO ISABELLA","cupo":35,"horarioRaw":"M2M3","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3}],"nivel":2,"tel":4,"sct":3,"area":"INGLES","jefeArea":"Ricardo Ubeda, Julia Barraza","fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352413","electividad":"0","coord":"A","seccion":6,"asignatura":"Inglés para la Administración y Economía I","profesor":"GALVEZ JARA ANDRES","cupo":40,"horarioRaw":"J2J3","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3}],"nivel":2,"tel":4,"sct":3,"area":"INGLES","jefeArea":"Ricardo Ubeda, Julia Barraza","fechaPEP1":"2026-11-05","fechaPEP2":"2027-01-07"},{"codigo":"352413","electividad":"0","coord":"A","seccion":7,"asignatura":"Inglés para la Administración y Economía I","profesor":"CONCHA CARTES KOSTTIA","cupo":40,"horarioRaw":"J2J3","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3}],"nivel":2,"tel":4,"sct":3,"area":"INGLES","jefeArea":"Ricardo Ubeda, Julia Barraza","fechaPEP1":"2026-11-05","fechaPEP2":"2027-01-07"},{"codigo":"352413","electividad":"0","coord":"A","seccion":8,"asignatura":"Inglés para la Administración y Economía I","profesor":"TIZNADO LIESACK CLAUDIO","cupo":40,"horarioRaw":"J2J3","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3}],"nivel":2,"tel":4,"sct":3,"area":"INGLES","jefeArea":"Ricardo Ubeda, Julia Barraza","fechaPEP1":"2026-11-05","fechaPEP2":"2027-01-07"},{"codigo":"352413","electividad":"0","coord":"A","seccion":9,"asignatura":"Inglés para la Administración y Economía I","profesor":"LARA LARA HECTOR","cupo":45,"horarioRaw":"J2J3","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3}],"nivel":2,"tel":4,"sct":3,"area":"INGLES","jefeArea":"Ricardo Ubeda, Julia Barraza","fechaPEP1":"2026-11-05","fechaPEP2":"2027-01-07"},{"codigo":"352414","electividad":"0","coord":"A","seccion":1,"asignatura":"Matemáticas para la Administración y Economía III","profesor":"ANDRADES RUZ LUIS","cupo":45,"horarioRaw":"L5W5V5","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":5},{"dia":"W","diaNombre":"Miércoles","bloque":5},{"dia":"V","diaNombre":"Viernes","bloque":5}],"nivel":3,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352414","electividad":"0","coord":"A","seccion":2,"asignatura":"Matemáticas para la Administración y Economía III","profesor":"MORALES GARCIA IVAN","cupo":40,"horarioRaw":"L5W5V5","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":5},{"dia":"W","diaNombre":"Miércoles","bloque":5},{"dia":"V","diaNombre":"Viernes","bloque":5}],"nivel":3,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352414","electividad":"0","coord":"A","seccion":3,"asignatura":"Matemáticas para la Administración y Economía III","profesor":"JIMENEZ ZAMBRANO Ma. FRANCISCA","cupo":40,"horarioRaw":"L4W4V4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":3,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352414","electividad":"0","coord":"A","seccion":4,"asignatura":"Matemáticas para la Administración y Economía III","profesor":"LOPEZ JOAQUIN","cupo":40,"horarioRaw":"L4W4V4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":3,"tel":6,"sct":7,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352415","electividad":"0","coord":"A","seccion":1,"asignatura":"Estadísticas para Administración y Economía I","profesor":"SOTO MONSERRAT","cupo":40,"horarioRaw":"L4W4V4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":3,"tel":6,"sct":6,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-11","fechaPEP2":"2027-01-13"},{"codigo":"352415","electividad":"0","coord":"A","seccion":2,"asignatura":"Estadísticas para Administración y Economía I","profesor":"BUCCIONI ROLLY","cupo":40,"horarioRaw":"L4W4V4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":3,"tel":6,"sct":6,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-11","fechaPEP2":"2027-01-13"},{"codigo":"352415","electividad":"0","coord":"A","seccion":3,"asignatura":"Estadísticas para Administración y Economía I","profesor":"SOTO MONSERRAT","cupo":40,"horarioRaw":"L5W5V5","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":5},{"dia":"W","diaNombre":"Miércoles","bloque":5},{"dia":"V","diaNombre":"Viernes","bloque":5}],"nivel":3,"tel":6,"sct":6,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-11","fechaPEP2":"2027-01-13"},{"codigo":"352415","electividad":"0","coord":"A","seccion":4,"asignatura":"Estadísticas para Administración y Economía I","profesor":"BUCCIONI ROLLY","cupo":40,"horarioRaw":"L5W5V5","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":5},{"dia":"W","diaNombre":"Miércoles","bloque":5},{"dia":"V","diaNombre":"Viernes","bloque":5}],"nivel":3,"tel":6,"sct":6,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-11","fechaPEP2":"2027-01-13"},{"codigo":"352416","electividad":"0","coord":"A","seccion":1,"asignatura":"Principios de Macroeconomía","profesor":"SALAS OPAZO VICTOR","cupo":35,"horarioRaw":"L6W6V6","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":6},{"dia":"W","diaNombre":"Miércoles","bloque":6},{"dia":"V","diaNombre":"Viernes","bloque":6}],"nivel":3,"tel":6,"sct":6,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-04","fechaPEP2":"2027-01-06"},{"codigo":"352416","electividad":"0","coord":"A","seccion":2,"asignatura":"Principios de Macroeconomía","profesor":"FRANKEN HELMUTR","cupo":35,"horarioRaw":"L6W6V6","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":6},{"dia":"W","diaNombre":"Miércoles","bloque":6},{"dia":"V","diaNombre":"Viernes","bloque":6}],"nivel":3,"tel":6,"sct":6,"area":"ECONOMIA","jefeArea":"Orlando Balboa","fechaPEP1":"2026-11-04","fechaPEP2":"2027-01-06"},{"codigo":"352417","electividad":"0","coord":"A","seccion":1,"asignatura":"Derecho y Empresa","profesor":"VILLAGRA VILLARROEL PALOMA","cupo":35,"horarioRaw":"J5J6","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":5},{"dia":"J","diaNombre":"Jueves","bloque":6}],"nivel":3,"tel":4,"sct":3,"area":"ADM","jefeArea":"Mauricio Guerra","fechaPEP1":"2026-11-05","fechaPEP2":"2027-01-07"},{"codigo":"352417","electividad":"0","coord":"A","seccion":2,"asignatura":"Derecho y Empresa","profesor":"ALVARÉZ ALARCÓN RUBÉN","cupo":35,"horarioRaw":"J5J6","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":5},{"dia":"J","diaNombre":"Jueves","bloque":6}],"nivel":3,"tel":4,"sct":3,"area":"ADM","jefeArea":"Mauricio Guerra","fechaPEP1":"2026-11-05","fechaPEP2":"2027-01-07"},{"codigo":"352417","electividad":"0","coord":"A","seccion":3,"asignatura":"Derecho y Empresa","profesor":"VALDÉS PÉREZ GUSTAVO","cupo":35,"horarioRaw":"M5M6","bloques":[{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6}],"nivel":3,"tel":4,"sct":3,"area":"ADM","jefeArea":"Mauricio Guerra","fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352417","electividad":"0","coord":"A","seccion":4,"asignatura":"Derecho y Empresa","profesor":"ALVARÉZ UNDURRAGA GABRIEL","cupo":35,"horarioRaw":"M5M6","bloques":[{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6}],"nivel":3,"tel":4,"sct":3,"area":"ADM","jefeArea":"Mauricio Guerra","fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352417","electividad":"0","coord":"A","seccion":5,"asignatura":"Derecho y Empresa","profesor":"PEREZ GAETE CLAUDIA","cupo":35,"horarioRaw":"M5M6","bloques":[{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6}],"nivel":3,"tel":4,"sct":3,"area":"ADM","jefeArea":"Mauricio Guerra","fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352418","electividad":"0","coord":"A","seccion":1,"asignatura":"Contabilidad Financiera y Toma de Decisiones","profesor":"VALDÉS CAMILA","cupo":40,"horarioRaw":"J5J6M4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":5},{"dia":"J","diaNombre":"Jueves","bloque":6},{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":3,"tel":6,"sct":5,"area":"CONTABILIDAD","jefeArea":"Felipe González","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352418","electividad":"0","coord":"A","seccion":2,"asignatura":"Contabilidad Financiera y Toma de Decisiones","profesor":"NEIRA UNDA KARIN","cupo":40,"horarioRaw":"J5J6M4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":5},{"dia":"J","diaNombre":"Jueves","bloque":6},{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":3,"tel":6,"sct":5,"area":"CONTABILIDAD","jefeArea":"Felipe González","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352418","electividad":"0","coord":"A","seccion":3,"asignatura":"Contabilidad Financiera y Toma de Decisiones","profesor":"NEIRA UNDA KARIN","cupo":40,"horarioRaw":"M2M3J1","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":1}],"nivel":3,"tel":6,"sct":5,"area":"CONTABILIDAD","jefeArea":"Felipe González","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352419","electividad":"0","coord":"A","seccion":1,"asignatura":"Inglés para la Administración y Economía II","profesor":"CASTILLO ARROS SANDRA","cupo":35,"horarioRaw":"J2J3","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3}],"nivel":3,"tel":4,"sct":3,"area":"INGLES","jefeArea":"Ricardo Ubeda, Julia Barraza","fechaPEP1":"2026-11-12","fechaPEP2":"2027-01-14"},{"codigo":"352420","electividad":"0","coord":"A","seccion":1,"asignatura":"Inferencia Estadística para Administración","profesor":"PINTO CRISTIAN","cupo":35,"horarioRaw":"L4W4V4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":4,"tel":6,"sct":5,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-09","fechaPEP2":"2027-01-11"},{"codigo":"352420","electividad":"0","coord":"A","seccion":2,"asignatura":"Inferencia Estadística para Administración","profesor":"N.N.","cupo":35,"horarioRaw":"L4V4W4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":4}],"nivel":4,"tel":6,"sct":5,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-09","fechaPEP2":"2027-01-11"},{"codigo":"352420","electividad":"0","coord":"A","seccion":3,"asignatura":"Inferencia Estadística para Administración","profesor":"LEPE SOFIA","cupo":35,"horarioRaw":"L3J4V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":4,"tel":6,"sct":5,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-09","fechaPEP2":"2027-01-11"},{"codigo":"352420","electividad":"0","coord":"A","seccion":4,"asignatura":"Inferencia Estadística para Administración","profesor":"N.N.","cupo":35,"horarioRaw":"L3J4V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":4,"tel":6,"sct":5,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-09","fechaPEP2":"2027-01-11"},{"codigo":"352421","electividad":"0","coord":"A","seccion":1,"asignatura":"Organización Industrial","profesor":"CAMPOS GUTIÉRREZ JAIME FRANCISCO","cupo":40,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":4,"tel":6,"sct":5,"area":"ORG INDUSTRIAL","jefeArea":"Jaime Campos","fechaPEP1":"2026-11-04","fechaPEP2":"2027-01-06"},{"codigo":"352421","electividad":"0","coord":"A","seccion":2,"asignatura":"Organización Industrial","profesor":"ALLENDES CLAUDIA","cupo":40,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":4,"tel":6,"sct":5,"area":"ORG INDUSTRIAL","jefeArea":"Jaime Campos","fechaPEP1":"2026-11-04","fechaPEP2":"2027-01-06"},{"codigo":"352421","electividad":"0","coord":"A","seccion":3,"asignatura":"Organización Industrial","profesor":"N.N.","cupo":40,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":4,"tel":6,"sct":5,"area":"ORG INDUSTRIAL","jefeArea":"Jaime Campos","fechaPEP1":"2026-11-04","fechaPEP2":"2027-01-06"},{"codigo":"352421","electividad":"0","coord":"A","seccion":4,"asignatura":"Organización Industrial","profesor":"CAMPOS GUTIÉRREZ JAIME FRANCISCO","cupo":35,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":4,"tel":6,"sct":5,"area":"ORG INDUSTRIAL","jefeArea":"Jaime Campos","fechaPEP1":"2026-11-04","fechaPEP2":"2027-01-06"},{"codigo":"352421","electividad":"0","coord":"A","seccion":5,"asignatura":"Organización Industrial","profesor":"PARDO MARCIA","cupo":35,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":4,"tel":6,"sct":5,"area":"ORG INDUSTRIAL","jefeArea":"Jaime Campos","fechaPEP1":"2026-11-04","fechaPEP2":"2027-01-06"},{"codigo":"352421","electividad":"0","coord":"A","seccion":6,"asignatura":"Organización Industrial","profesor":"N.N.","cupo":35,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":4,"tel":6,"sct":5,"area":"ORG INDUSTRIAL","jefeArea":"Jaime Campos","fechaPEP1":"2026-11-04","fechaPEP2":"2027-01-06"},{"codigo":"352421","electividad":"0","coord":"A","seccion":7,"asignatura":"Organización Industrial","profesor":"BILBAO FRANCISCO","cupo":35,"horarioRaw":"L6W6V6","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":6},{"dia":"W","diaNombre":"Miércoles","bloque":6},{"dia":"V","diaNombre":"Viernes","bloque":6}],"nivel":4,"tel":6,"sct":5,"area":"ORG INDUSTRIAL","jefeArea":"Jaime Campos","fechaPEP1":"2026-11-04","fechaPEP2":"2027-01-06"},{"codigo":"352422","electividad":"0","coord":"A","seccion":1,"asignatura":"Derecho y Empresa II","profesor":"SOTOMAYOR MAXIMO","cupo":40,"horarioRaw":"J2J3M1","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3},{"dia":"M","diaNombre":"Martes","bloque":1}],"nivel":4,"tel":6,"sct":5,"area":"CONTABILIDAD","jefeArea":"German Pinto","fechaPEP1":"2026-11-05","fechaPEP2":"2027-01-07"},{"codigo":"352422","electividad":"0","coord":"A","seccion":2,"asignatura":"Derecho y Empresa II","profesor":"BOBADILLA VICTOR","cupo":40,"horarioRaw":"J2J3M1","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3},{"dia":"M","diaNombre":"Martes","bloque":1}],"nivel":4,"tel":6,"sct":5,"area":"CONTABILIDAD","jefeArea":"German Pinto","fechaPEP1":"2026-11-05","fechaPEP2":"2027-01-07"},{"codigo":"352422","electividad":"0","coord":"A","seccion":3,"asignatura":"Derecho y Empresa II","profesor":"BRAVO MARCOS","cupo":40,"horarioRaw":"J2J3M1","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3},{"dia":"M","diaNombre":"Martes","bloque":1}],"nivel":4,"tel":6,"sct":5,"area":"CONTABILIDAD","jefeArea":"German Pinto","fechaPEP1":"2026-11-05","fechaPEP2":"2027-01-07"},{"codigo":"352422","electividad":"0","coord":"A","seccion":4,"asignatura":"Derecho y Empresa II","profesor":"MONTALVA ARTURO","cupo":40,"horarioRaw":"M2M3J1","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":1}],"nivel":4,"tel":6,"sct":5,"area":"CONTABILIDAD","jefeArea":"German Pinto","fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352422","electividad":"0","coord":"A","seccion":5,"asignatura":"Derecho y Empresa II","profesor":"N.N.","cupo":40,"horarioRaw":"M2M3J1","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":1}],"nivel":4,"tel":6,"sct":5,"area":"CONTABILIDAD","jefeArea":"German Pinto","fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352423","electividad":"0","coord":"A","seccion":1,"asignatura":"Sistema de Costos y Toma de Decisiones","profesor":"AGUIRRE ALFREDO","cupo":30,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":4,"tel":6,"sct":5,"area":"CONTABILIDAD","jefeArea":"Juan Abello","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352423","electividad":"0","coord":"A","seccion":2,"asignatura":"Sistema de Costos y Toma de Decisiones","profesor":"TAGLE OYARZUN JORGE","cupo":40,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":4,"tel":6,"sct":5,"area":"CONTABILIDAD","jefeArea":"Juan Abello","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352423","electividad":"0","coord":"A","seccion":3,"asignatura":"Sistema de Costos y Toma de Decisiones","profesor":"NEIRA UNDA KARIN","cupo":45,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":4,"tel":6,"sct":5,"area":"CONTABILIDAD","jefeArea":"Juan Abello","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352423","electividad":"0","coord":"A","seccion":4,"asignatura":"Sistema de Costos y Toma de Decisiones","profesor":"NUÑEZFRANCISCA","cupo":40,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":4,"tel":6,"sct":5,"area":"CONTABILIDAD","jefeArea":"Juan Abello","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352423","electividad":"0","coord":"A","seccion":5,"asignatura":"Sistema de Costos y Toma de Decisiones","profesor":"TAPIA AREVALO MARCELA","cupo":40,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":4,"tel":6,"sct":5,"area":"CONTABILIDAD","jefeArea":"Juan Abello","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352424","electividad":"0","coord":"A","seccion":1,"asignatura":"Investigación de Operaciones","profesor":"BRAVO MARIO","cupo":30,"horarioRaw":"L3J4V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":4,"tel":6,"sct":5,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-11","fechaPEP2":"2027-01-13"},{"codigo":"352424","electividad":"0","coord":"A","seccion":2,"asignatura":"Investigación de Operaciones","profesor":"QUINTEROS MARIA JOSÉ","cupo":30,"horarioRaw":"L3J4V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":4,"tel":6,"sct":5,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-11","fechaPEP2":"2027-01-13"},{"codigo":"352424","electividad":"0","coord":"A","seccion":3,"asignatura":"Investigación de Operaciones","profesor":"CORDERO REBOLLEDO MARÍA CRISTINA","cupo":25,"horarioRaw":"L4W4V4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":4,"tel":6,"sct":5,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-11","fechaPEP2":"2027-01-13"},{"codigo":"352424","electividad":"0","coord":"A","seccion":4,"asignatura":"Investigación de Operaciones","profesor":"GRANDÓN RIVERA JOSE MANUEL","cupo":25,"horarioRaw":"L4W4V4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":4,"tel":6,"sct":5,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-11","fechaPEP2":"2027-01-13"},{"codigo":"352425","electividad":"0","coord":"A","seccion":1,"asignatura":"Habilidades para la Organización I","profesor":"GALLEGOS REYES CLAUDIA MARLENE","cupo":35,"horarioRaw":"M2M3","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3}],"nivel":4,"tel":6,"sct":5,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352425","electividad":"0","coord":"A","seccion":2,"asignatura":"Habilidades para la Organización I","profesor":"ORTIZ WILHELM LEON ALEJANDRO","cupo":35,"horarioRaw":"M2M3","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3}],"nivel":4,"tel":6,"sct":5,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352425","electividad":"0","coord":"A","seccion":3,"asignatura":"Habilidades para la Organización I","profesor":"BÓRQUEZ PIZARRO CÉSAR PATRICIO","cupo":35,"horarioRaw":"M2M3","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3}],"nivel":4,"tel":6,"sct":5,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352425","electividad":"0","coord":"A","seccion":4,"asignatura":"Habilidades para la Organización I","profesor":"RIVEROS ARAYA FELIPE ALFREDO","cupo":35,"horarioRaw":"J2J3","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3}],"nivel":4,"tel":6,"sct":5,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352425","electividad":"0","coord":"A","seccion":5,"asignatura":"Habilidades para la Organización I","profesor":"ORTIZ WILHELM LEON ALEJANDRO","cupo":35,"horarioRaw":"J2J3","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3}],"nivel":4,"tel":6,"sct":5,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352425","electividad":"0","coord":"A","seccion":6,"asignatura":"Habilidades para la Organización I","profesor":"ACOSTA RAMÍREZ JOSÉ ENRIQUE","cupo":35,"horarioRaw":"M5M6","bloques":[{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6}],"nivel":4,"tel":6,"sct":5,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352425","electividad":"0","coord":"A","seccion":7,"asignatura":"Habilidades para la Organización I","profesor":"GALLEGOS REYES CLAUDIA MARLENE","cupo":35,"horarioRaw":"M5M6","bloques":[{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6}],"nivel":4,"tel":6,"sct":5,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352426","electividad":"0","coord":"A","seccion":1,"asignatura":"Comportamiento Organizacional","profesor":"BERRÍOS ESPINOZA RAÚL ANTONIO","cupo":30,"horarioRaw":"J5J6M4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":5},{"dia":"J","diaNombre":"Jueves","bloque":6},{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":4,"tel":6,"sct":5,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352426","electividad":"0","coord":"A","seccion":2,"asignatura":"Comportamiento Organizacional","profesor":"ORTIZ WILHELM LEON ALEJANDRO","cupo":30,"horarioRaw":"J5J6M4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":5},{"dia":"J","diaNombre":"Jueves","bloque":6},{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":4,"tel":6,"sct":5,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352427","electividad":"0","coord":"A","seccion":1,"asignatura":"Finanzas I","profesor":"ESPINOSA MÉNDEZ CHRISTIAN ENRIQUE","cupo":45,"horarioRaw":"L3J4V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":5,"tel":6,"sct":6,"area":"FIN","jefeArea":"Christian Espinosa","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352427","electividad":"0","coord":"A","seccion":2,"asignatura":"Finanzas I","profesor":"VEGA BROWN ARNALDO ANTONIO","cupo":40,"horarioRaw":"L3J4V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":5,"tel":6,"sct":6,"area":"FIN","jefeArea":"Christian Espinosa","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352428","electividad":"0","coord":"A","seccion":1,"asignatura":"Marketing I","profesor":"NICOLAS ALARCÓN CAROLINA ANDREA","cupo":40,"horarioRaw":"L2V2W2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2}],"nivel":5,"tel":6,"sct":6,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-02","fechaPEP2":"2027-01-04"},{"codigo":"352428","electividad":"0","coord":"A","seccion":2,"asignatura":"Marketing I","profesor":"ACEVEDO PAJARITO RODRIGO","cupo":40,"horarioRaw":"L2V2W2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2}],"nivel":5,"tel":6,"sct":6,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-02","fechaPEP2":"2027-01-04"},{"codigo":"352429","electividad":"0","coord":"A","seccion":1,"asignatura":"Gestión de Operaciones","profesor":"VALLEJOS ROJAS BENJAMIN IGNACIO","cupo":45,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":5,"tel":6,"sct":5,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-11","fechaPEP2":"2027-01-13"},{"codigo":"352429","electividad":"0","coord":"A","seccion":2,"asignatura":"Gestión de Operaciones","profesor":"CORDERO REBOLLEDO MARÍA CRISTINA","cupo":50,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":5,"tel":6,"sct":5,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-11","fechaPEP2":"2027-01-13"},{"codigo":"352429","electividad":"0","coord":"A","seccion":3,"asignatura":"Gestión de Operaciones","profesor":"GRANDÓN RIVERA JOSE MANUEL","cupo":50,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":5,"tel":6,"sct":5,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-11","fechaPEP2":"2027-01-13"},{"codigo":"352430","electividad":"0","coord":"A","seccion":1,"asignatura":"Habilidades para la Organización II","profesor":"N.N.","cupo":35,"horarioRaw":"M5M6","bloques":[{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6}],"nivel":5,"tel":6,"sct":5,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352430","electividad":"0","coord":"A","seccion":2,"asignatura":"Habilidades para la Organización II","profesor":"ORTIZ WILHELM LEON ALEJANDRO","cupo":35,"horarioRaw":"M5M6","bloques":[{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6}],"nivel":5,"tel":6,"sct":5,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352430","electividad":"0","coord":"A","seccion":3,"asignatura":"Habilidades para la Organización II","profesor":"BARRENECHEA OPAZO SERGIO ENRIQUE NICOLÁS","cupo":35,"horarioRaw":"M2M3","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3}],"nivel":5,"tel":6,"sct":5,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352431","electividad":"0","coord":"A","seccion":1,"asignatura":"Inglés para la Administración y Economía III","profesor":"DÍAZ TORO CARLOS","cupo":30,"horarioRaw":"J2J3","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3}],"nivel":5,"tel":4,"sct":3,"area":"INGLES","jefeArea":"Ricardo Ubeda, Julia Barraza","fechaPEP1":"2026-11-12","fechaPEP2":"2027-01-14"},{"codigo":"352431","electividad":"0","coord":"A","seccion":2,"asignatura":"Inglés para la Administración y Economía III","profesor":"TIZNADO LIESACK CLAUDIO","cupo":25,"horarioRaw":"J5J6","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":5},{"dia":"J","diaNombre":"Jueves","bloque":6}],"nivel":5,"tel":4,"sct":3,"area":"INGLES","jefeArea":"Ricardo Ubeda, Julia Barraza","fechaPEP1":"2026-11-12","fechaPEP2":"2027-01-14"},{"codigo":"352431","electividad":"0","coord":"A","seccion":3,"asignatura":"Inglés para la Administración y Economía III","profesor":"LARA LARA HECTOR","cupo":25,"horarioRaw":"J5J6","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":5},{"dia":"J","diaNombre":"Jueves","bloque":6}],"nivel":5,"tel":4,"sct":3,"area":"INGLES","jefeArea":"Ricardo Ubeda, Julia Barraza","fechaPEP1":"2026-11-12","fechaPEP2":"2027-01-14"},{"codigo":"352432","electividad":"0","coord":"A","seccion":1,"asignatura":"Transformación Digital I","profesor":"ARRIZAGA RUBÍ","cupo":40,"horarioRaw":"J2J3M1","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3},{"dia":"M","diaNombre":"Martes","bloque":1}],"nivel":6,"tel":6,"sct":5,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-05","fechaPEP2":"2027-01-07"},{"codigo":"352432","electividad":"0","coord":"A","seccion":2,"asignatura":"Transformación Digital I","profesor":"HERRERA DE LUCCA KATHERINE ANGELICA","cupo":40,"horarioRaw":"J2J3M1","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3},{"dia":"M","diaNombre":"Martes","bloque":1}],"nivel":6,"tel":6,"sct":5,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-05","fechaPEP2":"2027-01-07"},{"codigo":"352432","electividad":"0","coord":"A","seccion":3,"asignatura":"Transformación Digital I","profesor":"ARRIZAGA RUBÍ","cupo":40,"horarioRaw":"M2M3J1","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":1}],"nivel":6,"tel":6,"sct":5,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352432","electividad":"0","coord":"A","seccion":4,"asignatura":"Transformación Digital I","profesor":"HERRERA DE LUCCA KATHERINE ANGELICA","cupo":40,"horarioRaw":"M2M3J1","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":1}],"nivel":6,"tel":6,"sct":5,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352433","electividad":"0","coord":"A","seccion":1,"asignatura":"Gestión de Personas I","profesor":"PEREZ GREGORIO","cupo":45,"horarioRaw":"M2M3J1","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":1}],"nivel":6,"tel":6,"sct":5,"area":"RRHH","jefeArea":"Gregorio Pérez","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352433","electividad":"0","coord":"A","seccion":2,"asignatura":"Gestión de Personas I","profesor":"LOPEZ SERGIO","cupo":45,"horarioRaw":"M2M3J1","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":1}],"nivel":6,"tel":6,"sct":5,"area":"RRHH","jefeArea":"Gregorio Pérez","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352433","electividad":"0","coord":"A","seccion":3,"asignatura":"Gestión de Personas I","profesor":"BELLIDO DAINA","cupo":35,"horarioRaw":"J2J3M1","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3},{"dia":"M","diaNombre":"Martes","bloque":1}],"nivel":6,"tel":6,"sct":5,"area":"RRHH","jefeArea":"Gregorio Pérez","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352433","electividad":"0","coord":"A","seccion":4,"asignatura":"Gestión de Personas I","profesor":"MAUREIRA GRISELLE","cupo":40,"horarioRaw":"J2J3M1","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3},{"dia":"M","diaNombre":"Martes","bloque":1}],"nivel":6,"tel":6,"sct":5,"area":"RRHH","jefeArea":"Gregorio Pérez","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352434","electividad":"0","coord":"A","seccion":1,"asignatura":"Finanzas II","profesor":"CID ARANDA CARLOS IGNACIO","cupo":40,"horarioRaw":"L3J4V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":6,"tel":6,"sct":5,"area":"FIN","jefeArea":"Christian Espinosa","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352434","electividad":"0","coord":"A","seccion":2,"asignatura":"Finanzas II","profesor":"SILVA VICTOR","cupo":40,"horarioRaw":"L3J4V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":6,"tel":6,"sct":5,"area":"FIN","jefeArea":"Christian Espinosa","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352434","electividad":"0","coord":"A","seccion":3,"asignatura":"Finanzas II","profesor":"KORN FERNÁNDEZ CATHERINE SILVIA","cupo":50,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":6,"tel":6,"sct":5,"area":"FIN","jefeArea":"Christian Espinosa","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352434","electividad":"0","coord":"A","seccion":4,"asignatura":"Finanzas II","profesor":"CID ARANDA CARLOS IGNACIO","cupo":40,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":6,"tel":6,"sct":5,"area":"FIN","jefeArea":"Christian Espinosa","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352435","electividad":"0","coord":"A","seccion":1,"asignatura":"Marketing II","profesor":"TALA JAPAZ JUAN CAMEL","cupo":35,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":6,"tel":6,"sct":5,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-02","fechaPEP2":"2027-01-04"},{"codigo":"352435","electividad":"0","coord":"A","seccion":2,"asignatura":"Marketing II","profesor":"ESCOBAR FARFÁN MANUEL ANTONIO","cupo":35,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":6,"tel":6,"sct":5,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-02","fechaPEP2":"2027-01-04"},{"codigo":"352435","electividad":"0","coord":"A","seccion":3,"asignatura":"Marketing II","profesor":"YÁÑEZ PÉREZ MARCELO ANTONIO","cupo":35,"horarioRaw":"W2V2L2","bloques":[{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2},{"dia":"L","diaNombre":"Lunes","bloque":2}],"nivel":6,"tel":6,"sct":5,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-02","fechaPEP2":"2027-01-04"},{"codigo":"352435","electividad":"0","coord":"A","seccion":4,"asignatura":"Marketing II","profesor":"YÁÑEZ PÉREZ MARCELO ANTONIO","cupo":35,"horarioRaw":"L3J4V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":6,"tel":6,"sct":5,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-02","fechaPEP2":"2027-01-04"},{"codigo":"352435","electividad":"0","coord":"A","seccion":5,"asignatura":"Marketing II","profesor":"ACEVEDO PAJARITO RODRIGO","cupo":35,"horarioRaw":"L3J4V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":6,"tel":6,"sct":5,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-02","fechaPEP2":"2027-01-04"},{"codigo":"352436","electividad":"0","coord":"A","seccion":1,"asignatura":"Comportamiento Social y Toma de Decisiones","profesor":"SABIN NICHOLAS","cupo":30,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":6,"tel":6,"sct":5,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-09","fechaPEP2":"2027-01-11"},{"codigo":"352436","electividad":"0","coord":"A","seccion":2,"asignatura":"Comportamiento Social y Toma de Decisiones","profesor":"SABIN NICHOLAS","cupo":30,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":6,"tel":6,"sct":5,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-09","fechaPEP2":"2027-01-11"},{"codigo":"352437","electividad":"0","coord":"A","seccion":1,"asignatura":"Práctica I: Apresto Organizacional","profesor":"TALA JUAN","cupo":150,"horarioRaw":"M7M8","bloques":[{"dia":"M","diaNombre":"Martes","bloque":7},{"dia":"M","diaNombre":"Martes","bloque":8}],"nivel":6,"tel":4,"sct":5,"area":"DIRECCION","jefeArea":"Juan Tala","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352438","electividad":"0","coord":"A","seccion":1,"asignatura":"Transformación Digital II","profesor":"CASTILLO RODRÍGUEZ EDUARDO ENRIQUE","cupo":30,"horarioRaw":"M1J2J3","bloques":[{"dia":"M","diaNombre":"Martes","bloque":1},{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3}],"nivel":7,"tel":6,"sct":5,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-05","fechaPEP2":"2027-01-07"},{"codigo":"352438","electividad":"0","coord":"A","seccion":2,"asignatura":"Transformación Digital II","profesor":"BAEZA ROJAS OSVALDO DOMINGO ROGELIO","cupo":30,"horarioRaw":"M1J2J3","bloques":[{"dia":"M","diaNombre":"Martes","bloque":1},{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3}],"nivel":7,"tel":6,"sct":5,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-05","fechaPEP2":"2027-01-07"},{"codigo":"352439","electividad":"0","coord":"A","seccion":1,"asignatura":"Negocios y Sostenibilidad","profesor":"MUÑOZ RICARDO","cupo":40,"horarioRaw":"M5M6J4","bloques":[{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6},{"dia":"J","diaNombre":"Jueves","bloque":4}],"nivel":7,"tel":6,"sct":4,"area":"ESTRATEGIA","jefeArea":"Gabriela Pizarro","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352439","electividad":"0","coord":"A","seccion":2,"asignatura":"Negocios y Sostenibilidad","profesor":"PIZARRO VELOSO GABRIELA","cupo":40,"horarioRaw":"M5M6J4","bloques":[{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6},{"dia":"J","diaNombre":"Jueves","bloque":4}],"nivel":7,"tel":6,"sct":4,"area":"ESTRATEGIA","jefeArea":"Gabriela Pizarro","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352440","electividad":"0","coord":"A","seccion":1,"asignatura":"Acción y Sostenibilidad","profesor":"PIZARRO VELOSO GABRIELA","cupo":30,"horarioRaw":"M2M3","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3}],"nivel":7,"tel":6,"sct":4,"area":"ESTRATEGIA","jefeArea":"Gabriela Pizarro","fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352440","electividad":"0","coord":"A","seccion":2,"asignatura":"Acción y Sostenibilidad","profesor":"SANTOS ASTUDILLO CATALINA","cupo":30,"horarioRaw":"M2M3","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3}],"nivel":7,"tel":6,"sct":4,"area":"ESTRATEGIA","jefeArea":"Gabriela Pizarro","fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352441","electividad":"0","coord":"A","seccion":1,"asignatura":"Gestión de Personas II","profesor":"PEREZ GREGORIO","cupo":40,"horarioRaw":"J5J6M4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":5},{"dia":"J","diaNombre":"Jueves","bloque":6},{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":7,"tel":6,"sct":5,"area":"RRHH","jefeArea":"Gregorio Pérez","fechaPEP1":"2026-11-12","fechaPEP2":"2027-01-14"},{"codigo":"352442","electividad":"0","coord":"A","seccion":1,"asignatura":"Finanzas III","profesor":"ÁLVAREZ ILLESCA SERGIO ENRIQUE","cupo":40,"horarioRaw":"L5W5V5","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":5},{"dia":"W","diaNombre":"Miércoles","bloque":5},{"dia":"V","diaNombre":"Viernes","bloque":5}],"nivel":7,"tel":6,"sct":5,"area":"FIN","jefeArea":"Christian Espinosa","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352442","electividad":"0","coord":"A","seccion":2,"asignatura":"Finanzas III","profesor":"YÁÑEZ CASTRO GUILLERMO JOSE","cupo":40,"horarioRaw":"L5W5V5","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":5},{"dia":"W","diaNombre":"Miércoles","bloque":5},{"dia":"V","diaNombre":"Viernes","bloque":5}],"nivel":7,"tel":6,"sct":5,"area":"FIN","jefeArea":"Christian Espinosa","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352443","electividad":"0","coord":"A","seccion":1,"asignatura":"Marketing III","profesor":"YÁÑEZ PÉREZ MARCELO ANTONIO","cupo":35,"horarioRaw":"L6W6V6","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":6},{"dia":"W","diaNombre":"Miércoles","bloque":6},{"dia":"V","diaNombre":"Viernes","bloque":6}],"nivel":7,"tel":6,"sct":5,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-02","fechaPEP2":"2027-01-04"},{"codigo":"352443","electividad":"0","coord":"A","seccion":2,"asignatura":"Marketing III","profesor":"ESCOBAR FARFÁN MANUEL ANTONIO","cupo":30,"horarioRaw":"L6W6V6","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":6},{"dia":"W","diaNombre":"Miércoles","bloque":6},{"dia":"V","diaNombre":"Viernes","bloque":6}],"nivel":7,"tel":6,"sct":5,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352444","electividad":"0","coord":"A","seccion":1,"asignatura":"Inglés para la Administración y Economía IV","profesor":"GALVEZ JARA ANDRES","cupo":35,"horarioRaw":"M2M3","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3}],"nivel":7,"tel":4,"sct":3,"area":"INGLES","jefeArea":"Ricardo Ubeda, Julia Barraza","fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352444","electividad":"0","coord":"A","seccion":2,"asignatura":"Inglés para la Administración y Economía IV","profesor":"CONCHA CARTES KOSTTIA","cupo":35,"horarioRaw":"M2M3","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3}],"nivel":7,"tel":4,"sct":3,"area":"INGLES","jefeArea":"Ricardo Ubeda, Julia Barraza","fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352445","electividad":"0","coord":"A","seccion":1,"asignatura":"Transformación Digital III","profesor":"BRAVO MARIO","cupo":35,"horarioRaw":"M5M6J4","bloques":[{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6},{"dia":"J","diaNombre":"Jueves","bloque":4}],"nivel":8,"tel":6,"sct":5,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-05","fechaPEP2":"2027-01-07"},{"codigo":"352445","electividad":"0","coord":"A","seccion":2,"asignatura":"Transformación Digital III","profesor":"ROZAS PALMA JORGE ANDRES","cupo":35,"horarioRaw":"M5M6J4","bloques":[{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6},{"dia":"J","diaNombre":"Jueves","bloque":4}],"nivel":8,"tel":6,"sct":5,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-05","fechaPEP2":"2027-01-07"},{"codigo":"352445","electividad":"0","coord":"A","seccion":3,"asignatura":"Transformación Digital III","profesor":"ROZAS PALMA JORGE ANDRES","cupo":35,"horarioRaw":"J5J6M4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":5},{"dia":"J","diaNombre":"Jueves","bloque":6},{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":8,"tel":6,"sct":5,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-05","fechaPEP2":"2027-01-07"},{"codigo":"352445","electividad":"0","coord":"A","seccion":4,"asignatura":"Transformación Digital III","profesor":"BERRÍOS PACHECO BEATRIZ DEL CARMEN","cupo":35,"horarioRaw":"J5J6M4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":5},{"dia":"J","diaNombre":"Jueves","bloque":6},{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":8,"tel":6,"sct":5,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-05","fechaPEP2":"2027-01-07"},{"codigo":"352446","electividad":"0","coord":"A","seccion":1,"asignatura":"Implementación y Control Estratégico","profesor":"MUÑOZ ESTRADA EDUARDO","cupo":35,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":8,"tel":6,"sct":5,"area":"ESTRATEGIA","jefeArea":"Gabriela Pizarro","fechaPEP1":"2026-11-11","fechaPEP2":"2027-01-13"},{"codigo":"352446","electividad":"0","coord":"A","seccion":2,"asignatura":"Implementación y Control Estratégico","profesor":"RIQUELME ALEXIS","cupo":35,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":8,"tel":6,"sct":5,"area":"ESTRATEGIA","jefeArea":"Gabriela Pizarro","fechaPEP1":"2026-11-11","fechaPEP2":"2027-01-13"},{"codigo":"352446","electividad":"0","coord":"A","seccion":3,"asignatura":"Implementación y Control Estratégico","profesor":"MOYA CONTRERAS OCTAVIO","cupo":40,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":8,"tel":6,"sct":5,"area":"ESTRATEGIA","jefeArea":"Gabriela Pizarro","fechaPEP1":"2026-11-11","fechaPEP2":"2027-01-13"},{"codigo":"352446","electividad":"0","coord":"A","seccion":4,"asignatura":"Implementación y Control Estratégico","profesor":"BAHAMONDES ARRIAGADA MARTA","cupo":40,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":8,"tel":6,"sct":5,"area":"ESTRATEGIA","jefeArea":"Gabriela Pizarro","fechaPEP1":"2026-11-11","fechaPEP2":"2027-01-13"},{"codigo":"352447","electividad":"0","coord":"A","seccion":1,"asignatura":"Capacidad Emprendedora","profesor":"MAZZARELLI MARIO","cupo":40,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":8,"tel":6,"sct":5,"area":"ESTRATEGIA","jefeArea":"Gabriela Pizarro","fechaPEP1":"2026-11-04","fechaPEP2":"2027-01-06"},{"codigo":"352447","electividad":"0","coord":"A","seccion":2,"asignatura":"Capacidad Emprendedora","profesor":"SEPULVEDA ÁVILA CHRISTIAN","cupo":40,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":8,"tel":6,"sct":5,"area":"ESTRATEGIA","jefeArea":"Gabriela Pizarro","fechaPEP1":"2026-11-04","fechaPEP2":"2027-01-06"},{"codigo":"352447","electividad":"0","coord":"A","seccion":3,"asignatura":"Capacidad Emprendedora","profesor":"MAZZARELLI MARIO","cupo":30,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":8,"tel":6,"sct":5,"area":"ESTRATEGIA","jefeArea":"Gabriela Pizarro","fechaPEP1":"2026-11-04","fechaPEP2":"2027-01-06"},{"codigo":"352447","electividad":"0","coord":"A","seccion":4,"asignatura":"Capacidad Emprendedora","profesor":"SEPULVEDA ÁVILA CHRISTIAN","cupo":30,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":8,"tel":6,"sct":5,"area":"ESTRATEGIA","jefeArea":"Gabriela Pizarro","fechaPEP1":"2026-11-04","fechaPEP2":"2027-01-06"},{"codigo":"352448","electividad":"0","coord":"A","seccion":1,"asignatura":"Estrategia de Negocios","profesor":"MUÑOZ CANALES CRISTIAN","cupo":40,"horarioRaw":"J5J6M4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":5},{"dia":"J","diaNombre":"Jueves","bloque":6},{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":8,"tel":6,"sct":5,"area":"ESTRATEGIA","jefeArea":"Gabriela Pizarro","fechaPEP1":"2026-11-12","fechaPEP2":"2027-01-14"},{"codigo":"352448","electividad":"0","coord":"A","seccion":2,"asignatura":"Estrategia de Negocios","profesor":"DAVIDSON RITA","cupo":40,"horarioRaw":"J5J6M4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":5},{"dia":"J","diaNombre":"Jueves","bloque":6},{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":8,"tel":6,"sct":5,"area":"ESTRATEGIA","jefeArea":"Gabriela Pizarro","fechaPEP1":"2026-11-12","fechaPEP2":"2027-01-14"},{"codigo":"352448","electividad":"0","coord":"A","seccion":3,"asignatura":"Estrategia de Negocios","profesor":"DAVIDSON RITA","cupo":40,"horarioRaw":"M5M6J4","bloques":[{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6},{"dia":"J","diaNombre":"Jueves","bloque":4}],"nivel":8,"tel":6,"sct":5,"area":"ESTRATEGIA","jefeArea":"Gabriela Pizarro","fechaPEP1":"2026-11-12","fechaPEP2":"2027-01-14"},{"codigo":"352448","electividad":"0","coord":"A","seccion":4,"asignatura":"Estrategia de Negocios","profesor":"CASTRO PABLO","cupo":40,"horarioRaw":"M5M6J4","bloques":[{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6},{"dia":"J","diaNombre":"Jueves","bloque":4}],"nivel":8,"tel":6,"sct":5,"area":"ESTRATEGIA","jefeArea":"Gabriela Pizarro","fechaPEP1":"2026-11-12","fechaPEP2":"2027-01-14"},{"codigo":"352449","electividad":"0","coord":"A","seccion":1,"asignatura":"Habilidades para la Organización III","profesor":"BARRENECHEA OPAZO SERGIO ENRIQUE NICOLÁS","cupo":30,"horarioRaw":"L3L4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"L","diaNombre":"Lunes","bloque":4}],"nivel":8,"tel":4,"sct":5,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352449","electividad":"0","coord":"A","seccion":2,"asignatura":"Habilidades para la Organización III","profesor":"GALLARDO ARAYA PATRICIA LORENA","cupo":30,"horarioRaw":"L3L4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"L","diaNombre":"Lunes","bloque":4}],"nivel":8,"tel":4,"sct":5,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352449","electividad":"0","coord":"A","seccion":3,"asignatura":"Habilidades para la Organización III","profesor":"n.n.","cupo":30,"horarioRaw":"L3L4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"L","diaNombre":"Lunes","bloque":4}],"nivel":8,"tel":4,"sct":5,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352449","electividad":"0","coord":"A","seccion":4,"asignatura":"Habilidades para la Organización III","profesor":"BARRENECHEA OPAZO SERGIO ENRIQUE NICOLÁS","cupo":30,"horarioRaw":"V3V4","bloques":[{"dia":"V","diaNombre":"Viernes","bloque":3},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":8,"tel":4,"sct":5,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352449","electividad":"0","coord":"A","seccion":5,"asignatura":"Habilidades para la Organización III","profesor":"BÓRQUEZ PIZARRO CÉSAR PATRICIO","cupo":30,"horarioRaw":"V3V4","bloques":[{"dia":"V","diaNombre":"Viernes","bloque":3},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":8,"tel":4,"sct":5,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352449","electividad":"0","coord":"A","seccion":6,"asignatura":"Habilidades para la Organización III","profesor":"GALLARDO ARAYA PATRICIA LORENA","cupo":30,"horarioRaw":"V3V4","bloques":[{"dia":"V","diaNombre":"Viernes","bloque":3},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":8,"tel":4,"sct":5,"area":"TALLERES","jefeArea":"Raúl Berríos","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352450","electividad":"0","coord":"A","seccion":1,"asignatura":"Examen de Grado","profesor":"TALA JUAN","cupo":200,"horarioRaw":"S7S8","bloques":[{"dia":"S","diaNombre":"Sábado","bloque":7},{"dia":"S","diaNombre":"Sábado","bloque":8}],"nivel":8,"tel":4,"sct":4,"area":"DIRECCION","jefeArea":"Juan Tala","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352450","electividad":"0","coord":"E","seccion":1,"asignatura":"Examen de Grado","profesor":"N.N.","cupo":5,"horarioRaw":"S1S2","bloques":[{"dia":"S","diaNombre":"Sábado","bloque":1},{"dia":"S","diaNombre":"Sábado","bloque":2}],"nivel":8,"tel":4,"sct":4,"area":"DIRECCION","jefeArea":"Juan Tala","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352450","electividad":"0","coord":"F","seccion":1,"asignatura":"Examen de Grado","profesor":"N.N.","cupo":5,"horarioRaw":"S1S2","bloques":[{"dia":"S","diaNombre":"Sábado","bloque":1},{"dia":"S","diaNombre":"Sábado","bloque":2}],"nivel":8,"tel":4,"sct":4,"area":"DIRECCION","jefeArea":"Juan Tala","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352450","electividad":"0","coord":"M","seccion":1,"asignatura":"Examen de Grado","profesor":"N.N.","cupo":5,"horarioRaw":"J2J3","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"J","diaNombre":"Jueves","bloque":3}],"nivel":8,"tel":4,"sct":4,"area":"DIRECCION","jefeArea":"Juan Tala","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352450","electividad":"0","coord":"P","seccion":1,"asignatura":"Examen de Grado","profesor":"N.N.","cupo":5,"horarioRaw":"S1S2","bloques":[{"dia":"S","diaNombre":"Sábado","bloque":1},{"dia":"S","diaNombre":"Sábado","bloque":2}],"nivel":8,"tel":4,"sct":4,"area":"DIRECCION","jefeArea":"Juan Tala","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352450","electividad":"0","coord":"T","seccion":1,"asignatura":"Examen de Grado","profesor":"N.N.","cupo":5,"horarioRaw":"S1S2","bloques":[{"dia":"S","diaNombre":"Sábado","bloque":1},{"dia":"S","diaNombre":"Sábado","bloque":2}],"nivel":8,"tel":4,"sct":4,"area":"DIRECCION","jefeArea":"Juan Tala","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352451","electividad":"4","coord":"M","seccion":4,"asignatura":"Electivo Especialidad I: Simulación de Marketing y Negocios","profesor":"PLANT PAVLOV RODERICK WILLIAM","cupo":40,"horarioRaw":"V5V6","bloques":[{"dia":"V","diaNombre":"Viernes","bloque":5},{"dia":"V","diaNombre":"Viernes","bloque":6}],"nivel":9,"tel":6,"sct":6,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352451","electividad":"5","coord":"M","seccion":5,"asignatura":"Electivo Especialidad I: Neuromarketing","profesor":"GONZÁLEZ VERGARA GLORIA ANGELICA","cupo":40,"horarioRaw":"L3L4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"L","diaNombre":"Lunes","bloque":4}],"nivel":9,"tel":6,"sct":6,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-09","fechaPEP2":"2027-01-11"},{"codigo":"352451","electividad":"6","coord":"M","seccion":6,"asignatura":"Electivo Especialidad I: Marketing B2B","profesor":"ORMEÑO MILLA FABIÁN CLAUDIO","cupo":30,"horarioRaw":"M5M6","bloques":[{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6}],"nivel":9,"tel":6,"sct":6,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352451","electividad":"8","coord":"M","seccion":8,"asignatura":"Electivo Especialidad I: Marketing Internacional","profesor":"COGAN MANUEL","cupo":40,"horarioRaw":"W5W6","bloques":[{"dia":"W","diaNombre":"Miércoles","bloque":5},{"dia":"W","diaNombre":"Miércoles","bloque":6}],"nivel":9,"tel":6,"sct":6,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-04","fechaPEP2":"2027-01-06"},{"codigo":"352451","electividad":"11","coord":"M","seccion":11,"asignatura":"Electivo Especialidad I: Relaciones Internacionales y Comercio Exterior","profesor":"ÁLVAREZ UNDURRAGA GABRIEL BERNARDO CARLOS","cupo":40,"horarioRaw":"V5V6","bloques":[{"dia":"V","diaNombre":"Viernes","bloque":5},{"dia":"V","diaNombre":"Viernes","bloque":6}],"nivel":9,"tel":6,"sct":6,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352451","electividad":"2","coord":"M","seccion":22,"asignatura":"Electivo Especialidad I: Trade Marketing y Merchandising","profesor":"YÁÑEZ PÉREZ MARCELO ANTONIO","cupo":30,"horarioRaw":"J7J8","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":7},{"dia":"J","diaNombre":"Jueves","bloque":8}],"nivel":9,"tel":6,"sct":6,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352451","electividad":"1","coord":"M","seccion":40,"asignatura":"Electivo Minor MK Digital: E-commerce","profesor":"FREIRE MARCHANT JUAN FRANCISCO","cupo":40,"horarioRaw":"L2L3W2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"W","diaNombre":"Miércoles","bloque":2}],"nivel":9,"tel":6,"sct":6,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-09","fechaPEP2":"2027-01-11"},{"codigo":"352451","electividad":"7","coord":"M","seccion":50,"asignatura":"Electivo Minor MK Digital: Marketing Digital","profesor":"SABAT CÁDIZ MARCELA ALEJANDRA","cupo":40,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":9,"tel":6,"sct":6,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-02","fechaPEP2":"2027-01-04"},{"codigo":"352451","electividad":"10","coord":"M","seccion":60,"asignatura":"Electivo Minor MK Dgital: Marketing Analytics","profesor":"FREIRE MARCHANT JUAN FRANCISCO","cupo":40,"horarioRaw":"L4L5L6","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"L","diaNombre":"Lunes","bloque":5},{"dia":"L","diaNombre":"Lunes","bloque":6}],"nivel":9,"tel":6,"sct":6,"area":"MARKETING","jefeArea":"Juan Tala","fechaPEP1":"2026-11-02","fechaPEP2":"2027-01-04"},{"codigo":"352452","electividad":"4","coord":"F","seccion":4,"asignatura":"Electivo Especialidad II: Evaluación de Proyectos","profesor":"ROJAS OVANDO IVÁN ROBERTO","cupo":40,"horarioRaw":"V5V6","bloques":[{"dia":"V","diaNombre":"Viernes","bloque":5},{"dia":"V","diaNombre":"Viernes","bloque":6}],"nivel":9,"tel":6,"sct":6,"area":"FINANZAS","jefeArea":"Christian Espinosa","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352452","electividad":"5","coord":"F","seccion":5,"asignatura":"Electivo Especialidad II: Análisis Económico y Financiero de la Empresa","profesor":"MUÑOZ PEDRO","cupo":40,"horarioRaw":"V5V6","bloques":[{"dia":"V","diaNombre":"Viernes","bloque":5},{"dia":"V","diaNombre":"Viernes","bloque":6}],"nivel":9,"tel":6,"sct":6,"area":"FINANZAS","jefeArea":"Christian Espinosa","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352452","electividad":"8","coord":"F","seccion":28,"asignatura":"Electivo Especialidad II: Mercado de Capitales","profesor":"ESPINOSA MÉNDEZ CHRISTIAN ENRIQUE","cupo":40,"horarioRaw":"M7M8","bloques":[{"dia":"M","diaNombre":"Martes","bloque":7},{"dia":"M","diaNombre":"Martes","bloque":8}],"nivel":10,"tel":6,"sct":6,"area":"FINANZAS","jefeArea":"Christian Espinosa","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352452","electividad":"9","coord":"F","seccion":29,"asignatura":"Electivo Especialidad II: Valoración de Empresas","profesor":"RIVERO FERNÁNDEZ DANIEL EDGARDO","cupo":40,"horarioRaw":"W7W8","bloques":[{"dia":"W","diaNombre":"Miércoles","bloque":7},{"dia":"W","diaNombre":"Miércoles","bloque":8}],"nivel":10,"tel":6,"sct":6,"area":"FINANZAS","jefeArea":"Christian Espinosa","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352452","electividad":"2","coord":"F","seccion":40,"asignatura":"Electivo Minor Finanzas: Gestión de Riesgos con Derivados","profesor":"ZAVALA GARCÍA FREDDY ARQUIMIDES","cupo":40,"horarioRaw":"L4L5L6","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"L","diaNombre":"Lunes","bloque":5},{"dia":"L","diaNombre":"Lunes","bloque":6}],"nivel":9,"tel":6,"sct":6,"area":"FINANZAS","jefeArea":"Christian Espinosa","fechaPEP1":"2026-11-02","fechaPEP2":"2027-01-04"},{"codigo":"352452","electividad":"6","coord":"F","seccion":50,"asignatura":"Electivo Minor Finanzas: Machine Learning en Finanzas","profesor":"YÁÑEZ CASTRO GUILLERMO JOSE","cupo":40,"horarioRaw":"W4W5W6","bloques":[{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":5},{"dia":"W","diaNombre":"Miércoles","bloque":6}],"nivel":9,"tel":6,"sct":6,"area":"FINANZAS","jefeArea":"Christian Espinosa","fechaPEP1":"2026-11-11","fechaPEP2":"2027-01-13"},{"codigo":"352452","electividad":"7","coord":"F","seccion":60,"asignatura":"Electivo Minor Finanzas: Gestión De Inversiones","profesor":"CAVIERES CARLOS","cupo":40,"horarioRaw":"M4M5M6","bloques":[{"dia":"M","diaNombre":"Martes","bloque":4},{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6}],"nivel":9,"tel":6,"sct":6,"area":"FINANZAS","jefeArea":"Christian Espinosa","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352453","electividad":"3","coord":"P","seccion":3,"asignatura":"Electivo Especialidad III: Gestión de la Seguridad y Bienestar Laboral","profesor":"MAUREIRA GRISELLE","cupo":40,"horarioRaw":"V3V4","bloques":[{"dia":"V","diaNombre":"Viernes","bloque":3},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":9,"tel":6,"sct":6,"area":"RRHH","jefeArea":"Gregorio Pérez","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352453","electividad":"4","coord":"P","seccion":4,"asignatura":"Electivo Especialidad III: Coaching para Empresas en el Área de Recursos Humanos","profesor":"CASTILLO FRANCISCO","cupo":30,"horarioRaw":"V2V3","bloques":[{"dia":"V","diaNombre":"Viernes","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":9,"tel":6,"sct":6,"area":"RRHH","jefeArea":"Gregorio Pérez","fechaPEP1":"2026-11-13","fechaPEP2":"2027-01-15"},{"codigo":"352453","electividad":"7","coord":"P","seccion":7,"asignatura":"Electivo Especialidad III: Desarrollo de Habilidades Esenciales para la Gestión Estratégica del Área de Recursos Humanos","profesor":"BELL JEANNY","cupo":40,"horarioRaw":"L5L6","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":5},{"dia":"L","diaNombre":"Lunes","bloque":6}],"nivel":9,"tel":6,"sct":6,"area":"RRHH","jefeArea":"Gregorio Pérez","fechaPEP1":"2026-11-02","fechaPEP2":"2027-01-04"},{"codigo":"352453","electividad":"8","coord":"P","seccion":8,"asignatura":"Electivo Especialidad: Igualdad de género, derechos digitales y ciudadanía","profesor":"GUTIÉRREZ MARCELA","cupo":40,"horarioRaw":"J1J2","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":1},{"dia":"J","diaNombre":"Jueves","bloque":2}],"nivel":9,"tel":6,"sct":6,"area":"RRHH","jefeArea":"Gregorio Pérez","fechaPEP1":"2026-11-02","fechaPEP2":"2027-01-04"},{"codigo":"352453","electividad":"5","coord":"P","seccion":40,"asignatura":"Electivo Minor RRHH: Culturas de Alto Desempeño","profesor":"LOPEZ SERGIO","cupo":40,"horarioRaw":"M4M5M6","bloques":[{"dia":"M","diaNombre":"Martes","bloque":4},{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6}],"nivel":10,"tel":6,"sct":6,"area":"RRHH","jefeArea":"Gregorio Pérez","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352453","electividad":"6","coord":"P","seccion":50,"asignatura":"Electivo Minor RRHH: Compensaciones","profesor":"ANDRADE EDITH","cupo":40,"horarioRaw":"W4W5W6","bloques":[{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":5},{"dia":"W","diaNombre":"Miércoles","bloque":6}],"nivel":9,"tel":6,"sct":6,"area":"RRHH","jefeArea":"Gregorio Pérez","fechaPEP1":"2026-11-11","fechaPEP2":"2027-01-13"},{"codigo":"352453","electividad":"10","coord":"P","seccion":60,"asignatura":"Electivo Minor RRHH: Relaciones Laborales","profesor":"BELLIDO DAINA","cupo":40,"horarioRaw":"L4L5L6","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"L","diaNombre":"Lunes","bloque":5},{"dia":"L","diaNombre":"Lunes","bloque":6}],"nivel":9,"tel":6,"sct":6,"area":"RRHH","jefeArea":"Gregorio Pérez","fechaPEP1":"2026-11-02","fechaPEP2":"2027-01-04"},{"codigo":"352454","electividad":"5","coord":"T","seccion":5,"asignatura":"Electivo:  Power Bi Básico e Intermedio","profesor":"ZAMORA ALCÁNTARA HERNALDO ANTONIO","cupo":40,"horarioRaw":"W1W2","bloques":[{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":2}],"nivel":9,"tel":6,"sct":6,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-04","fechaPEP2":"2027-01-06"},{"codigo":"352454","electividad":"5","coord":"T","seccion":15,"asignatura":"Electivo Especialidad III: Power Bi Básico e Intermedio","profesor":"DELANNAYS ARAYA CHRISTIAN","cupo":30,"horarioRaw":"M7M8","bloques":[{"dia":"M","diaNombre":"Martes","bloque":7},{"dia":"M","diaNombre":"Martes","bloque":8}],"nivel":null,"tel":null,"sct":null,"area":"","jefeArea":null,"fechaPEP1":"2026-11-03","fechaPEP2":"2027-01-05"},{"codigo":"352454","electividad":"8","coord":"T","seccion":8,"asignatura":"Electivo: Agentes de IA para la Toma de Decisiones Empresariales","profesor":"CASTILLO RODRÍGUEZ EDUARDO ENRIQUE","cupo":20,"horarioRaw":"M1M2","bloques":[{"dia":"M","diaNombre":"Martes","bloque":1},{"dia":"M","diaNombre":"Martes","bloque":2}],"nivel":9,"tel":6,"sct":6,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-04","fechaPEP2":"2027-01-06"},{"codigo":"352454","electividad":"6","coord":"T","seccion":40,"asignatura":"Electivo Minor Transform Digital: Tecnologías Emergentes y Aplicaciones  en la Empresa","profesor":"BARRIA VÁSQUEZ JOSÉ LUIS","cupo":40,"horarioRaw":"L4L5L6","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"L","diaNombre":"Lunes","bloque":5},{"dia":"L","diaNombre":"Lunes","bloque":6}],"nivel":9,"tel":6,"sct":6,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352454","electividad":"7","coord":"T","seccion":50,"asignatura":"Electivo Minor Transform. Digital: Gestión del Cambio","profesor":"HUERE EDGAR","cupo":40,"horarioRaw":"W4W5W6","bloques":[{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":5},{"dia":"W","diaNombre":"Miércoles","bloque":6}],"nivel":9,"tel":6,"sct":6,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-11","fechaPEP2":"2027-01-13"},{"codigo":"352454","electividad":"9","coord":"T","seccion":60,"asignatura":"Electivo Minor Transform. Digital: Automatización y Optimización de Procesos de Negocios","profesor":"SIMPERTIGUE BASTIÁN","cupo":40,"horarioRaw":"V4V5V6","bloques":[{"dia":"V","diaNombre":"Viernes","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":5},{"dia":"V","diaNombre":"Viernes","bloque":6}],"nivel":9,"tel":6,"sct":6,"area":"OPERACIÓN","jefeArea":"Maria José Quinteros","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352456","electividad":"9","coord":"S","seccion":40,"asignatura":"Electivo Minor sostenibilidad: Marketing Sostenible","profesor":"YAÑEZ PEREZ MARCELO","cupo":40,"horarioRaw":"M4M5M6","bloques":[{"dia":"M","diaNombre":"Martes","bloque":4},{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6}],"nivel":8,"tel":6,"sct":5,"area":"ESTRATEGIA","jefeArea":"Gabriela Pizarro","fechaPEP1":"2026-11-10","fechaPEP2":"2027-01-12"},{"codigo":"352456","electividad":"8","coord":"S","seccion":50,"asignatura":"Electivo Minor sostenibilidad: Sosteniblidad Financiera","profesor":"ALVAREZ ILLESCA SERGIO","cupo":40,"horarioRaw":"W4W5W6","bloques":[{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":5},{"dia":"W","diaNombre":"Miércoles","bloque":6}],"nivel":8,"tel":6,"sct":5,"area":"ESTRATEGIA","jefeArea":"Gabriela Pizarro","fechaPEP1":"2026-11-11","fechaPEP2":"2027-01-13"},{"codigo":"352456","electividad":"7","coord":"S","seccion":60,"asignatura":"Electivo Minor sostenibilidad: Personas e Inclusión en Organizaciones","profesor":"SOTO IBARRA ANGELICA","cupo":40,"horarioRaw":"V4V5V6","bloques":[{"dia":"V","diaNombre":"Viernes","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":5},{"dia":"V","diaNombre":"Viernes","bloque":6}],"nivel":8,"tel":6,"sct":5,"area":"ESTRATEGIA","jefeArea":"Gabriela Pizarro","fechaPEP1":"2026-11-06","fechaPEP2":"2027-01-08"},{"codigo":"352457","electividad":"14","coord":"P","seccion":14,"asignatura":"Electivo Especialidad VII: Gestión Estratégica y Compliance Laboral","profesor":"TARIFEÑO EDUARDO","cupo":40,"horarioRaw":"V7V8","bloques":[{"dia":"V","diaNombre":"Viernes","bloque":7},{"dia":"V","diaNombre":"Viernes","bloque":8}],"nivel":9,"tel":6,"sct":6,"area":"RRHH","jefeArea":"Gregorio Pérez","fechaPEP1":null,"fechaPEP2":null},{"codigo":"352458","electividad":"0","coord":"A","seccion":1,"asignatura":"Práctica II: Profesional","profesor":"TALA JUAN","cupo":150,"horarioRaw":"S3S4","bloques":[{"dia":"S","diaNombre":"Sábado","bloque":3},{"dia":"S","diaNombre":"Sábado","bloque":4}],"nivel":10,"tel":4,"sct":18,"area":"DIRECCION","jefeArea":"Juan Tala","fechaPEP1":null,"fechaPEP2":null}]},"economia":{"label":"Ingeniería Comercial en Economía","semestre":"2026-2","sections":[{"codigo":"351475","electividad":"0","coord":"E","seccion":1,"asignatura":"Macroeconomía II","profesor":"DROLLER FEDERICO","cupo":5,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":6,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"351475","electividad":"0","coord":"E","seccion":2,"asignatura":"Macroeconomía II","profesor":"FRANKEN MONTERRIOS HELMUT HANS","cupo":5,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":6,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"351477","electividad":"0","coord":"E","seccion":1,"asignatura":"Econometría II","profesor":"DETTONI HIDALGO ROBINSON GABRIEL","cupo":5,"horarioRaw":"J1J2V4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":1},{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":6,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"351477","electividad":"0","coord":"E","seccion":2,"asignatura":"Econometría II","profesor":"PFENG IBACACHE BRIAN ARTHUR","cupo":5,"horarioRaw":"J1J2V4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":1},{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":6,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"351478","electividad":"0","coord":"E","seccion":1,"asignatura":"Economía Financiera","profesor":"VÁSQUEZ BAZÁN JOSE MANUEL","cupo":30,"horarioRaw":"L3M3V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"M","diaNombre":"Martes","bloque":3},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":7,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"351483","electividad":"0","coord":"E","seccion":1,"asignatura":"Evaluación de Proyectos","profesor":"CECCARELLI ARIAS JUAN FRANCISCO","cupo":30,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"351484","electividad":"0","coord":"E","seccion":1,"asignatura":"Comercio Internacional","profesor":"BALBOA CARDEMIL ORLANDO IVÁN","cupo":30,"horarioRaw":"L4W4V4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"351485","electividad":"0","coord":"E","seccion":1,"asignatura":"Finanzas Internacionales y Macroeconomía Abierta","profesor":"DROLLER FEDERICO","cupo":30,"horarioRaw":"L5W5V5","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":5},{"dia":"W","diaNombre":"Miércoles","bloque":5},{"dia":"V","diaNombre":"Viernes","bloque":5}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"351487","electividad":"2","coord":"E","seccion":2,"asignatura":"Electivo de Ciencias Sociales II: Fundamentos de Análisis para Economía Dinámica","profesor":"RIVERA VILLAGRÁN SEBASTIAN ENRIQUE","cupo":20,"horarioRaw":"M4M5","bloques":[{"dia":"M","diaNombre":"Martes","bloque":4},{"dia":"M","diaNombre":"Martes","bloque":5}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"351495","electividad":"1","coord":"E","seccion":1,"asignatura":"Electivo de Especialidad IV: Macroeconomía y Análisis de Coyuntura","profesor":"MARTNER FANTA GONZALO DANIEL","cupo":20,"horarioRaw":"J5J6M6","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":5},{"dia":"J","diaNombre":"Jueves","bloque":6},{"dia":"M","diaNombre":"Martes","bloque":6}],"nivel":10,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"351495","electividad":"2","coord":"E","seccion":2,"asignatura":"Electivo de Especialidad IV: Tópicos en Macroeconomía Dinámica","profesor":"SEPÚLVEDA PIZARRO FACUNDO","cupo":20,"horarioRaw":"L6W6V6","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":6},{"dia":"W","diaNombre":"Miércoles","bloque":6},{"dia":"V","diaNombre":"Viernes","bloque":6}],"nivel":10,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"351497","electividad":"0","coord":"E","seccion":1,"asignatura":"Práctica Profesional","profesor":"FRIEDMAN RAFAEL JORGE RICARDO","cupo":20,"horarioRaw":"S1","bloques":[{"dia":"S","diaNombre":"Sábado","bloque":1}],"nivel":9,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"351497","electividad":"0","coord":"E","seccion":2,"asignatura":"Práctica Profesional","profesor":"FRIEDMAN RAFAEL JORGE RICARDO","cupo":20,"horarioRaw":"S2","bloques":[{"dia":"S","diaNombre":"Sábado","bloque":2}],"nivel":9,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"351498","electividad":"0","coord":"E","seccion":1,"asignatura":"Trabajo de Titulación","profesor":"","cupo":30,"horarioRaw":"","bloques":[],"nivel":10,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352460","electividad":"0","coord":"E","seccion":1,"asignatura":"Métodos Cuantitativos","profesor":"DÍAZ VALENZUELA EDUARDO PATRICIO","cupo":30,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":4,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352460","electividad":"0","coord":"E","seccion":2,"asignatura":"Métodos Cuantitativos","profesor":"GARCÍA SALAS PABLO ANDRES","cupo":30,"horarioRaw":"L1W1V1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1},{"dia":"V","diaNombre":"Viernes","bloque":1}],"nivel":4,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352461","electividad":"0","coord":"E","seccion":1,"asignatura":"Estadística para la Economía II","profesor":"BELTRÁN RIVERA CLAUDIO ALEJANDRO","cupo":30,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":4,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352461","electividad":"0","coord":"E","seccion":2,"asignatura":"Estadística para la Economía II","profesor":"ROMERO VARGAS CAROLA ANDREA","cupo":30,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":4,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352462","electividad":"0","coord":"E","seccion":1,"asignatura":"Microeconomía I","profesor":"GÁLVEZ SILVA TOMÁS ANDRÉS","cupo":30,"horarioRaw":"M1M2V4","bloques":[{"dia":"M","diaNombre":"Martes","bloque":1},{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":4,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352462","electividad":"0","coord":"E","seccion":2,"asignatura":"Microeconomía I","profesor":"MUNDACA CÁCERES CRISTIAN MANUEL","cupo":30,"horarioRaw":"M1M2V4","bloques":[{"dia":"M","diaNombre":"Martes","bloque":1},{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":4,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352463","electividad":"0","coord":"E","seccion":1,"asignatura":"Economía Financiera I","profesor":"PATTILLO ÁLVAREZ GUILLERMO ALFONSO","cupo":30,"horarioRaw":"L3M3V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"M","diaNombre":"Martes","bloque":3},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":4,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352463","electividad":"0","coord":"E","seccion":2,"asignatura":"Economía Financiera I","profesor":"RODRÍGUEZ ALEXANDRE ENZO GERMAN REINALDI RAMON","cupo":30,"horarioRaw":"L3M3V3","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"M","diaNombre":"Martes","bloque":3},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":4,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352464","electividad":"0","coord":"E","seccion":1,"asignatura":"Comunicación Efectiva","profesor":"CASTILLO DE LA JARA BERNARDITA MARIA DE LOS ANGELES","cupo":20,"horarioRaw":"J3J4M4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":4,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352464","electividad":"0","coord":"E","seccion":2,"asignatura":"Comunicación Efectiva","profesor":"MORENO BASTÍAS VERONICA MARIA","cupo":20,"horarioRaw":"J3J4M4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":4,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352464","electividad":"0","coord":"E","seccion":3,"asignatura":"Comunicación Efectiva","profesor":"OLIVARES ACUÑA MARISOL HELENA","cupo":20,"horarioRaw":"M4J4J3","bloques":[{"dia":"M","diaNombre":"Martes","bloque":4},{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"J","diaNombre":"Jueves","bloque":3}],"nivel":4,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352465","electividad":"0","coord":"E","seccion":1,"asignatura":"Inglés para la Economía III","profesor":"CÉSPEDES CARREÑO CRISTIAN RICARDO","cupo":20,"horarioRaw":"J5J6","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":5},{"dia":"J","diaNombre":"Jueves","bloque":6}],"nivel":4,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352465","electividad":"0","coord":"E","seccion":2,"asignatura":"Inglés para la Economía III","profesor":"CONCHA CÁRTES KOSTTIA OLIA","cupo":20,"horarioRaw":"L4W4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":4}],"nivel":4,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352465","electividad":"0","coord":"E","seccion":3,"asignatura":"Inglés para la Economía III","profesor":"HENRÍQUEZ JARA MARIA JOSE","cupo":20,"horarioRaw":"L4W4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":4}],"nivel":4,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352467","electividad":"0","coord":"E","seccion":1,"asignatura":"Econometría I","profesor":"BAHAMONDES POBLETE CLIFF ORLANDO","cupo":30,"horarioRaw":"J1J2V4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":1},{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":5,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352468","electividad":"0","coord":"E","seccion":1,"asignatura":"Microeconomía II","profesor":"CAMPOS GUTIÉRREZ JAIME FRANCISCO","cupo":30,"horarioRaw":"J4J5M1","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":4},{"dia":"J","diaNombre":"Jueves","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":1}],"nivel":5,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352469","electividad":"0","coord":"E","seccion":1,"asignatura":"Macroeconomía I","profesor":"PATTILLO ÁLVAREZ GUILLERMO ALFONSO","cupo":30,"horarioRaw":"L5L6V5","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":5},{"dia":"L","diaNombre":"Lunes","bloque":6},{"dia":"V","diaNombre":"Viernes","bloque":5}],"nivel":5,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352472","electividad":"0","coord":"E","seccion":1,"asignatura":"Econometría II","profesor":"DETTONI HIDALGO ROBINSON GABRIEL","cupo":30,"horarioRaw":"J1J2V4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":1},{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":6,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352472","electividad":"0","coord":"E","seccion":2,"asignatura":"Econometría II","profesor":"PFENG IBACACHE BRIAN ARTHUR","cupo":30,"horarioRaw":"J1J2V4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":1},{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":6,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352473","electividad":"0","coord":"E","seccion":1,"asignatura":"Historia Económica","profesor":"ROBLES ORTIZ CLAUDIO RAMON","cupo":30,"horarioRaw":"M2M3V3","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":6,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352473","electividad":"0","coord":"E","seccion":2,"asignatura":"Historia Económica","profesor":"NOGUERA SANTAELLA JOSÉ DE JESÚS","cupo":30,"horarioRaw":"M2M3V3","bloques":[{"dia":"M","diaNombre":"Martes","bloque":2},{"dia":"M","diaNombre":"Martes","bloque":3},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":6,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352474","electividad":"0","coord":"E","seccion":1,"asignatura":"Macroeconomía II","profesor":"DROLLER FEDERICO","cupo":30,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":6,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352474","electividad":"0","coord":"E","seccion":2,"asignatura":"Macroeconomía II","profesor":"FRANKEN MONTERRIOS HELMUT HANS","cupo":30,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":6,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352475","electividad":"1","coord":"E","seccion":1,"asignatura":"Electivo I: Política Económica","profesor":"SALAS OPAZO VÍCTOR ALEXIS","cupo":20,"horarioRaw":"L1W1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1}],"nivel":6,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352475","electividad":"2","coord":"E","seccion":2,"asignatura":"Electivo I: Tecnología, Economía y Sociedad","profesor":"COVARRUBIAS GATICA ELIANA BERTA","cupo":20,"horarioRaw":"L1W1","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":1},{"dia":"W","diaNombre":"Miércoles","bloque":1}],"nivel":6,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352475","electividad":"3","coord":"E","seccion":3,"asignatura":"Electivo I: Agricultura y crecimiento económico en Chile","profesor":"ROBLES ORTIZ CLAUDIO RAMON","cupo":20,"horarioRaw":"W4W5","bloques":[{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":5}],"nivel":6,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352476","electividad":"1","coord":"E","seccion":1,"asignatura":"Electivo II: Fundamentos de Análisis para Economía Dinámica","profesor":"RIVERA VILLAGRÁN SEBASTIAN ENRIQUE","cupo":20,"horarioRaw":"M4M5","bloques":[{"dia":"M","diaNombre":"Martes","bloque":4},{"dia":"M","diaNombre":"Martes","bloque":5}],"nivel":6,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352476","electividad":"2","coord":"E","seccion":2,"asignatura":"Electivo II: Taller de Actualidad Política y Economica","profesor":"OLIVARES ACUÑA MARISOL HELENA","cupo":20,"horarioRaw":"L3L4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":3},{"dia":"L","diaNombre":"Lunes","bloque":4}],"nivel":6,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352476","electividad":"3","coord":"E","seccion":3,"asignatura":"Electivo II: Economía y Diseño de Sistemas de Pensiones","profesor":"FRANKEN MONTERRIOS HELMUT HANS","cupo":20,"horarioRaw":"M4M5","bloques":[{"dia":"M","diaNombre":"Martes","bloque":4},{"dia":"M","diaNombre":"Martes","bloque":5}],"nivel":6,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352477","electividad":"0","coord":"E","seccion":1,"asignatura":"Taller de Comunicación para Economistas","profesor":"MARTÍNEZ PÉREZ CECILIA LEONOR","cupo":20,"horarioRaw":"J3","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":3}],"nivel":6,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352477","electividad":"0","coord":"E","seccion":2,"asignatura":"Taller de Comunicación para Economistas","profesor":"CISTERNAS AGUIRRE CARLOS FERNANDO","cupo":20,"horarioRaw":"J3","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":3}],"nivel":6,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352477","electividad":"0","coord":"E","seccion":3,"asignatura":"Taller de Comunicación para Economistas","profesor":"OLIVARES ACUÑA MARISOL HELENA","cupo":20,"horarioRaw":"J3","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":3}],"nivel":6,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352484","electividad":"1","coord":"E","seccion":1,"asignatura":"Electivo VIII: Evaluación de Proyectos","profesor":"CECCARELLI ARIAS JUAN FRANCISCO","cupo":20,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352484","electividad":"2","coord":"E","seccion":2,"asignatura":"Electivo VIII: Economía del Desarrollo","profesor":"GARCIA JOAO MARCOS BASTOS VILAR","cupo":20,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352484","electividad":"3","coord":"E","seccion":3,"asignatura":"Electivo VIII: Tributación de Mercado de Capitales","profesor":"CARRASCO ABARCA NELSON MILAN","cupo":20,"horarioRaw":"M5M6V3","bloques":[{"dia":"M","diaNombre":"Martes","bloque":5},{"dia":"M","diaNombre":"Martes","bloque":6},{"dia":"V","diaNombre":"Viernes","bloque":3}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352484","electividad":"4","coord":"E","seccion":4,"asignatura":"Electivo VIII: Metodología de la investigación cualitativa de Mercado","profesor":"AZÓCAR ORTIZ CARLOS IGNACIO","cupo":20,"horarioRaw":"L2W2V2","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":2},{"dia":"W","diaNombre":"Miércoles","bloque":2},{"dia":"V","diaNombre":"Viernes","bloque":2}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352485","electividad":"1","coord":"E","seccion":1,"asignatura":"Electivo IX: Comercio Internacional","profesor":"BALBOA CARDEMIL ORLANDO IVÁN","cupo":20,"horarioRaw":"L4W4V4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352485","electividad":"2","coord":"E","seccion":2,"asignatura":"Electivo IX: Tópicos de Inclusión y Educación Financiera","profesor":"MENESES VERGARA IRINA PIROSKA","cupo":20,"horarioRaw":"L4W4V4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352485","electividad":"3","coord":"E","seccion":3,"asignatura":"Electivo IX: Metodología de la Investigación en Ciencias Sociales y Economía","profesor":"AZÓCAR ORTIZ CARLOS IGNACIO","cupo":20,"horarioRaw":"L4W4V4","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":4},{"dia":"W","diaNombre":"Miércoles","bloque":4},{"dia":"V","diaNombre":"Viernes","bloque":4}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352486","electividad":"1","coord":"E","seccion":1,"asignatura":"Electivo X: Macroeconomía abierta","profesor":"DROLLER FEDERICO","cupo":20,"horarioRaw":"L5W5V5","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":5},{"dia":"W","diaNombre":"Miércoles","bloque":5},{"dia":"V","diaNombre":"Viernes","bloque":5}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352486","electividad":"2","coord":"E","seccion":2,"asignatura":"Electivo X: Banca, Dinero y Mercados Financieros","profesor":"MENESES VERGARA IRINA PIROSKA","cupo":20,"horarioRaw":"L5W5V5","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":5},{"dia":"W","diaNombre":"Miércoles","bloque":5},{"dia":"V","diaNombre":"Viernes","bloque":5}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352486","electividad":"3","coord":"E","seccion":3,"asignatura":"Electivo X: Impacto Económico de la Inteligencia Artificial","profesor":"FRANKEN MONTERRIOS HELMUT HANS","cupo":20,"horarioRaw":"L5W5V5","bloques":[{"dia":"L","diaNombre":"Lunes","bloque":5},{"dia":"W","diaNombre":"Miércoles","bloque":5},{"dia":"V","diaNombre":"Viernes","bloque":5}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352486","electividad":"4","coord":"E","seccion":4,"asignatura":"Electivo X: Sociología Económica Contemporánea","profesor":"HERNÁNDEZ ARAYA ROBERTO ANTONIO","cupo":20,"horarioRaw":"W5W6V5","bloques":[{"dia":"W","diaNombre":"Miércoles","bloque":5},{"dia":"W","diaNombre":"Miércoles","bloque":6},{"dia":"V","diaNombre":"Viernes","bloque":5}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352487","electividad":"1","coord":"E","seccion":1,"asignatura":"Electivo XI: Liderazgo y Trabajo en Equipo","profesor":"MARTÍNEZ PÉREZ CECILIA LEONOR","cupo":20,"horarioRaw":"J1J2L3","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":1},{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"L","diaNombre":"Lunes","bloque":3}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352487","electividad":"2","coord":"E","seccion":2,"asignatura":"Electivo XI: Business Analytic","profesor":"CISTERNAS AGUIRRE CARLOS FERNANDO","cupo":20,"horarioRaw":"J1J2L3","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":1},{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"L","diaNombre":"Lunes","bloque":3}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352487","electividad":"3","coord":"E","seccion":3,"asignatura":"Electivo XI: Taller de Estudios Macroeconómicos(1)","profesor":"","cupo":20,"horarioRaw":"J1J2L3","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":1},{"dia":"J","diaNombre":"Jueves","bloque":2},{"dia":"L","diaNombre":"Lunes","bloque":3}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352488","electividad":"1","coord":"E","seccion":1,"asignatura":"Electivo XII: Pensamiento Sistémico e Inversión de Impacto","profesor":"VÁSQUEZ ALVARADO ALEJANDRA ALICIA","cupo":20,"horarioRaw":"M3M4","bloques":[{"dia":"M","diaNombre":"Martes","bloque":3},{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352488","electividad":"2","coord":"E","seccion":2,"asignatura":"Electivo XII: Análisis Microeconómico de la Pobreza y Desigualdad","profesor":"MUNDACA CÁCERES CRISTIAN MANUEL","cupo":20,"horarioRaw":"M3M4","bloques":[{"dia":"M","diaNombre":"Martes","bloque":3},{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352488","electividad":"3","coord":"E","seccion":3,"asignatura":"Electivo XII: Riesgo y Dinámica en Economía y Finanzas: Procesos Estocásticos Aplicados","profesor":"BAHAMONDES POBLETE CLIFF ORLANDO","cupo":20,"horarioRaw":"M3M4","bloques":[{"dia":"M","diaNombre":"Martes","bloque":3},{"dia":"M","diaNombre":"Martes","bloque":4}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352489","electividad":"0","coord":"E","seccion":1,"asignatura":"Taller Laboral","profesor":"BARRENECHEA OPAZO SERGIO ENRIQUE NICOLÁS","cupo":20,"horarioRaw":"J3J4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352489","electividad":"0","coord":"E","seccion":2,"asignatura":"Taller Laboral","profesor":"GALLEGOS REYES CLAUDIA MARLENE","cupo":20,"horarioRaw":"J3J4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352489","electividad":"0","coord":"E","seccion":3,"asignatura":"Taller Laboral","profesor":"ALFARO MARTÍNEZ DORA BEATRIZ","cupo":20,"horarioRaw":"J3J4","bloques":[{"dia":"J","diaNombre":"Jueves","bloque":3},{"dia":"J","diaNombre":"Jueves","bloque":4}],"nivel":8,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null},{"codigo":"352490","electividad":"0","coord":"E","seccion":1,"asignatura":"Práctica Profesional","profesor":"","cupo":20,"horarioRaw":"S1S2","bloques":[{"dia":"S","diaNombre":"Sábado","bloque":1},{"dia":"S","diaNombre":"Sábado","bloque":2}],"nivel":9,"tel":null,"sct":null,"area":"ECONOMÍA","jefeArea":null}]}};
 let programKey = 'ingeco';
@@ -5983,42 +5089,6 @@ document.getElementById('app-mark').addEventListener('click', ()=>{
   });
 })();
 
-// ---------- Guide panel placement: in modo amigable it moves up to live as
-// a compact button right below the search bar, instead of down after the
-// results/horario layout where it lives in every other theme. Mismo patrón
-// de reparenting que initSchedulePlacement de más abajo — mueve el mismo
-// nodo entre 2 posiciones fijas del DOM en vez de duplicar el markup, así
-// que el estado abierto/cerrado (bc-usach-guide-open, ver initGuide arriba)
-// y el contenido (ilustración + pasos) son siempre los mismos, sólo cambia
-// dónde vive. ----------
-(function initGuidePlacement(){
-  const wrap = document.getElementById('bottom-guide-wrap');
-  const amigableSlot = document.getElementById('guide-slot-topbar');
-  // Fuera de modo amigable, el guide vive donde siempre — inmediatamente
-  // antes de #big-schedule-wrap (su posición original en shell.html).
-  const defaultAnchor = document.getElementById('big-schedule-wrap');
-  if(!wrap || !amigableSlot || !defaultAnchor) return;
-  const root = document.documentElement;
-
-  function isAmigable(){ return root.getAttribute('data-theme') === 'amigable'; }
-
-  function place(){
-    if(isAmigable()){
-      if(wrap.parentElement !== amigableSlot) amigableSlot.appendChild(wrap);
-    } else if(wrap.parentElement !== defaultAnchor.parentElement || wrap.nextElementSibling !== defaultAnchor){
-      defaultAnchor.parentElement.insertBefore(wrap, defaultAnchor);
-    }
-  }
-  place();
-
-  // El toggle de modo amigable (🎀) vive en otra función (initTheme, más
-  // arriba) — en vez de acoplarse a ese código, se observa directamente el
-  // atributo data-theme del <html>, así ambas funciones quedan
-  // independientes entre sí.
-  const mo = new MutationObserver(place);
-  mo.observe(root, { attributes:true, attributeFilter:['data-theme'] });
-})();
-
 // ---------- Responsive reparenting: move "Mi horario" beside the picker whenever the layout is single-column ----------
 (function initSchedulePlacement(){
   const panel = document.getElementById('rail-right-panel');
@@ -6059,48 +5129,6 @@ document.getElementById('app-mark').addEventListener('click', ()=>{
   toggle.addEventListener('keydown', e=>{
     if(e.key===' '||e.key==='Enter'){ e.preventDefault(); setOpen(!open); }
   });
-})();
-
-// ---------- Panel "Mi horario" (#rail-right-panel), colapsable en modo
-// amigable — mismo patrón que initPickerCollapse de arriba (fuera de modo
-// amigable el CSS no usa data-open para nada, así que este estado no
-// cambia el aspecto del panel en los otros temas). A diferencia del
-// picker, acá el chevron no es la ÚNICA forma de abrirlo: apretar
-// cualquiera de las 2 pestañas ("Horario semanal" / "Calendario de
-// pruebas") también lo despliega — tiene más sentido que el usuario abra
-// su horario apretando la pestaña que quiere ver, en vez de tener que
-// encontrar la flecha primero. El chevron sigue funcionando en ambos
-// sentidos (abre y cierra), pero su rol principal es volver a colapsar.
-// Sólo aplica a la instancia chica (#rail-right-panel) — el panel grande
-// de abajo (.big-schedule-wrap) queda "siempre visible" como siempre. ----
-(function initRailScheduleCollapse(){
-  const panel = document.getElementById('rail-right-panel');
-  const toggle = document.getElementById('rail-sched-toggle');
-  const tabHorario = document.getElementById('tab-horario');
-  const tabExamenes = document.getElementById('tab-examenes');
-  if(!panel || !toggle) return;
-  let open = false;
-  try{
-    const saved = localStorage.getItem('bc-usach-rail-sched-open');
-    if(saved !== null) open = saved === 'true';
-  }catch(e){}
-  function setOpen(v){
-    open = v;
-    panel.dataset.open = String(open);
-    toggle.setAttribute('aria-expanded', String(open));
-    try{ localStorage.setItem('bc-usach-rail-sched-open', String(open)); }catch(e){}
-  }
-  setOpen(open);
-  toggle.addEventListener('click', ()=> setOpen(!open));
-  toggle.addEventListener('keydown', e=>{
-    if(e.key===' '||e.key==='Enter'){ e.preventDefault(); setOpen(!open); }
-  });
-  // Las pestañas ya tienen su propio listener (setScheduleView, más
-  // arriba) que cambia qué vista se muestra — este listener adicional
-  // sólo se preocupa de desplegar el panel si estaba colapsado, así que
-  // ambos conviven sin pisarse.
-  if(tabHorario) tabHorario.addEventListener('click', ()=> setOpen(true));
-  if(tabExamenes) tabExamenes.addEventListener('click', ()=> setOpen(true));
 })();
 
 // ---------- Panel "Dataset" (Asignaturas/Secciones/Áreas): oculto para
@@ -6177,67 +5205,6 @@ initChzToggle('chz-toggleMalla', 'chz-bodyMalla', 'chz-previewMalla', 'bc-usach-
 // clave de localStorage propios, no pisa ni la firma real ni la del cogollo.
 initChzToggle('chz-toggleMallaOriginal', 'chz-bodyMallaOriginal', 'chz-previewMallaOriginal', 'bc-usach-chz-open-malla-original');
 initChzSmoke('chelpaHazeFooterMallaOriginal', 'chzSmokeMallaOriginal');
-
-// Barra "pipeline" decorativa (build → lint → test → deploy) al fondo de
-// la Malla curricular, justo debajo de la firma nano de arriba (la que
-// muestra "malla_grid.html · grafo" colapsada). Es puramente cosmética:
-// no dispara nada real, sólo cicla los 4 estados con setTimeout en loop
-// para sentirse como un CI corriendo solo, coherente con el resto de las
-// firmas "dev" del sitio.
-function initChzPipeline(containerId){
-  var root = document.getElementById(containerId);
-  if (!root) return;
-  var stages = Array.prototype.slice.call(root.querySelectorAll('.chz-pipeline-stage'));
-  var statusEl = root.querySelector('.chz-pipeline-status');
-  if (!stages.length || !statusEl) return;
-
-  var MESSAGES = {
-    build: 'build → compilando index.html…',
-    lint: 'lint → revisando estilos y clases…',
-    test: 'test → corriendo la suite de Playwright…',
-    deploy: 'deploy → publicando en GitHub Pages…'
-  };
-  var RUN_MS = 1100;
-  var GAP_MS = 250;
-  var DONE_HOLD_MS = 2600;
-  var RESTART_GAP_MS = 900;
-  var DONE_MSG = '✓ pipeline OK — todo verde, listo para producción';
-
-  function setState(el, state){
-    el.classList.remove('chz-pipeline-stage--idle', 'chz-pipeline-stage--running', 'chz-pipeline-stage--done');
-    el.classList.add('chz-pipeline-stage--' + state);
-  }
-
-  function resetAll(){
-    stages.forEach(function(s){ setState(s, 'idle'); });
-    statusEl.textContent = 'esperando…';
-    statusEl.classList.remove('chz-pipeline-status--ok');
-  }
-
-  function runStage(i){
-    if (i >= stages.length){
-      statusEl.textContent = DONE_MSG;
-      statusEl.classList.add('chz-pipeline-status--ok');
-      setTimeout(function(){
-        resetAll();
-        setTimeout(function(){ runStage(0); }, RESTART_GAP_MS);
-      }, DONE_HOLD_MS);
-      return;
-    }
-    var stage = stages[i];
-    var key = stage.getAttribute('data-stage');
-    setState(stage, 'running');
-    statusEl.textContent = MESSAGES[key] || '…';
-    setTimeout(function(){
-      setState(stage, 'done');
-      setTimeout(function(){ runStage(i + 1); }, GAP_MS);
-    }, RUN_MS);
-  }
-
-  resetAll();
-  runStage(0);
-}
-initChzPipeline('chzPipeline');
 
 // ---------- Segunda firma, sólo dentro de la Malla curricular ----------
 // #malla-footer-preview, al fondo de la Malla: la firma nueva ("nano_gollo",
