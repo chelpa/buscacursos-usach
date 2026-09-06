@@ -345,6 +345,32 @@
     background:var(--action-blue); border-color:var(--action-blue); color:var(--action-blue-text);
   }
 
+  /* ---------- Topbar compacta en celular ----------
+     Sin esto, la barra superior no tenía ningún ajuste para pantallas
+     chicas: el logo/título a 22px + insignia "No oficial" + el bloque
+     .context (programa/semestre + botón cambiar mención) + los 5 íconos
+     (tema, amigable, simulación, malla, bitácora) competían por el mismo
+     ancho y el flex-wrap normal los repartía en 3 filas sueltas — eso
+     empujaba "Mi horario" varias pantallas más abajo de lo necesario.
+     Acá se reduce el tamaño de cada pieza y se fuerza a .context a ocupar
+     su propia fila (en vez de quedar mezclado entre íconos), así el resto
+     de la página (y el panel de horario) queda visible mucho antes. */
+  @media (max-width:700px){
+    .topbar-inner{ padding:8px 12px; gap:6px 8px; }
+    .brand{ gap:6px; }
+    .app-mark, .brand-mark{ width:26px; height:26px; }
+    .brand h1{ font-size:15px; }
+    .brand .unofficial{ display:none; }
+    .context{
+      margin-left:0; flex-basis:100%; order:3; text-align:left;
+      display:flex; align-items:center; flex-wrap:wrap; gap:8px; font-size:11px;
+    }
+    .program-switch{ margin-top:0; font-size:10.5px; padding:2px 9px; }
+    .theme-toggle, .icon-btn{ width:28px; height:28px; }
+    .theme-toggle svg{ width:15px; height:15px; }
+    .amigable-btn, .sim-btn{ font-size:14px; }
+  }
+
   .btn-view-mode{
     margin-top:10px; width:100%; display:inline-flex; align-items:center; justify-content:center; gap:6px;
     border:1px solid var(--border-strong); background:var(--surface-2); color:var(--ink-soft);
@@ -442,28 +468,17 @@
     box-shadow:var(--shadow);
   }
 
-  /* ---------- Guide panel ---------- */
-  .guide-panel{
-    grid-column: 1 / -1;
-    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
-    box-shadow:var(--shadow); overflow:hidden;
-  }
-  .guide-head{
-    display:flex; align-items:center; gap:10px; padding:14px 18px;
-    cursor:pointer; user-select:none; background:var(--surface-2);
-  }
-  .guide-head:hover{ background:var(--surface-3); }
-  .guide-head svg{ color:var(--ink-faint); flex:none; transition:transform .18s ease; }
-  .guide-panel[data-open="true"] .guide-head svg{ transform:rotate(180deg); }
-  .guide-head .t{ flex:1; min-width:0; }
-  .guide-head h2{ font-family:'Bebas Neue', 'Nunito Sans', sans-serif; margin:0; font-size:19px; font-weight:400; letter-spacing:.015em; }
-  .guide-head p{ margin:2px 0 0; font-size:12px; color:var(--ink-soft); }
+  /* ---------- Guide content (ilustración + pasos) ----------
+     Vive dentro de #guide-overlay (ver .guide-overlay/.help-fab más abajo),
+     el único lugar de toda la página donde aparece esta guía — antes se
+     repetía en 3 lugares (tarjeta bajo el horario, versión compacta en modo
+     amigable, copia inline en el estado "sin resultados aún"); el overlay
+     reutiliza el mismo header .malla-head/.malla-close que Malla/Bitácora,
+     así que sólo hacen falta las reglas del contenido en sí. */
   .guide-body{
     display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:14px;
-    padding:18px; border-top:1px solid var(--border);
+    padding:18px;
   }
-  .guide-panel[data-open="false"] .guide-body,
-  .guide-panel[data-open="false"] .guide-mock{ display:none; }
   .guide-step{ display:flex; gap:12px; }
   .guide-step .num{
     flex:none; width:26px; height:26px; border-radius:50%;
@@ -477,33 +492,6 @@
     font-family:'IBM Plex Mono',monospace; font-size:11px; background:var(--surface-3);
     border:1px solid var(--border-strong); border-radius:4px; padding:1px 5px;
   }
-  .guide-panel.inline{ box-shadow:none; }
-
-  /* ---------- Guía reubicada arriba, en modo amigable ----------
-     #guide-slot-topbar vive vacío (sin ningún efecto visual) en el resto
-     de los temas — initGuidePlacement (app.js) sólo mueve #bottom-guide-wrap
-     acá cuando el tema es "amigable". El mismo <section class="guide-panel">
-     se ve distinto según dónde está parado: acá arriba se comprime a un
-     botón de una sola línea (sin el subtítulo "Guía rápida en 5 pasos…",
-     con el h2 mucho más chico) en vez de la tarjeta grande de siempre —
-     al desplegarse, el contenido (ilustración + pasos) sigue siendo
-     exactamente el mismo, sólo cambia el encabezado colapsado. */
-  #guide-slot-topbar:not(:empty){ max-width:1440px; margin:0 auto; padding:10px 20px 0; }
-  /* render() (más abajo, sección "Render: resultados") pone
-     bottom-guide-wrap.style.display='none' mientras no haya ningún filtro
-     activo (usa en su lugar la copia embebida de welcomeGuideHTML() dentro
-     de #results) — pero acá arriba, junto a la barra de búsqueda, el botón
-     debe verse SIEMPRE en modo amigable, sea cual sea el estado de los
-     resultados, así que se fuerza por encima de ese estilo inline. */
-  #guide-slot-topbar .bottom-guide-wrap{ display:block !important; }
-  #guide-slot-topbar .guide-panel{ box-shadow:none; }
-  #guide-slot-topbar .guide-head{ padding:9px 14px; gap:8px; }
-  #guide-slot-topbar .guide-head .t p{ display:none; }
-  #guide-slot-topbar .guide-head h2{
-    font-family:'Nunito Sans', sans-serif; font-size:13px; font-weight:700;
-    text-transform:none; letter-spacing:normal; color:var(--ink);
-  }
-  #guide-slot-topbar .guide-head svg{ width:14px; height:14px; }
 
   /* ---------- Guide illustration (mock) ---------- */
   .guide-mock{
@@ -1011,9 +999,24 @@
      en app.js sólo cicla los 4 estados con setTimeout en loop, para
      sentirse coherente con el resto de las firmas "dev" oscuras del sitio
      (por eso tampoco usa las variables de tema, igual que .malla-footer-preview
-     de arriba). ---------- */
+     de arriba). Ahora es un acordeón (a pedido del usuario): el botón
+     .chz-pipeline-toggle ("ver pipeline de producción" + ícono + chevron)
+     despliega/colapsa este bloque — initChzPipelineToggle en app.js. ---------- */
+  .chz-pipeline-toggle{
+    display:flex; align-items:center; gap:9px; width:100%; max-width:1500px;
+    margin:22px auto 0; padding:12px 18px; border-radius:14px;
+    background:#0a0a0a; border:1px solid #262626; color:#c9c9c6;
+    font-family:'IBM Plex Mono',monospace; font-size:12px; text-align:left;
+    cursor:pointer; transition:background-color .2s, border-color .2s;
+  }
+  .chz-pipeline-toggle:hover{ background:#141414; border-color:#3a3a3a; }
+  .chz-pipeline-toggle:focus-visible{ outline:2px solid #e0ac54; outline-offset:-2px; }
+  .chz-pipeline-toggle .chz-pipeline-icon{ flex:none; color:#e0ac54; }
+  .chz-pipeline-toggle span{ flex:1; }
+  .chz-pipeline-toggle .chz-toggle-chevron{ flex:none; transition:transform .18s ease; }
+  .chz-pipeline-toggle[aria-expanded="true"] .chz-toggle-chevron{ transform:rotate(180deg); }
   .chz-pipeline{
-    max-width:1500px; margin:22px auto 0; padding:16px 18px;
+    max-width:1500px; margin:10px auto 0; padding:16px 18px;
     border-radius:14px; background:#0a0a0a; border:1px solid #262626;
     box-shadow:0 12px 30px rgba(0,0,0,.35);
     font-family:'IBM Plex Mono',monospace;
@@ -1137,10 +1140,6 @@
   .nano-bud-wrap{ background:radial-gradient(circle at 50% 40%, #141a0c 0%, #0a0a0a 70%); }
   .nano-bud-wrap svg{ display:block; }
 
-
-  .bottom-guide-wrap{
-    max-width:1440px; margin:0 auto; padding:0 20px 22px;
-  }
 
   /* ---------- Big schedule: always visible, above the footer, on every viewport ---------- */
   .big-schedule-wrap{
@@ -1285,7 +1284,7 @@
   }
   .malla-close:hover{ border-color:var(--accent); color:var(--ink); }
   .malla-body{
-    flex:1; overflow:auto; padding:18px 20px 28px;
+    flex:1; overflow:auto; overscroll-behavior:contain; padding:18px 20px 28px;
   }
   .malla-hint{
     max-width:1500px; margin:0 auto 12px; font-size:12.5px; color:var(--ink-soft); line-height:1.5;
@@ -1459,13 +1458,44 @@
   .bitacora-field select.filter-select{ width:100%; }
   .bitacora-submit{ align-self:flex-start; }
 
+  /* ---------- Botón de ayuda "?" (único en toda la página) ----------
+     Fijo, siempre visible encima de todo (z-index por encima de los
+     overlays de Malla/Bitácora/Guía, que usan 300), en cualquier tema y
+     tamaño de pantalla. Abre #guide-overlay, justo debajo. */
+  .help-fab{
+    position:fixed; right:16px; bottom:16px; z-index:400;
+    width:44px; height:44px; border-radius:50%; border:none;
+    background:var(--accent-btn-bg); color:var(--accent-btn-text);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 4px 14px -4px rgba(20,24,30,.4), 0 1px 3px rgba(20,24,30,.3);
+    cursor:pointer; transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .help-fab:hover{ transform:translateY(-1px) scale(1.04); box-shadow:0 8px 20px -6px rgba(20,24,30,.45), 0 2px 4px rgba(20,24,30,.3); }
+  .help-fab:active{ transform:translateY(0) scale(.97); }
+  @media (max-width:700px){
+    .help-fab{ right:12px; bottom:12px; width:40px; height:40px; }
+  }
+
+  /* ---------- Guía "Cómo usar este buscador" — overlay único ----------
+     Misma familia visual que .malla-overlay/.bitacora-overlay (cabecera
+     .malla-head/.malla-close, cuerpo .malla-body con scroll propio,
+     candado de scroll del body vía lockBodyScroll/unlockBodyScroll en
+     app.js) — el contenido en sí (.guide-mock/.guide-body/.guide-step) usa
+     las reglas ya definidas más arriba, junto a "Guide content". */
+  .guide-overlay{
+    position:fixed; inset:0; z-index:300; background:var(--bg);
+    display:flex; flex-direction:column;
+  }
+  .guide-overlay[hidden]{ display:none; }
+  .guide-overlay .malla-body{ max-width:900px; margin:0 auto; width:100%; }
+
   @media print{
     /* #rail-right-panel ("Mi horario") may currently live inside .rail-left
        (moved there by JS on narrow/tablet layouts) or inside .rail-right —
        hide everything else in the left rail by id instead of hiding
        .rail-left wholesale, so the schedule always prints regardless of
        where it physically sits in the DOM at print time. */
-    .topbar, #picker-panel, #dataset-panel, footer, .results-head, .course-card, .guide-panel, .bottom-guide-wrap, .big-schedule-wrap, .malla-overlay, .bitacora-overlay, .sim-status-bar{ display:none !important; }
+    .topbar, .help-fab, #picker-panel, #dataset-panel, footer, .results-head, .course-card, .big-schedule-wrap, .malla-overlay, .bitacora-overlay, .guide-overlay, .sim-status-bar{ display:none !important; }
     .layout{ grid-template-columns: 1fr; display:block; }
     .rail-left, .rail-right{ position:static; }
   }

@@ -1,3 +1,44 @@
+// ---------- Candado de scroll del body ----------
+// Usado por todos los overlays a pantalla completa (Malla, Bitácora, Guía,
+// confirmar "vaciar horario", configurar simulación). El usuario reportó
+// que en el celular se podía seguir haciendo scroll con la Bitácora
+// abierta y se veía la página de buscador de atrás moviéndose debajo del
+// overlay. Causa real: aunque cada overlay es position:fixed;inset:0, el
+// body detrás sigue siendo scrolleable — y el scroll interno de paneles
+// con overflow:auto (como .malla-body) "encadena" (scroll chaining) hacia
+// el documento apenas llega a su límite, en vez de quedarse contenido dentro
+// del overlay. Fix estándar y robusto en iOS/Android: al abrir el primer
+// overlay, se guarda el scroll actual y se fija el body en position:fixed
+// con ese offset en negativo (así no tiene de dónde moverse); al cerrar el
+// último overlay abierto, se libera y se vuelve a dejar el scroll donde
+// estaba. lockCount soporta que dos overlays se superpongan sin
+// desincronizar el candado (por ejemplo, el diálogo de "vaciar horario"
+// abierto encima de la Malla).
+let bodyScrollLockCount = 0;
+let bodyScrollLockY = 0;
+function lockBodyScroll(){
+  if(bodyScrollLockCount === 0){
+    bodyScrollLockY = window.scrollY || window.pageYOffset || 0;
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${bodyScrollLockY}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+  }
+  bodyScrollLockCount++;
+}
+function unlockBodyScroll(){
+  bodyScrollLockCount = Math.max(0, bodyScrollLockCount - 1);
+  if(bodyScrollLockCount === 0){
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    window.scrollTo(0, bodyScrollLockY);
+  }
+}
+
 // Función reutilizable (antes era una IIFE fija a los ids del footer
 // principal) — hay una segunda copia de la firma dentro de la Malla
 // curricular, sólo de prueba (ver "Vista previa de firma dentro de la
@@ -287,12 +328,17 @@ initChzMatrixRain('chelpaHazeFooter');
 // hay que "saltarlas" con el aleteo, como en los 100 metros con vallas) y
 // se juntan libros/cuadernos 📚 (+1 "ramo aprobado", el puntaje real del
 // juego) y nubes-boost (☁️, aumentan la velocidad hacia adelante por un
-// rato); la carne 🍖 en cambio RETRASA a usachin (aplica una frenada
-// temporal, sin dar puntos). Cada cierta distancia aparece Kong (🦍) como
-// cameo de fondo. El juego arranca con una pantalla de inicio ("toca para
-// empezar") antes de que corra ninguna física/spawn — sólo el fondo de
-// Matrix se ve animando. 3 stuns seguidos (sin juntar nada positivo entre
-// medio) = game over: el loop se pausa del todo (mejor para el
+// rato, dan además un salto extra y un relámpago amarillo al tocarlas —
+// para que el boost se note, no sólo se sienta en la velocidad); la carne
+// 🍖 en cambio RETRASA a usachin (aplica una frenada temporal, sin dar
+// puntos, con una explosión roja en el momento del choque para que quede
+// claro que lo frenó). La nube nimbus sólo se dibuja mientras usachin va
+// ascendiendo (viene de aletear = "está volando"); mientras cae se ve a
+// usachin solo, sin nube debajo. Cada cierta distancia aparece Kong (🦍)
+// como cameo de fondo. El juego arranca con una pantalla de inicio ("toca
+// para empezar") antes de que corra ninguna física/spawn — sólo el fondo
+// de Matrix se ve animando. 3 stuns seguidos (sin juntar nada positivo
+// entre medio) = game over: el loop se pausa del todo (mejor para el
 // rendimiento, a pedido del usuario) y muestra los ramos aprobados de esa
 // vuelta; un click/touch reinicia. Mismo patrón de IntersectionObserver
 // que initChzSmoke/initChzBugGame/initChzMatrixRain: el loop de rAF sólo
@@ -358,6 +404,8 @@ function initChzNimbusGame(footerId){
   var speedFramesLeft = 0;
   var stunFramesLeft = 0;
   var stunStreak = 0;
+  var bursts = []; // partículas de explosión (ej. frenada roja al chocar con la carne)
+  var lightningFramesLeft = 0; // rayo amarillo extra al pasar por una nube-boost
   var started = false;
   var gameOver = false;
   var visible = false;
@@ -385,6 +433,8 @@ function initChzNimbusGame(footerId){
     speedFramesLeft = 0;
     stunFramesLeft = 0;
     stunStreak = 0;
+    bursts = [];
+    lightningFramesLeft = 0;
     gameOver = false;
     updateScore();
   }
@@ -551,6 +601,65 @@ function initChzNimbusGame(footerId){
     ctx.fillText(p.kind === 'meat' ? '🍖' : '📚', p.x, p.y);
   }
 
+  // Explosión de partículas — a pedido del usuario, para que "se note" el
+  // efecto de un pickup (roja cuando la carne frena a usachin). Reutiliza
+  // el mismo estilo de partícula circular que initNanoSmoke, pero con
+  // impulso hacia afuera y una vida bien corta (es un golpe, no humo).
+  function spawnBurst(x, y, color){
+    for (var i = 0; i < 10; i++){
+      var a = Math.random() * Math.PI * 2;
+      var speed = 1.4 + Math.random() * 2.4;
+      bursts.push({
+        x: x, y: y,
+        vx: Math.cos(a) * speed, vy: Math.sin(a) * speed,
+        r: 2 + Math.random() * 2.5,
+        alpha: 1,
+        color: color
+      });
+    }
+  }
+
+  function updateBursts(){
+    bursts.forEach(function(b){
+      b.x += b.vx; b.y += b.vy;
+      b.vx *= 0.9; b.vy *= 0.9;
+      b.alpha -= 0.05;
+    });
+    bursts = bursts.filter(function(b){ return b.alpha > 0; });
+  }
+
+  function drawBursts(){
+    bursts.forEach(function(b){
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba(' + b.color + ',' + Math.max(b.alpha, 0) + ')';
+      ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  }
+
+  // Rayo amarillo extra al pasar por una nube-boost — a pedido del
+  // usuario, para que el "salto extra" del boost se note más que sólo el
+  // cambio de velocidad. Se dibuja unos cuadros, más grande y brillante
+  // que el rayo fijo de drawCloud.
+  function drawLightningFlash(x, y){
+    ctx.save();
+    ctx.translate(x, y - 6);
+    ctx.shadowColor = '#f2c14e';
+    ctx.shadowBlur = 14;
+    ctx.fillStyle = '#ffe27a';
+    ctx.beginPath();
+    ctx.moveTo(-3, -18);
+    ctx.lineTo(5, -18);
+    ctx.lineTo(-1, -4);
+    ctx.lineTo(6, -4);
+    ctx.lineTo(-6, 20);
+    ctx.lineTo(1, 2);
+    ctx.lineTo(-6, 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
   function drawKong(k){
     ctx.font = '34px sans-serif';
     ctx.textAlign = 'center';
@@ -663,6 +772,11 @@ function initChzNimbusGame(footerId){
           speedEffect = 'boost';
           speedFramesLeft = BOOST_FRAMES;
           stunStreak = 0;
+          // A pedido del usuario: pasar por una nube-boost da además un
+          // salto extra (empujón hacia arriba) y un relámpago amarillo,
+          // para que el boost se sienta, no sólo se vea en la velocidad.
+          cloud.vy = FLAP * 1.3;
+          lightningFramesLeft = 16;
         }
       }
     });
@@ -673,9 +787,12 @@ function initChzNimbusGame(footerId){
         p.taken = true;
         if (p.kind === 'meat'){
           // La carne retrasa a usachin (a pedido del usuario) — no da
-          // puntos, sólo frena por un rato.
+          // puntos, sólo frena por un rato. Se agrega una explosión roja
+          // en el momento del choque para que "se note" que lo frenó,
+          // también a pedido del usuario.
           speedEffect = 'slow';
           speedFramesLeft = SLOW_FRAMES;
+          spawnBurst(cloud.x, cloud.y, '255,95,87');
         } else {
           score += 1; // +1 ramo aprobado
           stunStreak = 0;
@@ -690,8 +807,20 @@ function initChzNimbusGame(footerId){
       if (distance >= kong.until || kong.x < -60) kong = null;
     }
 
-    drawCloud(cloud.x, cloud.y);
+    // "Usachin sin nube, salvo cuando está volando" — a pedido del
+    // usuario: la nube nimbus sólo se dibuja mientras usachin va
+    // ascendiendo (vy<0, viene de aletear = "está volando"); si va
+    // cayendo (vy>=0, la gravedad ya le está ganando al aleteo) se ve a
+    // usachin solo, sin nube debajo, para que quede claro que no la tiene
+    // en ese momento.
+    if (cloud.vy < 0) drawCloud(cloud.x, cloud.y);
     drawUsachin(cloud.x, cloud.y);
+    if (lightningFramesLeft > 0){
+      drawLightningFlash(cloud.x, cloud.y);
+      lightningFramesLeft--;
+    }
+    updateBursts();
+    drawBursts();
 
     if (stunFramesLeft > 0) stunFramesLeft--;
 
@@ -1132,8 +1261,9 @@ function openSimSetup(preferNivel){
   // sugiere la malla, en vez del primero de la lista por defecto.
   if(preferNivel != null && nivelSet.includes(preferNivel)) simNivelInicialSel.value = String(preferNivel);
   simSetupOverlay.hidden = false;
+  lockBodyScroll();
 }
-function closeSimSetup(){ simSetupOverlay.hidden = true; }
+function closeSimSetup(){ simSetupOverlay.hidden = true; unlockBodyScroll(); }
 simToggleBtn.addEventListener('click', ()=>{
   if(simMode) exitSimulation();
   else openSimSetup();
@@ -1592,10 +1722,28 @@ function mallaSelectCourse(key, id){
 function openMalla(){
   renderMalla();
   mallaOverlay.hidden = false;
+  lockBodyScroll();
+  // Bug real reportado por el usuario ("el cogollo sigue sin aparecer con
+  // el humo al reiniciar la página con eso abierto"): el humo del cogollo
+  // (initNanoSmoke), el de la copia ámbar de la firma (initChzSmoke) y el
+  // canvas del juego nimbus (initChzNimbusGame) viven DENTRO de este
+  // overlay, que arranca oculto en cada carga de página (su estado
+  // abierto/cerrado no se guarda en localStorage, a diferencia del de cada
+  // firma). Sus propios IntersectionObserver observan un elemento anidado
+  // adentro del overlay, no el overlay mismo — y en la práctica, cuando el
+  // overlay pasa de hidden a visible, esos observers no siempre vuelven a
+  // dispararse solos (se comprobó que ni scrollear ni esperar varios
+  // segundos lo hace, sólo un evento "resize" real). Por eso, igual que ya
+  // hace initChzToggle al desplegar una firma, se dispara un "resize"
+  // global apenas se abre la Malla — así los 3 efectos miden su canvas de
+  // nuevo con el ancho real en vez de quedar con el buffer de 1px del
+  // primer render (cuando todo esto todavía estaba oculto).
+  window.dispatchEvent(new Event('resize'));
   document.getElementById('malla-close').focus();
 }
 function closeMalla(){
   mallaOverlay.hidden = true;
+  unlockBodyScroll();
   document.getElementById('malla-toggle').focus();
 }
 document.getElementById('malla-toggle').addEventListener('click', openMalla);
@@ -1790,10 +1938,12 @@ function openBitacora(){
   const fechaInput = document.getElementById('bit-f-fecha');
   if(fechaInput && !fechaInput.value) fechaInput.value = new Date().toISOString().slice(0,10);
   bitacoraOverlay.hidden = false;
+  lockBodyScroll();
   document.getElementById('bitacora-close').focus();
 }
 function closeBitacora(){
   bitacoraOverlay.hidden = true;
+  unlockBodyScroll();
   document.getElementById('bitacora-toggle').focus();
 }
 document.getElementById('bitacora-toggle').addEventListener('click', openBitacora);
@@ -2036,24 +2186,23 @@ function guideMockHTML(){
       </div>`;
 }
 
-// ---------- Empty state: onboarding guide shown before any search ----------
+// ---------- Empty state: onboarding message shown before any search ----------
+// Antes esto era una copia completa de la guía de 5 pasos (duplicando
+// guideMockHTML/guideStepsHTML por tercera vez en la página). Ahora que hay
+// un único botón "?" (#help-fab) que abre la guía completa en su propio
+// overlay (ver initGuideOverlay más abajo), este estado vacío es sólo un
+// mensaje corto que apunta a ese botón — nada de contenido duplicado.
 function welcomeGuideHTML(){
-  return `<div class="guide-panel inline" data-open="true">
-    <div class="guide-head" style="cursor:default;">
-      <div class="t">
-        <h2>Cómo usar este buscador</h2>
-        <p>Aún no has buscado nada — así arma tu horario en 5 pasos.</p>
-      </div>
-    </div>
-    <div class="guide-mock">${guideMockHTML()}</div>
-    <div class="guide-body">${guideStepsHTML()}</div>
+  return `<div class="empty-state welcome-empty">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a2.9 2.9 0 0 1 5.6 1c0 1.9-2.6 2.1-2.7 3.9"/><circle cx="12" cy="17.2" r="0.15" fill="currentColor" stroke="currentColor" stroke-width="1.6"/></svg>
+    <h3>Aún no has buscado nada</h3>
+    <div>Escribe un ramo arriba o usa los filtros — la lista se arma sola. ¿Primera vez acá? Toca el botón <strong>“?”</strong> (arriba a la derecha) para ver la guía paso a paso.</div>
   </div>`;
 }
 
 // ---------- Render: results ----------
 const resultsEl = document.getElementById('results');
 const resultsHeadEl = document.querySelector('.results-head');
-const bottomGuideEl = document.getElementById('bottom-guide-wrap');
 // Acordeón de tarjetas de ramo: códigos que están COLAPSADOS ahora mismo.
 // Por defecto todas las tarjetas parten expandidas (mismo comportamiento
 // que antes de este cambio), y sólo se agregan acá cuando el usuario
@@ -2068,13 +2217,11 @@ function render(){
 
   if(noFiltersActive){
     resultsHeadEl.style.display = 'none';
-    bottomGuideEl.style.display = 'none';
     resultsEl.innerHTML = welcomeGuideHTML();
     renderSchedule();
     return;
   }
   resultsHeadEl.style.display = '';
-  bottomGuideEl.style.display = '';
 
   const matched = [];
   COURSES.forEach(course=>{
@@ -2553,10 +2700,12 @@ const confirmCancel = document.getElementById('confirm-cancel');
 let confirmResolve = null;
 function askConfirm(){
   confirmOverlay.hidden = false;
+  lockBodyScroll();
   return new Promise(resolve=>{ confirmResolve = resolve; });
 }
 function closeConfirm(result){
   confirmOverlay.hidden = true;
+  unlockBodyScroll();
   if(confirmResolve){ confirmResolve(result); confirmResolve = null; }
 }
 confirmAccept.addEventListener('click', ()=> closeConfirm(true));
@@ -2734,66 +2883,40 @@ document.getElementById('app-mark').addEventListener('click', ()=>{
   else if(mqCompact.addListener) mqCompact.addListener(updateButtons); // older Safari
 })();
 
-// ---------- Guide panel (collapsible, remembers state) ----------
-(function initGuide(){
-  const panel = document.getElementById('guide-panel');
-  const toggle = document.getElementById('guide-toggle');
-  // Rellena el panel colapsable con la misma ilustración y pasos que usa
-  // welcomeGuideHTML() — ver la nota junto a GUIDE_STEPS más arriba.
-  document.getElementById('guide-mock').innerHTML = guideMockHTML();
-  document.getElementById('guide-body').innerHTML = guideStepsHTML();
-  let open = false;
-  try{
-    const saved = localStorage.getItem('bc-usach-guide-open');
-    if(saved !== null) open = saved === 'true';
-  }catch(e){}
-  function setOpen(v){
-    open = v;
-    panel.dataset.open = String(open);
-    toggle.setAttribute('aria-expanded', String(open));
-    try{ localStorage.setItem('bc-usach-guide-open', String(open)); }catch(e){}
+// ---------- Guide overlay: único lugar donde vive la guía "Cómo usar este
+// buscador" ----------
+// Antes esta guía se veía en 3 lugares distintos a la vez (tarjeta grande
+// bajo el horario, versión compacta reubicada en modo amigable vía
+// initGuidePlacement, y copia completa dentro del estado "sin resultados
+// aún") con el mismo contenido repetido. El usuario pidió un único botón
+// "?" que la abra, visible en todos los temas y tamaños de pantalla, y que
+// no aparezca en ningún otro lugar — así que ahora es un solo overlay a
+// pantalla completa (mismo patrón que Malla/Bitácora: .malla-head con
+// .malla-close, cuerpo .malla-body con scroll propio), abierto desde
+// #help-fab (fijo, después de <body>, ver shell.html). El contenido se
+// rellena una sola vez con guideMockHTML()/guideStepsHTML() — misma fuente
+// que ya usaba el estado vacío antes de este cambio.
+(function initGuideOverlay(){
+  const overlay = document.getElementById('guide-overlay');
+  const fab = document.getElementById('help-fab');
+  const closeBtn = document.getElementById('guide-overlay-close');
+  if(!overlay || !fab || !closeBtn) return;
+  document.getElementById('guide-overlay-mock').innerHTML = guideMockHTML();
+  document.getElementById('guide-overlay-body').innerHTML = guideStepsHTML();
+
+  function openGuideOverlay(){
+    overlay.hidden = false;
+    lockBodyScroll();
+    closeBtn.focus();
   }
-  setOpen(open);
-  toggle.addEventListener('click', ()=> setOpen(!open));
-  toggle.addEventListener('keydown', e=>{
-    if(e.key===' '||e.key==='Enter'){ e.preventDefault(); setOpen(!open); }
-  });
-})();
-
-// ---------- Guide panel placement: in modo amigable it moves up to live as
-// a compact button right below the search bar, instead of down after the
-// results/horario layout where it lives in every other theme. Mismo patrón
-// de reparenting que initSchedulePlacement de más abajo — mueve el mismo
-// nodo entre 2 posiciones fijas del DOM en vez de duplicar el markup, así
-// que el estado abierto/cerrado (bc-usach-guide-open, ver initGuide arriba)
-// y el contenido (ilustración + pasos) son siempre los mismos, sólo cambia
-// dónde vive. ----------
-(function initGuidePlacement(){
-  const wrap = document.getElementById('bottom-guide-wrap');
-  const amigableSlot = document.getElementById('guide-slot-topbar');
-  // Fuera de modo amigable, el guide vive donde siempre — inmediatamente
-  // antes de #big-schedule-wrap (su posición original en shell.html).
-  const defaultAnchor = document.getElementById('big-schedule-wrap');
-  if(!wrap || !amigableSlot || !defaultAnchor) return;
-  const root = document.documentElement;
-
-  function isAmigable(){ return root.getAttribute('data-theme') === 'amigable'; }
-
-  function place(){
-    if(isAmigable()){
-      if(wrap.parentElement !== amigableSlot) amigableSlot.appendChild(wrap);
-    } else if(wrap.parentElement !== defaultAnchor.parentElement || wrap.nextElementSibling !== defaultAnchor){
-      defaultAnchor.parentElement.insertBefore(wrap, defaultAnchor);
-    }
+  function closeGuideOverlay(){
+    overlay.hidden = true;
+    unlockBodyScroll();
+    fab.focus();
   }
-  place();
-
-  // El toggle de modo amigable (🎀) vive en otra función (initTheme, más
-  // arriba) — en vez de acoplarse a ese código, se observa directamente el
-  // atributo data-theme del <html>, así ambas funciones quedan
-  // independientes entre sí.
-  const mo = new MutationObserver(place);
-  mo.observe(root, { attributes:true, attributeFilter:['data-theme'] });
+  fab.addEventListener('click', openGuideOverlay);
+  closeBtn.addEventListener('click', closeGuideOverlay);
+  document.addEventListener('keydown', e=>{ if(e.key === 'Escape' && !overlay.hidden) closeGuideOverlay(); });
 })();
 
 // ---------- Responsive reparenting: move "Mi horario" beside the picker whenever the layout is single-column ----------
@@ -3016,6 +3139,35 @@ function initChzPipeline(containerId){
 }
 initChzPipeline('chzPipeline');
 
+// Acordeón de la barra pipeline (a pedido del usuario): colapsada por
+// defecto, el botón #chzPipelineToggle ("ver pipeline de producción" +
+// ícono + chevron) la despliega — mismo patrón de persistencia en
+// localStorage que initChzToggle, pero sin "preview" propio (el botón ya
+// hace las veces de eso). initChzPipeline arriba sigue corriendo su ciclo
+// igual, sin enterarse de si el bloque está oculto o no.
+(function initChzPipelineToggle(){
+  var toggle = document.getElementById('chzPipelineToggle');
+  var body = document.getElementById('chzPipeline');
+  if (!toggle || !body) return;
+  var STORAGE_KEY = 'bc-usach-chz-pipeline-open';
+  var open = false;
+  try {
+    var saved = localStorage.getItem(STORAGE_KEY);
+    if (saved !== null) open = saved === 'true';
+  } catch(e){}
+  function setOpen(v){
+    open = v;
+    toggle.setAttribute('aria-expanded', String(open));
+    body.hidden = !open;
+    try { localStorage.setItem(STORAGE_KEY, String(open)); } catch(e){}
+  }
+  setOpen(open);
+  toggle.addEventListener('click', function(){ setOpen(!open); });
+  toggle.addEventListener('keydown', function(e){
+    if (e.key === ' ' || e.key === 'Enter'){ e.preventDefault(); setOpen(!open); }
+  });
+})();
+
 // ---------- Segunda firma, sólo dentro de la Malla curricular ----------
 // #malla-footer-preview, al fondo de la Malla: la firma nueva ("nano_gollo",
 // con Tailwind, aceptada por el usuario) que marca esta sección como
@@ -3070,7 +3222,20 @@ initChzPipeline('chzPipeline');
       raf = requestAnimationFrame(tick);
     }
   }
-  function start(){ if(running) return; running=true; tick(); }
+  function start(){
+    if(running) return;
+    running=true;
+    // Mismo bug real que initChzSmoke/initChzNimbusGame (Ronda 8): resize()
+    // se llamaba una sola vez al cargar el script, cuando el cogollo todavía
+    // está oculto dentro de la Malla (0×0) — el canvas quedaba con un
+    // buffer de 1px que el CSS estira a una mancha sólida, y nunca se
+    // volvía a medir salvo con un window "resize" real. Acá se vuelve a
+    // medir justo cuando el IntersectionObserver confirma que el cogollo
+    // pasó a estar realmente visible, para que el humo salga bien incluso
+    // si se refresca la página con la Malla ya abierta.
+    resize();
+    tick();
+  }
   function stop(){ running=false; if(raf) cancelAnimationFrame(raf); raf=null; }
   if('IntersectionObserver' in window){
     const io = new IntersectionObserver(entries=>{

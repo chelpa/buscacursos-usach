@@ -10,7 +10,7 @@ versionados acá y se corren todos juntos con un solo comando.
 
 ```
 node build.js          # genera/actualiza index.html
-node tests/run-all.mjs # corre los 15 tests en orden, reporta un resumen
+node tests/run-all.mjs # corre los 18 tests en orden, reporta un resumen
 ```
 
 Sale con código 1 (y falla en CI, si algún día hay CI) si algún test
@@ -85,27 +85,54 @@ PLAYWRIGHT_CHROMIUM_PATH=/opt/pw-browsers/chromium node tests/run-all.mjs
 - `13-pipeline-malla.mjs` — al fondo de la Malla curricular, debajo de la
   firma nano ("malla_grid.html · grafo"), hay una barra tipo pipeline
   (build → lint → test → deploy) que avanza sola en loop sin que el
-  usuario haga nada; el test espera a que llegue solo hasta "deploy" en
-  verde.
+  usuario haga nada. Ahora es un acordeón: el test confirma que arranca
+  colapsada, que el botón "ver pipeline de producción" la despliega, y
+  luego que las 4 etapas existen y que el loop llega solo hasta "deploy"
+  en verde.
 - `14-amigable-acordeones.mjs` — en modo amigable (🎀), "Filtrar por
   horario libre" y "Mi horario" arrancan colapsados (no expandidos);
   apretar la pestaña "Horario semanal" despliega "Mi horario" y la
-  flecha lo vuelve a colapsar; la guía "Cómo usar este buscador" se ve
-  como un botón chico debajo de la barra de búsqueda desde el primer
-  momento (incluso sin haber buscado nada todavía), no como la tarjeta
-  grande de siempre.
+  flecha lo vuelve a colapsar. (La guía ya no se prueba acá — desde que
+  pasó a ser un botón "?" único e igual en todos los temas, ver
+  `17-guia-unica.mjs`.)
 - `15-juego-nube-nimbus.mjs` — dentro de la firma ámbar de la Malla
-  (`#chelpaHazeFooterMallaOriginal`), existe un segundo mini-juego
-  distinto del de las chinitas: un canvas (`#chzNimbusCanvas`) con una
-  nube+rayo y "usachin" (mascota león) montado arriba, sobre un fondo de
-  lluvia de código verde estilo Matrix, estilo Dragon Ball Z. El test
-  confirma que el canvas existe con un ancho real de pixeles (protege
-  contra el bug real de "canvas estirado a 1px" que reportó el usuario al
-  refrescar la página con la firma ya abierta), que el puntaje arranca en
-  "🍌 0", que el loop de `requestAnimationFrame` realmente está dibujando
-  (compara dos capturas del canvas en una ventana corta), y que
-  interactuar (aletear con click) no rompe nada ni hace desaparecer el
-  canvas.
+  (`#chelpaHazeFooterMallaOriginal`, terminal "usachin.sh"), existe un
+  segundo mini-juego distinto del de las chinitas: un canvas
+  (`#chzNimbusCanvas`) con una nube+rayo y "usachin" (mascota león)
+  montado arriba (la nube sólo se ve mientras usachin está "volando",
+  ascendiendo), sobre un fondo de lluvia de código verde estilo Matrix,
+  con una pantalla de inicio ("toca para empezar") antes de que arranque
+  la física. El test confirma que el canvas existe con un ancho real de
+  pixeles (protege contra el bug real de "canvas estirado a 1px" que
+  reportó el usuario al refrescar la página con la firma ya abierta), que
+  el puntaje arranca en "📚 0", que el fondo de Matrix anima solo incluso
+  en la pantalla de inicio (compara dos capturas del canvas en una
+  ventana corta, antes de tocar nada), y que tocar para empezar no rompe
+  nada ni hace desaparecer el canvas.
+- `16-cogollo-humo-refresh.mjs` — reproduce el bug real reportado por el
+  usuario ("el cogollo sigue sin aparecer con el humo al reiniciar la
+  página con eso abierto"): abre la Malla, despliega la firma nano y la
+  ámbar (dejándolas "recordadas como abiertas" en `localStorage`),
+  refresca la página de verdad, vuelve a abrir la Malla, y confirma que
+  los 3 canvas que viven adentro (el humo del cogollo, el humo de la
+  firma ámbar, y el canvas del juego nimbus) miden un ancho real de
+  pixeles en vez de quedar estirados a 1px — protege el fix de
+  `openMalla()` que dispara un `resize` global al abrir la Malla.
+- `17-guia-unica.mjs` — la guía "Cómo usar este buscador" ya no aparece
+  en sus 3 lugares de antes (`#bottom-guide-wrap`, `#guide-slot-topbar`,
+  `#guide-panel`) — ninguno de los 3 existe en el DOM. En su lugar hay
+  exactamente un botón "?" (`#help-fab`), visible tanto en celular como
+  en modo amigable sin reubicarse, que al apretarlo despliega
+  `#guide-overlay` con los 5 pasos de siempre y una ilustración, y que se
+  cierra con su propio botón.
+- `18-scroll-lock-overlays.mjs` — reproduce el bug real reportado por el
+  usuario ("se puede hacer scroll" detrás de Mi Bitácora): scrollea la
+  página, abre la Malla/Bitácora/Guía una por una y confirma que el
+  `<body>` queda fijado exactamente en ese punto de scroll (con el
+  `top` negativo del patrón estándar de candado de scroll) mientras el
+  overlay está abierto, que ya no queda nada scrolleable en el
+  documento, y que al cerrar el overlay se libera y el scroll vuelve
+  exacto a donde estaba antes de abrir.
 
 Cada test es autocontenido: abre su propia página, hace sus propias
 aserciones (con `assert`/`assertEqual` de `tests/lib/harness.mjs`), y

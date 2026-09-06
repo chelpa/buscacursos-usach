@@ -1,6 +1,17 @@
 </head>
 <body>
 
+<!-- Único botón de ayuda de toda la página (ver guide-overlay, al fondo del
+     archivo): antes la guía "Cómo usar este buscador" vivía en 3 lugares
+     distintos (tarjeta grande bajo el horario, versión compacta reubicada en
+     modo amigable, y copia completa dentro del estado "sin resultados aún")
+     — ahora hay un solo botón "?" fijo, visible en todos los temas y
+     tamaños de pantalla, que abre un overlay a pantalla completa (mismo
+     patrón que Malla/Bitácora) con el mismo contenido de siempre. -->
+<button class="help-fab" id="help-fab" type="button" title="Cómo usar este buscador" aria-label="Cómo usar este buscador" aria-haspopup="dialog" aria-controls="guide-overlay">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a2.9 2.9 0 0 1 5.6 1c0 1.9-2.6 2.1-2.7 3.9"/><circle cx="12" cy="17.2" r="0.15" fill="currentColor" stroke="currentColor" stroke-width="1.6"/></svg>
+</button>
+
 <div class="topbar">
   <div class="topbar-inner">
     <div class="brand">
@@ -66,14 +77,6 @@
     <button class="link-btn sim-exit-btn" id="sim-exit-btn" type="button">Salir de la simulación</button>
   </div>
 </div>
-
-<!-- Sólo se usa en modo amigable: initGuidePlacement (app.js) mueve acá
-     #bottom-guide-wrap (la guía "Cómo usar este buscador", que en el resto
-     de los temas vive más abajo, después del resultado/horario — ver esa
-     sección al fondo del archivo) para que quede como un botón chico justo
-     debajo de la barra de búsqueda, en vez de la tarjeta grande de siempre.
-     Vacío y sin ningún efecto en los demás temas. -->
-<div id="guide-slot-topbar"></div>
 
 <div class="layout">
 
@@ -162,23 +165,6 @@
     </div>
   </aside>
 
-</div>
-
-<div class="bottom-guide-wrap" id="bottom-guide-wrap">
-  <section class="guide-panel" id="guide-panel" data-open="true">
-    <div class="guide-head" id="guide-toggle" role="button" tabindex="0" aria-expanded="true" aria-controls="guide-body">
-      <div class="t">
-        <h2>Cómo usar este buscador</h2>
-        <p>Guía rápida en 5 pasos — haz clic para ocultar o mostrar</p>
-      </div>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
-    </div>
-    <!-- Ilustración y pasos rellenados por JS (guideMockHTML/guideStepsHTML)
-         — misma fuente que usa el estado "sin resultados aún" (ver
-         welcomeGuideHTML), para no mantener el mismo contenido dos veces. -->
-    <div class="guide-mock" id="guide-mock"></div>
-    <div class="guide-body" id="guide-body"></div>
-  </section>
 </div>
 
 <div class="big-schedule-wrap" id="big-schedule-wrap">
@@ -306,8 +292,24 @@
          colapsada), dentro de la Malla curricular — no es un CI real, sólo
          cicla estados solo con setTimeout (ver initChzPipeline en
          app.js), para sentirse coherente con el resto de las firmas
-         "dev" del sitio. ---------- -->
-    <div class="chz-pipeline" id="chzPipeline">
+         "dev" del sitio. Ahora es un acordeón (a pedido del usuario):
+         colapsada por defecto, un botón "ver pipeline de producción" con
+         ícono de pipeline + chevron la despliega (initChzPipelineToggle en
+         app.js, mismo patrón de persistencia en localStorage que el resto
+         de los toggles de firma). initChzPipeline sigue apuntando a
+         #chzPipeline sin cambios — ahora es el body colapsable en vez de
+         estar siempre visible. ---------- -->
+    <button class="chz-pipeline-toggle" id="chzPipelineToggle" type="button" aria-expanded="false" aria-controls="chzPipeline">
+      <svg class="chz-pipeline-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="4" cy="12" r="2.6"/>
+        <circle cx="12" cy="12" r="2.6"/>
+        <circle cx="20" cy="12" r="2.6"/>
+        <path d="M6.6 12h2.8M14.6 12h2.8"/>
+      </svg>
+      <span>ver pipeline de producción</span>
+      <svg class="chz-toggle-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+    <div class="chz-pipeline" id="chzPipeline" hidden>
       <div class="chz-pipeline-head">
         <span class="chz-pipeline-label">.github/workflows/deploy.yml</span>
         <span class="chz-pipeline-run">#212</span>
@@ -409,6 +411,29 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Guía "Cómo usar este buscador" — único overlay para toda la página,
+     abierto desde el botón "?" (#help-fab, justo después de <body>). Mismo
+     patrón visual que #malla-overlay/#bitacora-overlay (misma cabecera
+     .malla-head/.malla-close y cuerpo .malla-body con scroll propio). El
+     contenido (#guide-overlay-mock/#guide-overlay-body) lo rellena JS con
+     guideMockHTML()/guideStepsHTML() — misma fuente que antes usaban los
+     3 lugares donde vivía esta guía, ahora consolidados en éste. -->
+<div class="guide-overlay" id="guide-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="guide-overlay-title">
+  <div class="malla-head">
+    <div class="malla-head-titles">
+      <h2 id="guide-overlay-title">Cómo usar este buscador</h2>
+      <p>Arma tu horario en 5 pasos.</p>
+    </div>
+    <button class="malla-close" id="guide-overlay-close" type="button" title="Cerrar guía" aria-label="Cerrar guía">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="malla-body">
+    <div class="guide-mock" id="guide-overlay-mock"></div>
+    <div class="guide-body" id="guide-overlay-body"></div>
   </div>
 </div>
 
